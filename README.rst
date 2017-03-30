@@ -7,5 +7,8 @@ Aplicação Django para controle de chamados Câmara Municipal de Curitiba
      :target: https://github.com/pydanny/cookiecutter-django/
      :alt: Built with Cookiecutter Django
 
+.. image:: https://travis-ci.org/CMCuritiba/chamados.svg?branch=master
+    :target: https://travis-ci.org/CMCuritiba/chamados     
+
 
 :License: MIT
