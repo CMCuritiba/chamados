@@ -8,7 +8,10 @@ Aplicação Django para controle de chamados Câmara Municipal de Curitiba
      :alt: Built with Cookiecutter Django
 
 .. image:: https://travis-ci.org/CMCuritiba/chamados.svg?branch=master
-    :target: https://travis-ci.org/CMCuritiba/chamados     
+    :target: https://travis-ci.org/CMCuritiba/chamados
+
+.. image:: https://codecov.io/gh/CMCuritiba/chamados/coverage.svg?branch=master
+    :target: https://codecov.io/gh/CMCuritiba/chamados/
 
 
 :License: MIT
