@@ -1,0 +1,16 @@
+language: python
+
+python:
+  - "3.5"
+
+# comando para instalar dependencias
+install: 
+  - pip install -r requirements.txt
+  - pip install coveralls
+
+# comando para rodas os testes
+script: 
+  coverage run manage.py test --settings=config.settings.test
+
+after_success:
+  coveralls
