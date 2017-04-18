@@ -60,3 +60,28 @@ TEMPLATES[0]['OPTIONS']['loaders'] = [
         'django.template.loaders.app_directories.Loader',
     ], ],
 ]
+
+# LDAP
+# ------------------------------------------------------------------------------
+LDAP_AUTH_URL = "ldap://ldap-desenv"
+LDAP_AUTH_SEARCH_BASE = "ou=Usuarios,dc=cmc,dc=pr,dc=gov,dc=br"
+
+# DATABASE CONFIGURATION
+# ------------------------------------------------------------------------------
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
+DATABASES = {
+    'ldap': {
+        'ENGINE': 'ldapdb.backends.ldap',
+        'NAME': 'ldap://ldap-desenv',
+        #'USER': 'ou=Usuarios,dc=cmc,dc=pr,dc=gov,dc=br',
+        #'PASSWORD': '',
+        #'USER': 'uid=alexandre.odoni,ou=Usuarios,dc=cmc,dc=pr,dc=gov,dc=br',
+        #'PASSWORD': '',
+        #'TLS': True,
+        #'CONNECTION_OPTIONS': {
+        #    ldap.OPT_X_TLS_DEMAND: True,
+        #}
+     },
+    'default': env.db('DATABASE_URL', default='postgres:///chamados-cmc-test'),
+}
+DATABASES['default']['ATOMIC_REQUESTS'] = True

@@ -1,0 +1,11 @@
+[
+    {
+        "pk": 1, 
+        "model": "autentica.user", 
+        "fields": {
+            "username": "desenv", 
+            "password": "camara321",
+            "chefia": "False"
+        }
+    }
+]
