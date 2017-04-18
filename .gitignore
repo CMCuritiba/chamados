@@ -65,4 +65,4 @@ chamados/media/
 
 staticfiles/
 components/
-*migrations/
+# *migrations/
