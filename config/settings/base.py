@@ -10,7 +10,7 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 """
 from __future__ import absolute_import, unicode_literals
 
-import environ
+import environ, os
 
 ROOT_DIR = environ.Path(__file__) - 3  # (chamados-cmc/config/settings/base.py - 3 = chamados-cmc/)
 APPS_DIR = ROOT_DIR.path('chamados-cmc')
@@ -48,14 +48,18 @@ DJANGO_APPS = [
     'django.contrib.admin',
 ]
 THIRD_PARTY_APPS = [
-    'crispy_forms',  # Form layouts
+     'pipeline',
+     'djangobower',
+     'crispy_forms',  # Form layouts
      'compressor',
+     'django_python3_ldap',
+     'ldapdb',
 ]
 
 # Apps specific for this project go here.
 LOCAL_APPS = [
-    # custom users app
-    # Your stuff: custom apps go here
+    'chamados-cmc.autentica.apps.AutenticaConfig',
+    'chamados-cmc.core.apps.CoreConfig',
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -71,6 +75,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
 ]
 
 # DEBUG
@@ -103,9 +108,24 @@ MANAGERS = ADMINS
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {
+    'ldap': {
+        'ENGINE': 'ldapdb.backends.ldap',
+        #'NAME': 'ldap://ldap',
+        'NAME': 'ldap://ldap-desenv',
+        #'USER': 'ou=Usuarios,dc=cmc,dc=pr,dc=gov,dc=br',
+        #'PASSWORD': '',
+        #'USER': 'uid=alexandre.odoni,ou=Usuarios,dc=cmc,dc=pr,dc=gov,dc=br',
+        #'PASSWORD': '',
+        #'TLS': True,
+        #'CONNECTION_OPTIONS': {
+        #    ldap.OPT_X_TLS_DEMAND: True,
+        #}
+     },
     'default': env.db('DATABASE_URL', default='postgres:///chamados-cmc'),
 }
 DATABASES['default']['ATOMIC_REQUESTS'] = True
+
+DATABASE_ROUTERS = ['ldapdb.router.Router']
 
 
 # GENERAL CONFIGURATION
@@ -117,7 +137,7 @@ DATABASES['default']['ATOMIC_REQUESTS'] = True
 TIME_ZONE = 'America/Sao_Paulo'
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#language-code
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pt-BR'
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#site-id
 SITE_ID = 1
@@ -176,11 +196,12 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 STATIC_ROOT = str(ROOT_DIR('staticfiles'))
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
-STATIC_URL = '/static/'
+STATIC_URL = '/staticfiles/'
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
 STATICFILES_DIRS = [
     str(APPS_DIR.path('static')),
+    str(ROOT_DIR.path('components/bower_components')),
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
@@ -188,6 +209,7 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'compressor.finders.CompressorFinder',
+    'pipeline.finders.PipelineFinder',
 ]
 
 # MEDIA CONFIGURATION
@@ -228,6 +250,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # AUTHENTICATION CONFIGURATION
 # ------------------------------------------------------------------------------
 AUTHENTICATION_BACKENDS = [
+    "django_python3_ldap.auth.LDAPBackend",
     'django.contrib.auth.backends.ModelBackend',
  ]
 
@@ -241,3 +264,123 @@ ADMIN_URL = r'^admin/'
 
 # Your common stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
+
+# LDAP
+# ------------------------------------------------------------------------------
+#LDAP_AUTH_URL = "ldap://ldap"
+LDAP_AUTH_URL = "ldap://ldap-desenv"
+LDAP_AUTH_USE_TLS = False
+#LDAP_AUTH_SEARCH_BASE = "ou=Usuarios,dc=pr,dc=gov,dc=br"
+LDAP_AUTH_SEARCH_BASE = "ou=Usuarios,dc=cmc,dc=pr,dc=gov,dc=br"
+LDAP_AUTH_OBJECT_CLASS = "inetOrgPerson"
+LDAP_AUTH_USER_FIELDS = {
+    "username": "uid",
+    "first_name": "givenName",
+    "last_name": "sn",
+    "email": "mail",
+    "matricula": "employeeNumber",
+    "lotado": "departmentNumber",
+    "chefia": "employeeType",
+}
+LDAP_AUTH_USER_LOOKUP_FIELDS = ("username",)
+LDAP_AUTH_CLEAN_USER_DATA = "django_python3_ldap.utils.clean_user_data"
+LDAP_AUTH_SYNC_USER_RELATIONS = "django_python3_ldap.utils.sync_user_relations"
+LDAP_AUTH_FORMAT_SEARCH_FILTERS = "django_python3_ldap.utils.format_search_filters"
+LDAP_AUTH_FORMAT_USERNAME = "django_python3_ldap.utils.format_username_openldap"
+LDAP_AUTH_ACTIVE_DIRECTORY_DOMAIN = None
+LDAP_AUTH_CONNECTION_USERNAME = None
+LDAP_AUTH_CONNECTION_PASSWORD = None
+
+
+# LOGGING
+# ------------------------------------------------------------------------------
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "level": "INFO",
+            "class": "logging.StreamHandler",
+        },
+    },
+    "loggers": {
+        "django_python3_ldap": {
+            "handlers": ["console"],
+            "level": "INFO",
+        },
+        "django": {
+            "handlers": ["console"],
+            "level": "ERROR",  
+            "propagate": True,
+        },
+         'django.request': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+    },
+}
+
+# PIPELINE
+# ------------------------------------------------------------------------------
+
+PIPELINE = {
+    'PIPELINE_ENABLED': True,
+    'JS_COMPRESSOR': None,
+    'CSS_COMPRESSOR': None,
+    'STYLESHEETS': {
+        'master': {
+            'source_filenames': (
+              'bootstrap/dist/css/bootstrap.css',
+              'jasny-bootstrap/dist/css/jasny-bootstrap.css',
+              'login.css',
+            ),
+            'output_filename': 'css/master.css',
+        },
+    },
+    'JAVASCRIPT': {
+        'master': {
+            'source_filenames': (
+              'jquery/dist/jquery.js',
+              'bootstrap/dist/js/bootstrap.js',
+              'jasny-bootstrap/dist/js/jasny-bootstrap.js',
+              'underscore/underscore.js',
+            ),
+            'output_filename': 'js/master.js',
+        }
+    }
+}
+
+STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
+
+# BOWER
+# ------------------------------------------------------------------------------
+
+BOWER_COMPONENTS_ROOT = str(ROOT_DIR.path('components'))
+BOWER_INSTALLED_APPS = (
+    'jquery',
+    'underscore',
+    'bootstrap',
+    'jasny-bootstrap'
+)
+
+# ALTERAÇÕES NO USER PARA GUARDAR INFO DO LDAP
+# ------------------------------------------------------------------------------
+
+AUTH_USER_MODEL = 'autentica.User'
+
+# Internationalization
+# ------------------------------------------------------------------------------
+
+LANGUAGE_CODE = 'pt-BR'
+
+TIME_ZONE = 'America/Sao_Paulo'
+
+USE_I18N = True
+
+USE_L10N = True
+
+USE_TZ = True
+
+DECIMAL_SEPARATOR=','
