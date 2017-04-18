@@ -42,3 +42,6 @@ django-ldapdb==0.8.0
 
 # Django pipeline
 django-pipeline==1.6.12
+
+# Django Bower
+django-bower==5.2.0
