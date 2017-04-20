@@ -6,6 +6,7 @@ from .models import Setor
 
 class SetorAdmin(admin.ModelAdmin):
 	model = Setor
+	actions = None
 
 	list_display = ('descricao', 'recebe_chamados')
 	list_per_page = 20
