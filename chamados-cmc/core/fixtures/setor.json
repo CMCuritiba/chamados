@@ -1,0 +1,18 @@
+[
+    {
+        "pk": 1, 
+        "model": "core.setor", 
+        "fields": {
+            "descricao": "Desenvolvimento", 
+            "id_elotech": 1001
+        }
+    },
+    {
+        "pk": 2, 
+        "model": "core.setor", 
+        "fields": {
+            "descricao": "Suporte", 
+            "id_elotech": 1002
+        }
+    }
+]
