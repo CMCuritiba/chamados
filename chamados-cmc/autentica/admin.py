@@ -7,6 +7,18 @@ from .models import User
 
 class CustomUserAdmin(UserAdmin):
 	model = User
+	actions = None
+
+	def has_delete_permission(self, request, obj=None):
+		return False
+
+	def has_add_permission(self, request, obj=None):
+		return False
+
+	def get_readonly_fields(self, request, obj=None):
+		retorno = ['username', 'first_name', 'last_name', 'email', 'is_active', 'date_joined', 'lotado', 'matricula', 'chefia','is_superuser','last_login','password']
+		
+		return retorno
 
 	fieldsets = UserAdmin.fieldsets + (
 		(None, {'fields': ('lotado', 'matricula', 'chefia',)}),
