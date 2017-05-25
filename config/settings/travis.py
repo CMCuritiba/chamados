@@ -100,9 +100,16 @@ DATABASES = {
         'ENGINE': 'ldapdb.backends.ldap',
         'NAME': 'ldap://dummy'
      },
-    'default': 'postgres:///chamados'
+    'default': {
+        'ENGINE':   'django.db.backends.postgresql_psycopg2',
+        'NAME':     'travisci',
+        'USER':     'postgres',
+        'PASSWORD': '',
+        'HOST':     'localhost',
+        'PORT':     '',
+    }
 }
-#DATABASES['default']['ATOMIC_REQUESTS'] = True
+DATABASES['default']['ATOMIC_REQUESTS'] = True
 
 DATABASE_ROUTERS = ['ldapdb.router.Router']
 
