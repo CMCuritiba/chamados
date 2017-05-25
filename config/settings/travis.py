@@ -96,10 +96,6 @@ MANAGERS = ADMINS
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {
-    'ldap': {
-        'ENGINE': 'ldapdb.backends.ldap',
-        'NAME': 'ldap://dummy'
-     },
     'default': {
         'ENGINE':   'django.db.backends.postgresql_psycopg2',
         'NAME':     'chamados',
@@ -110,7 +106,6 @@ DATABASES = {
 }
 DATABASES['default']['ATOMIC_REQUESTS'] = True
 
-DATABASE_ROUTERS = ['ldapdb.router.Router']
 
 
 # GENERAL CONFIGURATION
