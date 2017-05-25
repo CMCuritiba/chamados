@@ -65,4 +65,5 @@ chamados/media/
 
 staticfiles/
 components/
-# *migrations/
+*migrations
+!migrations/0001_initial.py

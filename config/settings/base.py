@@ -17,6 +17,7 @@ APPS_DIR = ROOT_DIR.path('chamados-cmc')
 
 # Load operating system environment variables and then prepare to use them
 env = environ.Env()
+env.read_env()
 
 # .env file, should load only in development environment
 READ_DOT_ENV_FILE = env.bool('DJANGO_READ_DOT_ENV_FILE', default=False)
@@ -37,7 +38,7 @@ DJANGO_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.sites',
+    #'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
@@ -110,18 +111,9 @@ MANAGERS = ADMINS
 DATABASES = {
     'ldap': {
         'ENGINE': 'ldapdb.backends.ldap',
-        #'NAME': 'ldap://ldap',
-        'NAME': 'ldap://ldap-desenv',
-        #'USER': 'ou=Usuarios,dc=cmc,dc=pr,dc=gov,dc=br',
-        #'PASSWORD': '',
-        #'USER': 'uid=alexandre.odoni,ou=Usuarios,dc=cmc,dc=pr,dc=gov,dc=br',
-        #'PASSWORD': '',
-        #'TLS': True,
-        #'CONNECTION_OPTIONS': {
-        #    ldap.OPT_X_TLS_DEMAND: True,
-        #}
+        'NAME': env('LDAP_AUTH_URL'),
      },
-    'default': env.db('DATABASE_URL', default='postgres:///chamados-cmc'),
+    'default': env.db(),
 }
 DATABASES['default']['ATOMIC_REQUESTS'] = True
 
@@ -268,19 +260,18 @@ ADMIN_URL = r'^admin/'
 # LDAP
 # ------------------------------------------------------------------------------
 #LDAP_AUTH_URL = "ldap://ldap"
-LDAP_AUTH_URL = "ldap://ldap-desenv"
-LDAP_AUTH_USE_TLS = False
-#LDAP_AUTH_SEARCH_BASE = "ou=Usuarios,dc=pr,dc=gov,dc=br"
-LDAP_AUTH_SEARCH_BASE = "ou=Usuarios,dc=cmc,dc=pr,dc=gov,dc=br"
-LDAP_AUTH_OBJECT_CLASS = "inetOrgPerson"
+LDAP_AUTH_URL = env('LDAP_AUTH_URL', default='')
+LDAP_AUTH_USE_TLS = env('LDAP_AUTH_USE_TLS', default=False, cast=bool)
+LDAP_AUTH_SEARCH_BASE = env('LDAP_AUTH_SEARCH_BASE', default='')
+LDAP_AUTH_OBJECT_CLASS = env('LDAP_AUTH_OBJECT_CLASS', default='')
 LDAP_AUTH_USER_FIELDS = {
-    "username": "uid",
-    "first_name": "givenName",
-    "last_name": "sn",
-    "email": "mail",
-    "matricula": "employeeNumber",
-    "lotado": "departmentNumber",
-    "chefia": "employeeType",
+    "username": env('LDAP_AUTH_USER_FIELDS_USERNAME', default=''),
+    "first_name": env('LDAP_AUTH_USER_FIELDS_FIRST_NAME', default=''),
+    "last_name": env('LDAP_AUTH_USER_FIELDS_LAST_NAME', default=''),
+    "email": env('LDAP_AUTH_USER_FIELDS_EMAIL', default=''),
+    "matricula": env('LDAP_AUTH_USER_FIELDS_MATRICULA', default=''),
+    "lotado": env('LDAP_AUTH_USER_FIELDS_LOTADO', default=''),
+    "chefia": env('LDAP_AUTH_USER_FIELDS_CHEFIA', default=''),
 }
 LDAP_AUTH_USER_LOOKUP_FIELDS = ("username",)
 LDAP_AUTH_CLEAN_USER_DATA = "django_python3_ldap.utils.clean_user_data"
@@ -334,6 +325,8 @@ PIPELINE = {
             'source_filenames': (
               'bootstrap/dist/css/bootstrap.css',
               'jasny-bootstrap/dist/css/jasny-bootstrap.css',
+              'datatables/media/css/jquery.dataTables.css',
+              'datatables/media/css/dataTables.bootstrap.css',
               'login.css',
             ),
             'output_filename': 'css/master.css',
@@ -346,6 +339,8 @@ PIPELINE = {
               'bootstrap/dist/js/bootstrap.js',
               'jasny-bootstrap/dist/js/jasny-bootstrap.js',
               'underscore/underscore.js',
+              'datatables/media/js/jquery.dataTables.js',
+              'datatables/media/js/dataTables.bootstrap.js',
             ),
             'output_filename': 'js/master.js',
         }
@@ -362,25 +357,12 @@ BOWER_INSTALLED_APPS = (
     'jquery',
     'underscore',
     'bootstrap',
-    'jasny-bootstrap'
+    'jasny-bootstrap',
+    'datatables',
+    'datatables-bootstrap3'
 )
 
 # ALTERAÇÕES NO USER PARA GUARDAR INFO DO LDAP
 # ------------------------------------------------------------------------------
 
 AUTH_USER_MODEL = 'autentica.User'
-
-# Internationalization
-# ------------------------------------------------------------------------------
-
-LANGUAGE_CODE = 'pt-BR'
-
-TIME_ZONE = 'America/Sao_Paulo'
-
-USE_I18N = True
-
-USE_L10N = True
-
-USE_TZ = True
-
-DECIMAL_SEPARATOR=','

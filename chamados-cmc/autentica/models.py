@@ -72,7 +72,7 @@ class User(AbstractUser):
 	last_name = models.CharField(max_length=200)
 	lotado = models.CharField(max_length=200, blank=True)
 	matricula = models.CharField(max_length=200, blank=True)
-	chefia = models.BooleanField(blank=True)
+	chefia = models.NullBooleanField()
 
 	def __str__(self):
 		return self.first_name + ' ' + self.last_name
