@@ -10,6 +10,7 @@ install:
 
 # variáveis de ambiente
 env:
+global:
 - TEMPLATE_DEBUG=False
 
 - SECRET_KEY_LOCAL=dummy
