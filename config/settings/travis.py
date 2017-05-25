@@ -15,6 +15,8 @@ import environ, os
 ROOT_DIR = environ.Path(__file__) - 3  # (chamados-cmc/config/settings/base.py - 3 = chamados-cmc/)
 APPS_DIR = ROOT_DIR.path('chamados-cmc')
 
+SECRET_KEY = 'TRAVIS'
+
 
 # APP CONFIGURATION
 # ------------------------------------------------------------------------------
