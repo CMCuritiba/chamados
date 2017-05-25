@@ -100,7 +100,7 @@ DATABASES = {
      },
     'default': 'postgres:///chamados'
 }
-DATABASES['default']['ATOMIC_REQUESTS'] = True
+#DATABASES['default']['ATOMIC_REQUESTS'] = True
 
 DATABASE_ROUTERS = ['ldapdb.router.Router']
 
