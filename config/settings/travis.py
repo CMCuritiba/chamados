@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Django settings for Chamados CMC project.
+Django settings for travis
 
 For more information on this file, see
 https://docs.djangoproject.com/en/dev/topics/settings/
@@ -15,21 +15,6 @@ import environ, os
 ROOT_DIR = environ.Path(__file__) - 3  # (chamados-cmc/config/settings/base.py - 3 = chamados-cmc/)
 APPS_DIR = ROOT_DIR.path('chamados-cmc')
 
-# Load operating system environment variables and then prepare to use them
-env = environ.Env()
-env.read_env(env_file=ROOT_DIR('.env'))
-
-# .env file, should load only in development environment
-READ_DOT_ENV_FILE = env.bool('DJANGO_READ_DOT_ENV_FILE', default=False)
-
-if READ_DOT_ENV_FILE:
-    # Operating System Environment variables have precedence over variables defined in the .env file,
-    # that is to say variables from the .env files will only be used if not defined
-    # as environment variables.
-    env_file = str(ROOT_DIR.path('.env'))
-    print('Loading : {}'.format(env_file))
-    env.read_env(env_file)
-    print('The .env file has been loaded. See base.py for more information')
 
 # APP CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -82,7 +67,7 @@ MIDDLEWARE = [
 # DEBUG
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#debug
-DEBUG = env.bool('DJANGO_DEBUG', False)
+DEBUG = False
 
 # FIXTURE CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -93,7 +78,7 @@ FIXTURE_DIRS = (
 
 # EMAIL CONFIGURATION
 # ------------------------------------------------------------------------------
-EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # MANAGER CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -111,9 +96,9 @@ MANAGERS = ADMINS
 DATABASES = {
     'ldap': {
         'ENGINE': 'ldapdb.backends.ldap',
-        'NAME': env('LDAP_AUTH_URL'),
+        'NAME': 'ldap://dummy'
      },
-    'default': env.db(),
+    'default': 'postgres:///chamados'
 }
 DATABASES['default']['ATOMIC_REQUESTS'] = True
 
@@ -260,18 +245,18 @@ ADMIN_URL = r'^admin/'
 # LDAP
 # ------------------------------------------------------------------------------
 #LDAP_AUTH_URL = "ldap://ldap"
-LDAP_AUTH_URL = env('LDAP_AUTH_URL', default='')
-LDAP_AUTH_USE_TLS = env('LDAP_AUTH_USE_TLS', default=False, cast=bool)
-LDAP_AUTH_SEARCH_BASE = env('LDAP_AUTH_SEARCH_BASE', default='')
-LDAP_AUTH_OBJECT_CLASS = env('LDAP_AUTH_OBJECT_CLASS', default='')
+LDAP_AUTH_URL = 'dummy'
+LDAP_AUTH_USE_TLS = False
+LDAP_AUTH_SEARCH_BASE = 'dummy'
+LDAP_AUTH_OBJECT_CLASS = 'dummy'
 LDAP_AUTH_USER_FIELDS = {
-    "username": env('LDAP_AUTH_USER_FIELDS_USERNAME', default=''),
-    "first_name": env('LDAP_AUTH_USER_FIELDS_FIRST_NAME', default=''),
-    "last_name": env('LDAP_AUTH_USER_FIELDS_LAST_NAME', default=''),
-    "email": env('LDAP_AUTH_USER_FIELDS_EMAIL', default=''),
-    "matricula": env('LDAP_AUTH_USER_FIELDS_MATRICULA', default=''),
-    "lotado": env('LDAP_AUTH_USER_FIELDS_LOTADO', default=''),
-    "chefia": env('LDAP_AUTH_USER_FIELDS_CHEFIA', default=''),
+    "username": 'dummy',
+    "first_name": 'dummy',
+    "last_name": 'dummy',
+    "email": 'dummy',
+    "matricula": 'dummy',
+    "lotado": 'dummy',
+    "chefia": 'dummy',
 }
 LDAP_AUTH_USER_LOOKUP_FIELDS = ("username",)
 LDAP_AUTH_CLEAN_USER_DATA = "django_python3_ldap.utils.clean_user_data"
