@@ -102,11 +102,10 @@ DATABASES = {
      },
     'default': {
         'ENGINE':   'django.db.backends.postgresql_psycopg2',
-        'NAME':     'travisci',
+        'NAME':     'chamados',
         'USER':     'postgres',
-        'PASSWORD': '',
         'HOST':     'localhost',
-        'PORT':     '',
+        'PORT':     '5432',
     }
 }
 DATABASES['default']['ATOMIC_REQUESTS'] = True
