@@ -10,33 +10,32 @@ install:
 
 # variáveis de ambiente
 env:
-  global:
-  	- TEMPLATE_DEBUG=False
+- TEMPLATE_DEBUG=False
 
-  	- SECRET_KEY_LOCAL=dummy
-  	- SECRET_KEY_PROD=dummy
+- SECRET_KEY_LOCAL=dummy
+- SECRET_KEY_PROD=dummy
 
-  	- DATABASE_URL=postgres:///dummy
-  	- DATABASE_TEST_URL=postgres:///chamados-test
+- DATABASE_URL=postgres:///dummy
+- DATABASE_TEST_URL=postgres:///chamados-test
 
-  	- DATABASE_PROD_NAME=dummy
-  	- DATABASE_PROD_USER=dummy
-  	- DATABASE_PROD_PASSWORD=dummy
-  	- DATABASE_PROD_HOST=dummy
-  	- DATABASE_PROD_PORT=dummy
+- DATABASE_PROD_NAME=dummy
+- DATABASE_PROD_USER=dummy
+- DATABASE_PROD_PASSWORD=dummy
+- DATABASE_PROD_HOST=dummy
+- DATABASE_PROD_PORT=dummy
 
-  	- LDAP_AUTH_URL=ldap://dummy
-  	- LDAP_AUTH_USE_TLS=False
-  	- LDAP_AUTH_SEARCH_BASE=dummy
-  	- LDAP_AUTH_OBJECT_CLASS=inetOrgPerson
+- LDAP_AUTH_URL=ldap://dummy
+- LDAP_AUTH_USE_TLS=False
+- LDAP_AUTH_SEARCH_BASE=dummy
+- LDAP_AUTH_OBJECT_CLASS=inetOrgPerson
 
-  	- LDAP_AUTH_USER_FIELDS_USERNAME=dummy
-  	- LDAP_AUTH_USER_FIELDS_FIRST_NAME=dummy
-  	- LDAP_AUTH_USER_FIELDS_LAST_NAME=dummy
-  	- LDAP_AUTH_USER_FIELDS_EMAIL=dummy
-  	- LDAP_AUTH_USER_FIELDS_MATRICULA=dummy
-  	- LDAP_AUTH_USER_FIELDS_LOTADO=dummy
-  	- LDAP_AUTH_USER_FIELDS_CHEFIA=dummy
+- LDAP_AUTH_USER_FIELDS_USERNAME=dummy
+- LDAP_AUTH_USER_FIELDS_FIRST_NAME=dummy
+- LDAP_AUTH_USER_FIELDS_LAST_NAME=dummy
+- LDAP_AUTH_USER_FIELDS_EMAIL=dummy
+- LDAP_AUTH_USER_FIELDS_MATRICULA=dummy
+- LDAP_AUTH_USER_FIELDS_LOTADO=dummy
+- LDAP_AUTH_USER_FIELDS_CHEFIA=dummy
 
 # comando para rodas os testes
 script: 
