@@ -9,8 +9,8 @@ install:
   - pip install codecov
 
 before_script:
-  - python manage.py makemigrations
-  - python manage.py migrate
+  - python manage.py makemigrations --settings=config.settings.travis
+  - python manage.py migrate --settings=config.settings.travis
 
 # comando para rodas os testes
 script: 
