@@ -3,7 +3,7 @@
 from django.test import TestCase, RequestFactory
 from unittest.mock import patch, MagicMock, Mock
 from django.db import IntegrityError, DataError
-from ..models import SetorChamado, GrupoServico, VSetor
+from ..models import SetorChamado, GrupoServico, VSetor, Servico
 import os
 
 class SetorChamadoTestCase(TestCase):
@@ -50,3 +50,27 @@ class GrupoServicoTestCase(TestCase):
 		setor_chamado = SetorChamado.objects.get(pk=1)
 		with self.assertRaises(IntegrityError):
 			grupo = GrupoServico.objects.create(setor=setor_chamado, descricao=None)
+
+class ServicoTestCase(TestCase):
+	fixtures = ['setor_chamado.json', 'grupo_servico.json', 'servico.json']
+
+	def setUp(self):
+		super(ServicoTestCase, self).setUp()			
+
+	def test_servico_ok(self):
+		servico = Servico.objects.get(pk=1)
+		self.assertEqual(servico.descricao,'Correção de Bug')
+
+	def test_servico_grupo_vazio(self):
+		with self.assertRaises(IntegrityError):
+			servico = Servico.objects.create(descricao='grupo vazio. tem que dar erro')
+
+	def test_servico_descricao_maior_300(self):
+		grupo_servico = GrupoServico.objects.get(pk=1)
+		with self.assertRaises(DataError):
+			servico = Servico.objects.create(grupo_servico=grupo_servico, descricao='1'*301)
+
+	def test_servico_descricao_vazio(self):
+		grupo_servico = GrupoServico.objects.get(pk=1)
+		with self.assertRaises(IntegrityError):
+			servico = Servico.objects.create(grupo_servico=grupo_servico, descricao=None)

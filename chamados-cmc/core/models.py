@@ -61,3 +61,20 @@ class GrupoServico(models.Model):
 
 	def __str__(self):
 		return self.descricao		
+
+#---------------------------------------------------------------------------------------------
+# Model Servico
+#---------------------------------------------------------------------------------------------
+@python_2_unicode_compatible
+class Servico(models.Model):
+	class Meta:
+		verbose_name_plural = 'Serviços'
+
+	descricao = models.CharField(max_length=300)
+	grupo_servico = models.ForeignKey(GrupoServico)
+
+	def __unicode__(self):
+		return self.descricao
+
+	def __str__(self):
+		return self.descricao				

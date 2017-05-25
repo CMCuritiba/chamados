@@ -1,0 +1,34 @@
+[
+    {
+        "pk": 1, 
+        "model": "core.servico", 
+        "fields": {
+            "grupo_servico": 1,
+            "descricao": "Correção de Bug"
+        }
+    },
+    {
+        "pk": 2, 
+        "model": "core.servico", 
+        "fields": {
+            "grupo_servico": 2,
+            "descricao": "Colocar PNGZão"
+        }
+    },
+    {
+        "pk": 3, 
+        "model": "core.servico", 
+        "fields": {
+            "grupo_servico": 2,
+            "descricao": "Alterar cor de botão"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "core.servico", 
+        "fields": {
+            "grupo_servico": 3,
+            "descricao": "Troca de tonner"
+        }
+    }
+]
