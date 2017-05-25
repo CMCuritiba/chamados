@@ -3,6 +3,9 @@ language: python
 python:
   - "3.5"
 
+before_install:
+  - export DJANGO_SETTINGS_MODULE=config.settings.travis
+
 # comando para instalar dependencias
 install: 
   - pip install -r requirements.txt

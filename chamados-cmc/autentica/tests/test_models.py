@@ -12,7 +12,7 @@ class AutenticacaoTestCase(TestCase):
 		super(AutenticacaoTestCase, self).setUp()
 		self.usuario_desenv = User.objects.get(pk=1)
 		self.TRAVIS = os.getenv('TRAVIS', False)
-'''
+
 	def test_usuario_desenv_ok(self):
 		self.assertEqual(self.usuario_desenv.username, 'desenv')
 
@@ -27,4 +27,3 @@ class AutenticacaoTestCase(TestCase):
 			self.client.login(username=self.usuario_desenv.username, password=self.usuario_desenv.password)
 			session = self.client.session
 		self.assertIn('_auth_user_id', session)
-'''		
