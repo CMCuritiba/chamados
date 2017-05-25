@@ -8,11 +8,13 @@ install:
   - pip install -r requirements.txt
   - pip install codecov
 
+before_script:
+  - python manage.py makemigrations
+  - python manage.py migrate
+
 # comando para rodas os testes
 script: 
-  python manage.py makemigrations
-  python manage.py migrate
-  coverage run manage.py test --settings=config.settings.travis
+  - coverage run manage.py test --settings=config.settings.travis
 
 after_success:
   codecov
