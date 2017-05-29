@@ -9,16 +9,20 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
-
     operations = [
-        migrations.CreateModel(
-            name='Setor',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('descricao', models.CharField(max_length=300)),
-                ('id_elotech', models.IntegerField()),
-            ],
+        migrations.RunSQL(
+            """
+            DROP TABLE IF EXISTS v_setor;
+ 
+            CREATE TABLE v_setor (
+                set_id serial primary key,
+                set_nome character varying(500) not null,
+                set_sigla character varying(100) not null,
+                set_id_superior integer,
+                set_ativo boolean not null, 
+                set_tipo character varying(1)
+            );
+
+            """
         ),
     ]

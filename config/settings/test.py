@@ -5,8 +5,8 @@ Test settings
 - Used to run tests fast on the continuous integration server and locally
 '''
 
-from .base import *  # noqa
-
+from .base import *
+import environ, os
 
 # DEBUG
 # ------------------------------------------------------------------------------

@@ -2,26 +2,27 @@
 from __future__ import unicode_literals
 from django.contrib import admin
 
-from .models import Setor
+from .models import GrupoServico, SetorChamado
 
-class SetorAdmin(admin.ModelAdmin):
-	model = Setor
-	actions = None
+class GrupoServicoInline(admin.TabularInline):
+	model = GrupoServico
+	extra = 2
+	verbose_name_plural = 'Grupos de Serviço'	
 
-	list_display = ('descricao', 'recebe_chamados')
+class SetorChamadoAdmin(admin.ModelAdmin):
+	model = SetorChamado
+
+	list_display = ('setor',)
 	list_per_page = 20
+	ordering = ('setor__set_nome', )
+	search_fields = ('setor__set_nome', )
+	inlines = [GrupoServicoInline]
+
+class GrupoServicoAdmin(admin.ModelAdmin):
+	model = GrupoServico
+	list_filter = ['setor', ]
 	ordering = ('descricao', )
 	search_fields = ('descricao', )
 
-	def has_delete_permission(self, request, obj=None):
-		return False
-
-	def has_add_permission(self, request, obj=None):
-		return False
-
-	def get_readonly_fields(self, request, obj=None):
-		if obj:
-			return self.readonly_fields + ('descricao', 'id_elotech')
-		return self.readonly_fields
-
-admin.site.register(Setor, SetorAdmin)
+admin.site.register(GrupoServico, GrupoServicoAdmin)
+admin.site.register(SetorChamado, SetorChamadoAdmin)
