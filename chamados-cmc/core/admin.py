@@ -2,12 +2,17 @@
 from __future__ import unicode_literals
 from django.contrib import admin
 
-from .models import GrupoServico, SetorChamado
+from .models import GrupoServico, SetorChamado, Servico
 
 class GrupoServicoInline(admin.TabularInline):
 	model = GrupoServico
 	extra = 2
 	verbose_name_plural = 'Grupos de Serviço'	
+
+class ServicoInline(admin.TabularInline):
+	model = Servico
+	extra = 2
+	verbose_name_plural = 'Serviços'		
 
 class SetorChamadoAdmin(admin.ModelAdmin):
 	model = SetorChamado
@@ -23,6 +28,7 @@ class GrupoServicoAdmin(admin.ModelAdmin):
 	list_filter = ['setor', ]
 	ordering = ('descricao', )
 	search_fields = ('descricao', )
+	inlines = [ServicoInline]
 
 admin.site.register(GrupoServico, GrupoServicoAdmin)
 admin.site.register(SetorChamado, SetorChamadoAdmin)
