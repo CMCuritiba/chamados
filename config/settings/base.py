@@ -366,3 +366,7 @@ BOWER_INSTALLED_APPS = (
 # ------------------------------------------------------------------------------
 
 AUTH_USER_MODEL = 'autentica.User'
+
+# SERVIDOR DE MICRO SERVICOS
+# ------------------------------------------------------------------------------
+MSCMC_SERVER = env('MSCMC_SERVER')
