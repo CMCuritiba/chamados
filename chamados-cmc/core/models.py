@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+from ..autentica.models import User
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
-
+from django.utils import timezone
 #---------------------------------------------------------------------------------------------
 # Model para a view V_SETOR
 #---------------------------------------------------------------------------------------------
@@ -11,7 +12,6 @@ from django.utils.encoding import python_2_unicode_compatible
 class AtivosVSetorManager(models.Manager):
     def get_queryset(self):
         return super(AtivosVSetorManager, self).get_queryset().filter(set_ativo = True)
-
 
 @python_2_unicode_compatible
 class VSetor(models.Model):
@@ -35,8 +35,6 @@ class VSetor(models.Model):
 
 	def __str__(self):
 		return self.set_nome
-
-
 
 #---------------------------------------------------------------------------------------------
 # Model SetorChamado
@@ -88,3 +86,53 @@ class Servico(models.Model):
 
 	def __str__(self):
 		return self.descricao				
+
+#---------------------------------------------------------------------------------------------
+# Model Chamado
+#---------------------------------------------------------------------------------------------
+@python_2_unicode_compatible
+class Chamado(models.Model):
+	PRIORIDADE_BAIXA = 'BAIXA'
+	PRIORIDADE_NORMAL = 'NORMAL'
+	PRIORIDADE_ALTA = 'ALTA'
+	PRIORIDADE_CHOICES = (
+		(PRIORIDADE_BAIXA, 'Baixa'),
+		(PRIORIDADE_NORMAL, 'Normal'),
+		(PRIORIDADE_ALTA, 'Alta')
+	)
+	STATUS_ABERTO = 'ABERTO'
+	STATUS_ATENDIMENTO = 'ATENDIMENTO'
+	STATUS_FECHADO = 'FECHADO'
+	STATUS_CHOICES = (
+		(STATUS_ABERTO, 'Aberto'),
+		(STATUS_ATENDIMENTO, 'Em Atendimento'),
+		(STATUS_FECHADO, 'Fechado')
+	)
+	usuario = models.ForeignKey(User)
+	setor = models.ForeignKey(SetorChamado)
+	grupo_servico = models.ForeignKey(GrupoServico)
+	servico = models.ForeignKey(Servico)
+	ramal = models.CharField(max_length=15, null=True, blank=True)
+	assunto = models.CharField(max_length=200, null=True, blank=True)
+	descricao = models.TextField(null=True, blank=True)
+	data_abertura = models.DateTimeField(default=timezone.now, blank=True)
+	prioridade = models.CharField(max_length=10, null=False, blank=False, choices=PRIORIDADE_CHOICES,
+								  default=PRIORIDADE_NORMAL)
+	status = models.CharField(max_length=15, null=False, blank=False, choices=STATUS_CHOICES, default=STATUS_ABERTO)
+	data_fechamento = models.DateTimeField(null=True)
+
+	def __unicode__(self):
+		return self.descricao
+
+	def __str__(self):
+		return 'usuario:%s ' \
+			   'setor:%s ' \
+			   'grupo_servico:%s ' \
+			   'servico:%s ' \
+			   'ramal:%s ' \
+			   'data_abertura:%s' % (str(self.usuario),
+									 str(self.setor),
+									 str(self.grupo_servico),
+									 str(self.servico),
+									 str(self.ramal),
+									 str(self.data_abertura))
