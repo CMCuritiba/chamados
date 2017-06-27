@@ -1,0 +1,15 @@
+[
+    {
+        "pk": 1,
+        "model": "core.chamado",
+        "fields": {
+            "usuario" : 1,
+            "setor" : 2,
+            "grupo_servico" : 4,
+            "servico" : 5,
+            "ramal" : "4813",
+            "assunto" : "mouse não funciona",
+            "descricao" : "meu mouse não está funcionando. Já verifiquei se o cabo estava bem encaixado, mas nem a luz do infravermelho está acendendo."
+        }
+    }
+ ]

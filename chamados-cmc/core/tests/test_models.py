@@ -1,10 +1,76 @@
 # -*- coding: utf-8 -*-
 
 from django.test import TestCase, RequestFactory
-from unittest.mock import patch, MagicMock, Mock
+from ...autentica.models import User
 from django.db import IntegrityError, DataError
-from ..models import SetorChamado, GrupoServico, VSetor, Servico
-import os
+from ..models import SetorChamado, GrupoServico, VSetor, Servico, Chamado
+
+
+class ChamadoTestCase(TestCase):
+	fixtures = ['user.json','chamado.json', 'setor_chamado.json', 'grupo_servico.json', 'servico.json']
+
+	def setUp(self):
+		super(ChamadoTestCase, self).setUp()
+
+	def test_dummy(self):
+		self.assertEqual(1,1)
+
+	def test_chamado_insere_ok(self):
+		usuario = User.objects.get(pk=1)
+		setor_chamado = SetorChamado.objects.get(pk=1)
+		grupo = GrupoServico.objects.get(pk=1)
+		servico = Servico.objects.get(pk=1)
+
+		chamado = Chamado.objects.create(usuario=usuario, setor=setor_chamado, grupo_servico=grupo, servico=servico,
+										 ramal="4813", assunto="pau no relatório",descricao="copiei texto do editor do "
+													"SPL e colei em nova proposição mas quando vou imprimir aparecem "
+																			"caracteres estranhos e não imprime PDF.")
+
+
+	def test_chamado_insere_usuario_nulo(self):
+		setor_chamado = SetorChamado.objects.get(pk=1)
+		grupo = GrupoServico.objects.get(pk=1)
+		servico = Servico.objects.get(pk=1)
+
+		with self.assertRaises(IntegrityError):
+			chamado = Chamado.objects.create(usuario=None, setor=setor_chamado, grupo_servico=grupo, servico=servico,
+										 ramal="4813", assunto="pau no relatório",descricao="copiei texto do editor do "
+													"SPL e colei em nova proposição mas quando vou imprimir aparecem "
+																			"caracteres estranhos e não imprime PDF.")
+
+
+	def test_chamado_insere_setor_nulo(self):
+		usuario = User.objects.get(pk=1)
+		grupo = GrupoServico.objects.get(pk=1)
+		servico = Servico.objects.get(pk=1)
+
+		with self.assertRaises(IntegrityError):
+			chamado = Chamado.objects.create(usuario=usuario, setor=None, grupo_servico=grupo, servico=servico,
+										 ramal="4813", assunto="pau no relatório",descricao="copiei texto do editor do "
+													"SPL e colei em nova proposição mas quando vou imprimir aparecem "
+																			"caracteres estranhos e não imprime PDF.")
+
+	def test_chamado_insere_grupo_nulo(self):
+		usuario = User.objects.get(pk=1)
+		setor = SetorChamado.objects.get(pk=1)
+		servico = Servico.objects.get(pk=1)
+
+		with self.assertRaises(IntegrityError):
+			chamado = Chamado.objects.create(usuario=usuario, setor=setor, grupo_servico=None, servico=servico,
+										 ramal="4813", assunto="pau no relatório",descricao="copiei texto do editor do "
+													"SPL e colei em nova proposição mas quando vou imprimir aparecem "
+																			"caracteres estranhos e não imprime PDF.")
+
+	def test_chamado_insere_servico_nulo(self):
+		usuario = User.objects.get(pk=1)
+		setor = SetorChamado.objects.get(pk=1)
+		grupo = GrupoServico.objects.get(pk=1)
+
+		with self.assertRaises(IntegrityError):
+			chamado = Chamado.objects.create(usuario=usuario, setor=setor, grupo_servico=grupo, servico=None,
+										 ramal="4813", assunto="pau no relatório",descricao="copiei texto do editor do "
+													"SPL e colei em nova proposição mas quando vou imprimir aparecem "
+																			"caracteres estranhos e não imprime PDF.")
 
 class SetorChamadoTestCase(TestCase):
 	fixtures = ['setor_chamado.json']
