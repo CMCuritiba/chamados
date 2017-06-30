@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
-<<<<<<< HEAD
 
 from django.test import TestCase, RequestFactory
 from unittest.mock import patch, MagicMock, Mock
 from django.db import IntegrityError, DataError
 from django.contrib.auth import get_user_model
 
+from ..forms import ChamadoForm, FilaChamadosForm
+from ...autentica.models import User
+from ..models import SetorChamado, GrupoServico, Servico
+
 import os
 
 class FilaChamadosFormTest(TestCase):
-	fixtures = ['chamados.json']
+	fixtures = ['user.json', 'setor_chamado.json', 'grupo_servico.json', 'servico.json', 'chamado.json']
 
 	def setUp(self):
 		self.user = get_user_model().objects.create_user('zaquinha', password='zaca')
@@ -20,13 +23,7 @@ class FilaChamadosFormTest(TestCase):
 		self.factory = RequestFactory()
 
 	def test_init(self):
-		form = RamalPesquisaForm()
-=======
-from django.contrib.auth import get_user_model
-from django.test import TestCase
-from ..forms import ChamadoForm
-from ...autentica.models import User
-from ..models import SetorChamado, GrupoServico, Servico
+		form = FilaChamadosForm()
 
 
 class ChamadoFormTest(TestCase):
@@ -82,5 +79,3 @@ class ChamadoFormTest(TestCase):
         form = ChamadoForm(data=form_data)
         self.assertFalse(form.is_valid())
         self.assertEqual(form.cleaned_data['grupo_servico'], grupo)
-
->>>>>>> 5d80a68c9b599341c5b9d00182f3c4aacf552807

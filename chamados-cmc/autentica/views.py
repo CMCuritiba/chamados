@@ -33,7 +33,7 @@ def valida_usuario(request):
 		if user is not None:
 			if user.is_active:
 				login(request, user)
-				atualiza(user)
+				atualiza(user, request)
 				if next != None and next != 'None':
 					return HttpResponseRedirect(next)
 				return render_to_response('index.html', context_instance=RequestContext(request))
@@ -51,9 +51,16 @@ def sair(request):
 # ----------------------------------------------------------------------------------------------------------------
 # Atualiza setor do usuario de acordo com servico elotech
 # ----------------------------------------------------------------------------------------------------------------
-def atualiza(usuario):
+def atualiza(usuario, request):
 	cons = MSCMCConsumer()
 	pessoa = cons.consome_pessoa(usuario.matricula)
+	setor = cons.consome_setor(usuario.matricula)
+
+	request.session['pessoa_nome'] = pessoa.pes_nome
+	request.session['pessoa_matricula'] = pessoa.pes_matricula
+
+	request.session['setor_nome'] = setor.set_nome
+	request.session['setor_id'] = setor.set_id
 	usuario.lotado=pessoa.set_id
 	usuario.save()
 

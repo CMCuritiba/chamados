@@ -3,7 +3,7 @@
 from django.test import TestCase, RequestFactory
 from ...autentica.models import User
 from django.db import IntegrityError, DataError
-from ..models import SetorChamado, GrupoServico, VSetor, Servico, Chamado
+from ..models import SetorChamado, GrupoServico, VSetor, Servico, Chamado, FilaChamados
 
 
 class ChamadoTestCase(TestCase):
@@ -140,3 +140,36 @@ class ServicoTestCase(TestCase):
 		grupo_servico = GrupoServico.objects.get(pk=1)
 		with self.assertRaises(IntegrityError):
 			servico = Servico.objects.create(grupo_servico=grupo_servico, descricao=None)
+
+class FilaChamadosTestCase(TestCase):
+	fixtures = ['user.json','chamado.json', 'setor_chamado.json', 'grupo_servico.json', 'servico.json', 'chamado.json', 'fila_chamados.json']
+
+	def setUp(self):
+		super(FilaChamadosTestCase, self).setUp()			
+
+	def test_init(self):
+		self.assertEqual(1, 1)
+
+	def test_insere_fila_ok(self):
+		usuario = User.objects.get(pk=1)
+		chamado = Chamado.objects.get(pk=2)
+		fila = FilaChamados.objects.cria_fila(usuario=usuario, chamado=chamado)
+		self.assertEqual(fila.chamado.usuario.pk, 1)
+		self.assertEqual(chamado.status, 'ATENDIMENTO')
+
+	def test_insere_fila_usuario_nulo(self):
+		chamado = Chamado.objects.get(pk=2)
+		with self.assertRaises(IntegrityError):
+			fila = FilaChamados.objects.cria_fila(usuario=None, chamado=chamado)
+
+	def test_insere_fila_chamado_nulo(self):
+		usuario = User.objects.get(pk=1)
+		with self.assertRaises(ValueError):
+			fila = FilaChamados.objects.cria_fila(usuario=usuario, chamado=None)
+
+	def test_insere_fila_chamado_atendido(self):
+		usuario = User.objects.get(pk=1)
+		chamado = Chamado.objects.get(pk=1)
+		self.assertEqual(chamado.status, 'ATENDIMENTO')
+		with self.assertRaises(ValueError):
+			fila = FilaChamados.objects.cria_fila(usuario=usuario, chamado=chamado)

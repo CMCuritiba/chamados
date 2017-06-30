@@ -8,7 +8,8 @@ from django.contrib.messages.storage.fallback import FallbackStorage
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.contrib.messages.middleware import MessageMiddleware
 
-from ..views import CadastroChamadosIndexView
+from ..views import CadastroChamadosIndexView, FilaChamadosIndexView
+from ...autentica.models import User
 
 class FilaChamadosViewTests(TestCase):
 
@@ -55,3 +56,35 @@ class ChamadoViewTests(TestCase):
 
         request.session['some'] = 'some'
         request.session.save()
+
+class FilaChamadosViewTests(TestCase):
+
+    fixtures = ['user.json','chamado.json', 'setor_chamado.json', 'grupo_servico.json', 'servico.json', 'chamado.json', 'fila_chamados.json']
+
+    def setUp(self):
+        self.user = User.objects.get(pk=1)
+        self.user.is_staff = True
+        self.user.save()
+        self.factory = RequestFactory()
+
+    def setup_request(self, request):
+        request.user = self.user
+
+        middleware = SessionMiddleware()
+        middleware.process_request(request)
+        request.session.save()
+
+        middleware = MessageMiddleware()
+        middleware.process_request(request)
+        request.session.save()
+
+        request.session['some'] = 'some'
+        request.session.save()
+
+    def test_url(self):
+        request = self.factory.get('/fila/')
+        request.user = self.user
+        response = FilaChamadosIndexView.as_view()(request)
+        response.render()
+        self.assertEqual(response.status_code, 200)
+        #self.assertContains(response, 'Alexandre Odoni')

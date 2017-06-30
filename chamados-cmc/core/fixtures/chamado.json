@@ -4,12 +4,41 @@
         "model": "core.chamado",
         "fields": {
             "usuario" : 1,
-            "setor" : 2,
+            "setor" : 1,
             "grupo_servico" : 4,
             "servico" : 5,
             "ramal" : "4813",
             "assunto" : "mouse não funciona",
-            "descricao" : "meu mouse não está funcionando. Já verifiquei se o cabo estava bem encaixado, mas nem a luz do infravermelho está acendendo."
+            "descricao" : "meu mouse não está funcionando. Já verifiquei se o cabo estava bem encaixado, mas nem a luz do infravermelho está acendendo.",
+            "status": "ATENDIMENTO"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "core.chamado",
+        "fields": {
+            "usuario" : 1,
+            "setor" : 1,
+            "grupo_servico" : 2,
+            "servico" : 2,
+            "ramal" : "4455",
+            "assunto" : "Colocar PNGZão para conscientização referente ao assédio moral",
+            "descricao" : "Não estou conseguindo fazer upload do PNGZão. Acho que ele é muito grande",
+            "status": "ABERTO"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "core.chamado",
+        "fields": {
+            "usuario" : 1,
+            "setor" : 1,
+            "grupo_servico" : 2,
+            "servico" : 3,
+            "ramal" : "4455",
+            "assunto" : "Alterar a cor do botão do slider",
+            "descricao" : "Gostaria de mudar a cor do botão do slider de preto para azul caiçara.",
+            "status": "ABERTO"
         }
     }
  ]

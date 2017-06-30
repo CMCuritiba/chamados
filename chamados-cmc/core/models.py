@@ -5,6 +5,10 @@ from ..autentica.models import User
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils import timezone
+from django.db import transaction
+from django.core.exceptions import ValidationError
+
+from ..autentica.models import User
 #---------------------------------------------------------------------------------------------
 # Model para a view V_SETOR
 #---------------------------------------------------------------------------------------------
@@ -136,3 +140,35 @@ class Chamado(models.Model):
 									 str(self.servico),
 									 str(self.ramal),
 									 str(self.data_abertura))
+
+#---------------------------------------------------------------------------------------------
+# Model FilaChamados
+#---------------------------------------------------------------------------------------------
+@python_2_unicode_compatible
+class FilaChamadosManager(models.Manager):
+
+	@transaction.atomic
+	def cria_fila(self, usuario, chamado):
+		if chamado == None or chamado.status != 'ABERTO':
+			raise ValueError('Status do chamado não é ABERTO.')
+		fila = self.create(usuario=usuario, chamado=chamado)
+		chamado.status = 'ATENDIMENTO'
+		chamado.save()
+		return fila
+
+
+@python_2_unicode_compatible
+class FilaChamados(models.Model):
+	class Meta:
+		verbose_name_plural = 'Fila de Chamados'
+
+	usuario = models.ForeignKey(User, blank=True, null=True)
+	chamado = models.ForeignKey(Chamado)
+
+	objects = FilaChamadosManager()
+
+	def __unicode__(self):
+		return self.chamado.assunto
+
+	def __str__(self):
+		return self.chamado.assunto

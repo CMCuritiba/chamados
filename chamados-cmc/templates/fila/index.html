@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+
+{% block title %}Fila de Chamados{% endblock %}
+
+{% block content %}
+	<div id="estatistica"></div>
+	<br>
+	<div class="panel panel-danger">
+		<div class="panel-heading">Chamados abertos para o setor : <b>{{ request.session.setor_nome }}</b></div>
+        <div class="panel-body">
+        	<div class="row">
+                <div class="col-sm-12">
+                	<table id="tchamados" class="table table-striped table-hover table-bordered fonteTable" width="100%" cellspacing="0"></table>
+                </div>
+            </div>
+        </div>
+	</div>
+
+	<div class="panel panel-warning">
+		<div class="panel-heading">Chamados selecionados para o usuário : <b>{{ user }}</b></div>
+        <div class="panel-body">
+        	<div class="row">
+                <div class="col-sm-12">
+                	<table id="tfila" class="table table-striped table-hover table-bordered fonteTable" width="100%" cellspacing="0"></table>
+                </div>
+            </div>
+        </div>
+	</div>
+{% endblock %}
+
+{% block extra_javascript %}
+	<script>
+		$(document).ready(function() {
+
+			var tableChamados = $('#tchamados').DataTable({
+				responsive: true,
+				"columns": [
+					{ 
+						title: "id_chamado" ,
+						data: 'chamado_id'
+					},
+        			{ 
+        				title: "Aberto",
+        				data: 'chamado_data_abertura'
+        			},
+        			{ 
+        				title: "Grupo",
+        				data: 'chamado_grupo_servico'
+        			},
+        			{ 
+        				title: "Serviço",
+        				data: 'chamado_servico'
+        			},
+        			{ 
+        				title: "Assunto",
+        				data: 'chamado_assunto'
+        			},
+        			{ 
+        				title: "Solicitante",
+        				data: 'chamado_usuario'
+        			}
+        		],
+        		"columnDefs": [
+        			{
+        				"targets": [0],
+        	   			"visible": false,
+        			},
+        			{
+        	   			"targets": [1],
+        	   			"visible": true,
+        			},
+        			{
+        	   			"targets": [2],
+        	   			"visible": true,
+        			},
+        			{
+        	   			"targets": [3],
+        	   			"visible": true,
+        			},
+        			{
+        	   			"targets": [4],
+        	   			"visible": true,
+        			},
+        			{
+        	   			"targets": [5],
+        	   			"visible": true,
+        			},
+
+        		],
+        		"language": {
+                	"info": "Páginas _PAGE_ de _PAGES_",
+                	"emptyTable": "Sem chamados para o setor",
+                	"decimal": ",",
+                	"thousands": ".",
+                	"oPaginate": {
+	                    "sFirst": '<span class="glyphicon glyphicon-fast-backward"></span>',
+                    	"sLast": '<span class="glyphicon glyphicon-fast-forward"></span>',
+                    	"sNext": '<span class="glyphicon glyphicon-forward"></span>',
+                    	"sPrevious": '<span class="glyphicon glyphicon-backward"></span>'
+                	}
+            	},
+        		"bPaginate" : true,
+        		"bLengthChange": false,
+        		"bFilter": false,
+            	"bInfo": false,
+            	"ajax": {
+        			"url": "/fila/api/chamados_abertos/{{ request.session.setor_id }}",
+        			"dataSrc": "",
+        		},
+			});
+
+			var tableFila = $('#tfila').DataTable({
+				responsive: true,
+				"columns": [
+					{ 
+						title: "fila_id" ,
+						data: 'fila_id'
+					},
+					{ 
+						title: "id_chamado" ,
+						data: 'chamado_id'
+					},
+        			{ 
+        				title: "Aberto",
+        				data: 'chamado_data_abertura'
+        			},
+        			{ 
+        				title: "Grupo",
+        				data: 'chamado_grupo_servico'
+        			},
+        			{ 
+        				title: "Serviço",
+        				data: 'chamado_servico'
+        			},
+        			{ 
+        				title: "Assunto",
+        				data: 'chamado_assunto'
+        			},
+        			{ 
+        				title: "Solicitante",
+        				data: 'chamado_usuario'
+        			}
+        		],
+        		"columnDefs": [
+        			{
+        				"targets": [0],
+        	   			"visible": false,
+        			},
+        			{
+        				"targets": [1],
+        	   			"visible": false,
+        			},
+        			{
+        	   			"targets": [2],
+        	   			"visible": true,
+        			},
+        			{
+        	   			"targets": [3],
+        	   			"visible": true,
+        			},
+        			{
+        	   			"targets": [4],
+        	   			"visible": true,
+        			},
+        			{
+        	   			"targets": [5],
+        	   			"visible": true,
+        			},
+        			{
+        	   			"targets": [6],
+        	   			"visible": true,
+        			},
+
+        		],
+        		"language": {
+                	"info": "Páginas _PAGE_ de _PAGES_",
+                	"emptyTable": "Sem chamados para o atendente",
+                	"decimal": ",",
+                	"thousands": ".",
+                	"oPaginate": {
+	                    "sFirst": '<span class="glyphicon glyphicon-fast-backward"></span>',
+                    	"sLast": '<span class="glyphicon glyphicon-fast-forward"></span>',
+                    	"sNext": '<span class="glyphicon glyphicon-forward"></span>',
+                    	"sPrevious": '<span class="glyphicon glyphicon-backward"></span>'
+                	}
+            	},
+        		"bPaginate" : true,
+        		"bLengthChange": false,
+        		"bFilter": false,
+            	"bInfo": false,
+            	"ajax": {
+        			"url": "/fila/api/chamados_usuario/{{ user.id }}/ATENDIMENTO/",
+        			"dataSrc": "",
+        		},
+			});
+
+			atualiza_estatisticas();
+
+			var tim = setInterval(function() {
+				tableChamados.ajax.reload(null, false);
+				tableFila.ajax.reload(null, false);
+				atualiza_estatisticas();				
+			}, 10000);
+		});
+
+		function atualiza_estatisticas() {
+			request_url = '/fila/api/chamados_estatistica/';
+
+			$.ajax({
+      			url: request_url,
+      			type: 'GET',
+      			accepts: 'application/json',
+      			dataType: 'json',
+      			success: function(result){
+      				$('#estatistica').empty();
+      				$('#estatistica').append('<span class="label label-success">Total de chamados finalizados : ' + result[0].atendidos +'</span> <span class="label label-warning">Total de chamados em atendimento : ' + result[2].atendimento + '</span> <span class="label label-danger">Total de chamados abertos : ' + result[1].abertos + '</span>')
+      	        	
+      			},
+      			error: function(xhr, status, error) {
+        			alert('Problema ao carregar informações dos chamados.');
+            		alert(xhr);
+            		alert(status);
+            		alert(error);
+      			}
+    		})
+		}
+	</script>
+{% endblock %}
