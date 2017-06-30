@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Abertura de Chamados{% endblock %}
+
+{% block content %}
+<form action="/chamado/" method="post" id="formulario">
+	{% crispy form %}
+
+	<div class="col-md-12 row">
+		<div class="col-md-6">
+			<div class="form-group">
+				<div class="controls "> <input type="submit" name="save" value="Salvar" class="btn btn-primary" id="submit-id-save"/> </div>
+			</div>
+		</div>
+	</div>
+</form>
+{% endblock %}
+
+{% block extra_javascript %}
+<script>
+	$(document).ready(function () {
+		$('#id_setor').on('change', function() {
+    		atualizaGrupoServico();
+    	})
+    	atualizaGrupoServico();
+		$('#id_grupo_servico').on('change', function() {
+    		atualizaServico();
+    	})
+        atualizaServico();
+	});
+	function atualizaGrupoServico() {
+		$('#id_grupo_servico').children().remove().end();
+		if ($('#id_setor option:selected').val() == '' || $('#id_setor option:selected').val() == '0') {
+			request_url = '/chamado/api/grupo_servico/99999';
+        }
+       	else {
+    		  request_url = '/chamado/api/grupo_servico/' + $('#id_setor option:selected').val();
+        }
+		$.ajax({
+			url: request_url,
+			dataType: 'json',
+			success: function(result){
+				var toAppend = '';
+				$.each(result, function(index, element) {
+					if ('{{form.grupo_servico.value}}' != 'None' && element.gs_id == '{{form.grupo_servico.value}}')
+						toAppend += '<option selected="selected" value="' + element.gs_id + '">' + element.gs_descricao + '</option>';
+					else
+						toAppend += '<option value="' + element.gs_id + '">' + element.gs_descricao + '</option>';
+				});
+				$('#id_grupo_servico').append(toAppend);
+			},
+			error: function(xhr, status, error) {
+				alert('Erro ao carregar Grupos de Serviços');
+				alert(xhr.readyState);
+				alert(status);
+				alert(error);
+			}
+		})
+    }
+	function atualizaServico() {
+		$('#id_servico').children().remove().end();
+		if ($('#id_grupo_servico option:selected').val() == '' ||
+		    $('#id_grupo_servico option:selected').val() == '0' ||
+		    typeof $('#id_grupo_servico option:selected').val() === "undefined"){
+			request_url = '/chamado/api/servico/99999';
+        }
+       	else {
+    		  request_url = '/chamado/api/servico/' + $('#id_grupo_servico option:selected').val();
+        }
+		$.ajax({
+			url: request_url,
+			dataType: 'json',
+			success: function(result){
+				var toAppend = '';
+				$.each(result, function(index, element) {
+					if ('{{form.servico.value}}' != 'None' && element.servico_id == '{{form.servico.value}}')
+						toAppend += '<option selected="selected" value="' + element.servico_id + '">' + element.servico_descricao + '</option>';
+					else
+						toAppend += '<option value="' + element.servico_id + '">' + element.servico_descricao + '</option>';
+				});
+				$('#id_servico').append(toAppend);
+			},
+			error: function(xhr, status, error) {
+				alert('Erro ao carregar Serviços');
+				alert(xhr.readyState);
+				alert(status);
+				alert(error);
+			}
+		})
+    }
+    $(document).ready(function() {
+        var table = $('#tchamados').DataTable({
+            responsive: true,
+            "columns": [
+                {
+                    title: "id_chamado" ,
+                    data: 'chamado_id'
+                },
+                {
+                    title: "Aberto",
+                    data: 'chamado_data_abertura'
+                },
+                {
+                    title: "Grupo",
+                    data: 'chamado_grupo_servico'
+                },
+                {
+                    title: "Serviço",
+                    data: 'chamado_servico'
+                },
+                {
+                    title: "Assunto",
+                    data: 'chamado_assunto'
+                },
+                {
+                    title: "Solicitante",
+                    data: 'chamado_usuario'
+                }
+            ],
+            "columnDefs": [
+                {
+                    "targets": [0],
+                    "visible": false,
+                },
+                {
+                    "targets": [1],
+                    "visible": true,
+                },
+                {
+                    "targets": [2],
+                    "visible": true,
+                },
+                {
+                    "targets": [3],
+                    "visible": true,
+                },
+                {
+                    "targets": [4],
+                    "visible": true,
+                },
+                {
+                    "targets": [5],
+                    "visible": true,
+                },
+
+            ],
+            "language": {
+                "info": "Páginas _PAGE_ de _PAGES_",
+                "emptyTable": "Sem chamados",
+                "decimal": ",",
+                "thousands": ".",
+                "oPaginate": {
+                    "sFirst": '<span class="glyphicon glyphicon-fast-backward"></span>',
+                    "sLast": '<span class="glyphicon glyphicon-fast-forward"></span>',
+                    "sNext": '<span class="glyphicon glyphicon-forward"></span>',
+                    "sPrevious": '<span class="glyphicon glyphicon-backward"></span>'
+                }
+            },
+            "bPaginate" : true,
+            "bLengthChange": false,
+            "bFilter": false,
+            "bInfo": false,
+            "ajax": {
+                "url": "/fila/api/chamados_abertos/171",
+                "dataSrc": "",
+            },
+        });
+    });
+</script>
+{% endblock %}
