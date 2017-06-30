@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Detalhes do Chamado{% endblock %}
+
+{% block content %}
+<form action="/chamado/" method="post" id="formulario">
+	<div class="col-md-12 row">
+		<div class="col-md-6">
+			<div class="form-group">
+				<h1>{{ chamado.id }}</h1>
+				<p>{{ chamado.data_abertura|date }}</p>
+				<p>Assunto: {{ chamado.assunto }}</p>
+				<p>Descrição: {{ chamado.descricao }}</p>
+			</div>
+		</div>
+	</div>
+</form>
+{% endblock %}
+
+{% block extra_javascript %}
+<script>
+
+</script>
+{% endblock %}

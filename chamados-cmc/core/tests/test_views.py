@@ -7,8 +7,9 @@ from django.core.urlresolvers import reverse
 from django.contrib.messages.storage.fallback import FallbackStorage
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.contrib.messages.middleware import MessageMiddleware
+from django.test import TestCase, RequestFactory
 
-from ..views import CadastroChamadosIndexView, FilaChamadosIndexView
+from ..views import CadastroChamadosIndexView, FilaChamadosIndexView, ChamadoDetailView
 from ...autentica.models import User
 
 class FilaChamadosViewTests(TestCase):
@@ -78,6 +79,24 @@ class FilaChamadosViewTests(TestCase):
         middleware.process_request(request)
         request.session.save()
 
+
+    def test_index(self):
+        request = self.factory.get('/chamado/')
+        request.user = self.user
+        response = CadastroChamadosIndexView.as_view()(request)
+        response.render()
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Abertura de Chamados')
+
+
+    def test_index_table_chamados(self):
+        request = self.factory.get('/chamado/')
+        request.user = self.user
+        response = CadastroChamadosIndexView.as_view()(request)
+        response.render()
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Abertura de Chamados')
+
         request.session['some'] = 'some'
         request.session.save()
 
@@ -88,3 +107,13 @@ class FilaChamadosViewTests(TestCase):
         response.render()
         self.assertEqual(response.status_code, 200)
         #self.assertContains(response, 'Alexandre Odoni')
+
+
+    def test_detalhe_chamado(self):
+        request = self.factory.get('/chamado/')
+        request.user = self.user
+        response = ChamadoDetailView.as_view()(request, pk=1)
+        response.render()
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Detalhes do Chamado')
+
