@@ -10,5 +10,6 @@ urlpatterns = [
     url(r'^api/grupo_servico/(?P<id_setor>[0-9]+)/$', views.grupo_servico_json, name='api-grupo_servico_json'),
     url(r'^api/servico/(?P<id_gs>[0-9]+)/$', views.servico_json, name='api-servico_json'),
     url(r'^(?P<id>[-\w]+)/$', views.ChamadoDetailView.as_view(template_name='core/chamado_detail.html'), name='detalhe-chamado'),
+    url(r'^edita/(?P<pk>[0-9]+)/$', views.ConsolidadoChamadoDetailView.as_view(template_name='core/edit.html'), name='chamado-update'),
 ]
 

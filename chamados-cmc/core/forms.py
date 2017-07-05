@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from django import forms
-from .models import Chamado
 from django.forms import ModelForm, CharField, DecimalField, DateField, BooleanField
 from django.forms.models import inlineformset_factory
 from django.forms import formsets, models
@@ -13,6 +12,8 @@ from crispy_forms.bootstrap import (PrependedText, PrependedAppendedText, FormAc
 from crispy_forms.bootstrap import StrictButton
 from django.conf import settings
 from decimal import Decimal
+
+from .models import Chamado, ChamadoResposta
 
 
 
@@ -60,3 +61,28 @@ class FilaChamadosForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(FilaChamadosForm, self).__init__(*args, **kwargs)
 
+class ChamadoRespostaForm(forms.ModelForm):
+    class Meta:
+        model = ChamadoResposta
+        fields = ['chamado', 'data', 'usuario', 'resposta']
+
+    def __init__(self, *args, **kwargs):
+        super(ChamadoRespostaForm, self).__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+
+        self.helper.layout = Layout(
+			Div(
+				Div('chamado', css_class='col-md-12',),
+				css_class='col-md-12 row hidden',
+			),
+			Div(
+				Div('usuario', css_class='col-md-12',),
+				css_class='col-md-12 row hidden',
+			),
+			Div(
+				Div('resposta', css_class='col-md-12',),
+				css_class='col-md-12 row',
+			),
+		)

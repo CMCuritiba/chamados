@@ -3,11 +3,27 @@
 {% block title %}Fila de Chamados{% endblock %}
 
 {% block content %}
+
+    <div id="alerta_atende" class="alert alert-danger collapse alert-dismissible" role="alert">
+        <h4 class="alert-heading">Erro ao selecionar o chamado</h4>
+        <p>Ou algum atendente acabou de selecionar o chamado ou ocorreu um erro no servidor.</p>
+    </div>
+
+    <div id="alerta_devolve" class="alert alert-danger collapse" role="alert">
+        <h4 class="alert-heading">Erro ao devolver o chamado</h4>
+        <p>Ocorreu um erro no servidor.</p>
+    </div>
+
 	<div id="estatistica"></div>
 	<br>
-	<div class="panel panel-danger">
+	<div class="panel panel-primary">
 		<div class="panel-heading">Chamados abertos para o setor : <b>{{ request.session.setor_nome }}</b></div>
         <div class="panel-body">
+            <div class="row">
+                <div class="col-sm-12">
+                    <span class="filtro"></span>
+                </div>
+            </div>
         	<div class="row">
                 <div class="col-sm-12">
                 	<table id="tchamados" class="table table-striped table-hover table-bordered fonteTable" width="100%" cellspacing="0"></table>
@@ -16,7 +32,7 @@
         </div>
 	</div>
 
-	<div class="panel panel-warning">
+	<div class="panel panel-primary">
 		<div class="panel-heading">Chamados selecionados para o usuário : <b>{{ user }}</b></div>
         <div class="panel-body">
         	<div class="row">
@@ -26,13 +42,19 @@
             </div>
         </div>
 	</div>
+
+    
+
+    
 {% endblock %}
 
 {% block extra_javascript %}
 	<script>
+        var tableChamados;
+        var tableFila;
 		$(document).ready(function() {
 
-			var tableChamados = $('#tchamados').DataTable({
+			tableChamados = $('#tchamados').DataTable({
 				responsive: true,
 				"columns": [
 					{ 
@@ -41,24 +63,43 @@
 					},
         			{ 
         				title: "Aberto",
-        				data: 'chamado_data_abertura'
+        				data: 'chamado_data_abertura',
+                        render: function(data, type, full, meta) {
+                            return '<a href="/fila/detalhe/' + full.chamado_id + '/">'+ data + '</a>';
+                        }
         			},
         			{ 
         				title: "Grupo",
-        				data: 'chamado_grupo_servico'
+        				data: 'chamado_grupo_servico',
+                        render: function(data, type, full, meta) {
+                            return '<a href="/fila/detalhe/' + full.chamado_id + '/">'+ data + '</a>';
+                        }
         			},
         			{ 
         				title: "Serviço",
-        				data: 'chamado_servico'
+        				data: 'chamado_servico',
+                        render: function(data, type, full, meta) {
+                            return '<a href="/fila/detalhe/' + full.chamado_id + '/">'+ data + '</a>';
+                        }
         			},
         			{ 
         				title: "Assunto",
-        				data: 'chamado_assunto'
+        				data: 'chamado_assunto',
+                        render: function(data, type, full, meta) {
+                            return '<a href="/fila/detalhe/' + full.chamado_id + '/">'+ data + '</a>';
+                        }
         			},
         			{ 
         				title: "Solicitante",
-        				data: 'chamado_usuario'
-        			}
+        				data: 'chamado_usuario',
+                        render: function(data, type, full, meta) {
+                            return '<a href="/fila/detalhe/' + full.chamado_id + '/">'+ data + '</a>';
+                        }
+        			},
+                    { 
+                        title: "status" ,
+                        data: 'status'
+                    }
         		],
         		"columnDefs": [
         			{
@@ -85,6 +126,21 @@
         	   			"targets": [5],
         	   			"visible": true,
         			},
+                    {
+                        "targets": [6],
+                        "visible": true,
+                    },
+                    {
+                        "targets": [7],
+                        "data": null,
+                        "render" : function(data, type, full, meta) {
+                            if (full.status == 'FECHADO' || full.status == 'ATENDIMENTO')
+                                return '';
+                            else
+                                return "<a href='#'><span id='atende' class='badge progress-bar-danger'>Atender</span></a>";
+                        },
+                        "className": "dt-center"
+                    },
 
         		],
         		"language": {
@@ -101,15 +157,21 @@
             	},
         		"bPaginate" : true,
         		"bLengthChange": false,
-        		"bFilter": false,
+        		"bFilter": true,
             	"bInfo": false,
             	"ajax": {
         			"url": "/fila/api/chamados_abertos/{{ request.session.setor_id }}",
         			"dataSrc": "",
         		},
+                "sDom": '<"top"i>rt<"bottom"lp><"clear">',
 			});
 
-			var tableFila = $('#tfila').DataTable({
+            $('#tchamados tbody').on('click', '#atende', function () {
+                var data = tableChamados.row( $(this).parents('tr') ).data();
+                atende(data.chamado_id);
+            });
+
+			tableFila = $('#tfila').DataTable({
 				responsive: true,
 				"columns": [
 					{ 
@@ -122,23 +184,38 @@
 					},
         			{ 
         				title: "Aberto",
-        				data: 'chamado_data_abertura'
+        				data: "chamado_data_abertura",
+                        render: function(data, type, full, meta) {
+                            return '<a href="/chamado/edita/' + full.chamado_id + '/">'+ data + '</a>';
+                        }
         			},
         			{ 
         				title: "Grupo",
-        				data: 'chamado_grupo_servico'
+        				data: 'chamado_grupo_servico',
+                        render: function(data, type, full, meta) {
+                            return '<a href="/chamado/edita/' + full.chamado_id + '/">'+ data + '</a>';
+                        }
         			},
         			{ 
         				title: "Serviço",
-        				data: 'chamado_servico'
+        				data: 'chamado_servico',
+                        render: function(data, type, full, meta) {
+                            return '<a href="/chamado/edita/' + full.chamado_id + '/">'+ data + '</a>';
+                        }
         			},
         			{ 
         				title: "Assunto",
-        				data: 'chamado_assunto'
+        				data: 'chamado_assunto',
+                        render: function(data, type, full, meta) {
+                            return '<a href="/chamado/edita/' + full.chamado_id + '/">'+ data + '</a>';
+                        }
         			},
         			{ 
         				title: "Solicitante",
-        				data: 'chamado_usuario'
+        				data: 'chamado_usuario',
+                        render: function(data, type, full, meta) {
+                            return '<a href="/chamado/edita/' + full.chamado_id + '/">'+ data + '</a>';
+                        }
         			}
         		],
         		"columnDefs": [
@@ -170,6 +247,13 @@
         	   			"targets": [6],
         	   			"visible": true,
         			},
+                    {
+                        "targets": [7],
+                        "data": null,
+                        "defaultContent": "<a href='#'><span id='devolve' class='badge progress-bar-danger'>Devolver</span></a>",
+                        "className": "dt-center"
+                    },
+
 
         		],
         		"language": {
@@ -189,18 +273,37 @@
         		"bFilter": false,
             	"bInfo": false,
             	"ajax": {
-        			"url": "/fila/api/chamados_usuario/{{ user.id }}/ATENDIMENTO/",
+        			"url": "/fila/api/chamados_atendente/{{ user.id }}/ATENDIMENTO/",
         			"dataSrc": "",
         		},
 			});
 
+            $('#tfila tbody').on('click', '#devolve', function () {
+                var data = tableFila.row( $(this).parents('tr') ).data();
+                devolve(data.chamado_id);
+            });
+
 			atualiza_estatisticas();
+            montaComboFiltro();
 
 			var tim = setInterval(function() {
 				tableChamados.ajax.reload(null, false);
 				tableFila.ajax.reload(null, false);
 				atualiza_estatisticas();				
 			}, 10000);
+
+            var tim2 = setInterval(function() {
+                $('.alert').alert('close');
+            }, 5000);
+
+            $('span.filtro select').change(function() {
+                console.log(this.value);
+                if (this.value == 'TODOS')
+                    tableChamados.search('').draw();
+                else    
+                    tableChamados.search(this.value).draw();
+            });
+
 		});
 
 		function atualiza_estatisticas() {
@@ -217,12 +320,61 @@
       	        	
       			},
       			error: function(xhr, status, error) {
-        			alert('Problema ao carregar informações dos chamados.');
-            		alert(xhr);
-            		alert(status);
-            		alert(error);
+                    console.log('Problema ao carregar informações dos chamados.');
       			}
     		})
 		}
+
+        function atende(id_chamado) {
+            request_url = '/fila/api/atende/' + id_chamado + '/';
+
+            $.ajax({
+                url: request_url,
+                type: 'GET',
+                accepts: 'application/json',
+                dataType: 'json',
+                success: function(result){
+                    tableChamados.ajax.reload(null, false);
+                    tableFila.ajax.reload(null, false);
+                    atualiza_estatisticas();
+                },
+                error: function(xhr, status, error) {
+                    $('#alerta_atende').show();
+                    console.log(status);
+                    console.log(error);
+                    console.log(xhr);
+                }
+            })
+        }
+
+        function devolve(id_chamado) {
+            request_url = '/fila/api/devolve/' + id_chamado + '/';
+
+            $.ajax({
+                url: request_url,
+                type: 'GET',
+                accepts: 'application/json',
+                dataType: 'json',
+                success: function(result){
+                    tableChamados.ajax.reload(null, false);
+                    tableFila.ajax.reload(null, false);
+                    atualiza_estatisticas();  
+                },
+                error: function(xhr, status, error) {
+                    $('#alerta_devolve').show();
+                    console.log(status);
+                    console.log(error);
+                    console.log(xhr);
+                }
+            })
+        }
+
+        function montaComboFiltro() {
+            var filtro = "Filtrar chamados : <select name='filtro' id='filtro'><option value='TODOS' selected>TODOS</option><option value='ABERTO'>ABERTO</option><option value='ATENDIMENTO'>ATENDIMENTO</option><option value='FECHADO'>FECHADO</option></select>";
+            $('span.filtro').empty();
+            $('span.filtro').append(filtro);
+        }
+
+
 	</script>
 {% endblock %}

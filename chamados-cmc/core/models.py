@@ -148,12 +148,48 @@ class Chamado(models.Model):
 class FilaChamadosManager(models.Manager):
 
 	@transaction.atomic
-	def cria_fila(self, usuario, chamado):
+	def atende(self, usuario, chamado):
 		if chamado == None or chamado.status != 'ABERTO':
 			raise ValueError('Status do chamado não é ABERTO.')
-		fila = self.create(usuario=usuario, chamado=chamado)
+		fila = self.filter(chamado=chamado).first()
+		if fila == None:
+			fila = self.create(usuario=usuario, chamado=chamado)
+		else:
+			fila.chamado = chamado
+			fila.usuario = usuario
+			fila.save()
 		chamado.status = 'ATENDIMENTO'
 		chamado.save()
+
+		#historico = HistoricoChamados.objects.create(chamado=chamado, status='ABERTO')
+		#historico.save()
+		historico = HistoricoChamados.objects.create(chamado=chamado, status='ATENDIMENTO', usuario=usuario)
+		historico.save()
+		return fila
+
+	@transaction.atomic
+	def devolve(self, usuario, chamado):
+		if chamado == None or chamado.status != 'ATENDIMENTO':
+			raise ValueError('Status do chamado não é ATENDIMENTO.')
+		fila = self.filter(chamado=chamado).first()
+		fila.usuario = None
+		fila.save()
+		chamado.status = 'ABERTO'
+		chamado.save()
+
+		historico = HistoricoChamados.objects.create(chamado=chamado, status='ABERTO')
+		historico.save()
+		return fila
+
+	@transaction.atomic
+	def fecha(self, usuario, chamado):
+		if chamado == None or chamado.status != 'ATENDIMENTO':
+			raise ValueError('Status do chamado não é ATENDIMENTO.')
+		chamado.status = 'FECHADO'
+		chamado.save()
+
+		historico = HistoricoChamados.objects.create(chamado=chamado, status='FECHADO')
+		historico.save()
 		return fila
 
 
@@ -172,3 +208,41 @@ class FilaChamados(models.Model):
 
 	def __str__(self):
 		return self.chamado.assunto
+
+#---------------------------------------------------------------------------------------------
+# Model HistoricoChamados
+#---------------------------------------------------------------------------------------------
+@python_2_unicode_compatible
+class HistoricoChamados(models.Model):
+	class Meta:
+		verbose_name_plural = 'Histórico do Chamado'
+
+	chamado = models.ForeignKey(Chamado)
+	data = models.DateTimeField(default=timezone.now)
+	status = models.CharField(max_length=15)
+	usuario = models.ForeignKey(User, blank=True, null=True)
+
+	def __unicode__(self):
+		return self.chamado.assunto
+
+	def __str__(self):
+		return self.chamado.assunto		
+
+#---------------------------------------------------------------------------------------------
+# Model ChamadoResposta
+#---------------------------------------------------------------------------------------------
+@python_2_unicode_compatible
+class ChamadoResposta(models.Model):
+	class Meta:
+		verbose_name_plural = 'Respostas para o Chamado'
+
+	chamado = models.ForeignKey(Chamado)
+	data = models.DateTimeField(default=timezone.now)
+	usuario = models.ForeignKey(User)
+	resposta = models.TextField()
+
+	def __unicode__(self):
+		return self.chamado.assunto
+
+	def __str__(self):
+		return self.chamado.assunto				

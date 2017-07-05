@@ -97,9 +97,6 @@ class FilaChamadosViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Abertura de Chamados')
 
-        request.session['some'] = 'some'
-        request.session.save()
-
     def test_url(self):
         request = self.factory.get('/fila/')
         request.user = self.user

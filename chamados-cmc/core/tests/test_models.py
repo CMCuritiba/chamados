@@ -3,7 +3,7 @@
 from django.test import TestCase, RequestFactory
 from ...autentica.models import User
 from django.db import IntegrityError, DataError
-from ..models import SetorChamado, GrupoServico, VSetor, Servico, Chamado, FilaChamados
+from ..models import SetorChamado, GrupoServico, VSetor, Servico, Chamado, FilaChamados, ChamadoResposta
 
 
 class ChamadoTestCase(TestCase):
@@ -153,23 +153,54 @@ class FilaChamadosTestCase(TestCase):
 	def test_insere_fila_ok(self):
 		usuario = User.objects.get(pk=1)
 		chamado = Chamado.objects.get(pk=2)
-		fila = FilaChamados.objects.cria_fila(usuario=usuario, chamado=chamado)
+		fila = FilaChamados.objects.atende(usuario=usuario, chamado=chamado)
 		self.assertEqual(fila.chamado.usuario.pk, 1)
 		self.assertEqual(chamado.status, 'ATENDIMENTO')
 
 	def test_insere_fila_usuario_nulo(self):
 		chamado = Chamado.objects.get(pk=2)
 		with self.assertRaises(IntegrityError):
-			fila = FilaChamados.objects.cria_fila(usuario=None, chamado=chamado)
+			fila = FilaChamados.objects.atende(usuario=None, chamado=chamado)
 
 	def test_insere_fila_chamado_nulo(self):
 		usuario = User.objects.get(pk=1)
 		with self.assertRaises(ValueError):
-			fila = FilaChamados.objects.cria_fila(usuario=usuario, chamado=None)
+			fila = FilaChamados.objects.atende(usuario=usuario, chamado=None)
 
 	def test_insere_fila_chamado_atendido(self):
 		usuario = User.objects.get(pk=1)
 		chamado = Chamado.objects.get(pk=1)
 		self.assertEqual(chamado.status, 'ATENDIMENTO')
 		with self.assertRaises(ValueError):
-			fila = FilaChamados.objects.cria_fila(usuario=usuario, chamado=chamado)
+			fila = FilaChamados.objects.atende(usuario=usuario, chamado=chamado)
+
+class ChamadoRespostaTestCase(TestCase):
+	fixtures = ['user.json','chamado.json', 'setor_chamado.json', 'grupo_servico.json', 'servico.json', 'chamado.json', 'fila_chamados.json']
+
+	def setUp(self):
+		super(ChamadoRespostaTestCase, self).setUp()			
+
+	def test_init(self):
+		self.assertEqual(1, 1)		
+
+	def test_insere_resposta_ok(self)	:
+		usuario = User.objects.get(pk=1)
+		chamado = Chamado.objects.get(pk=2)
+		resposta = ChamadoResposta.objects.create(usuario=usuario, chamado=chamado, resposta='O cabo estava desconectado. Tudo OK.')
+		self.assertEqual(resposta.chamado.pk, chamado.pk)
+
+	def test_insere_resposta_usuario_nulo(self)	:
+		chamado = Chamado.objects.get(pk=2)
+		with self.assertRaises(IntegrityError):
+			resposta = ChamadoResposta.objects.create(usuario=None, chamado=chamado, resposta='O cabo estava desconectado. Tudo OK.')
+
+	def test_insere_resposta_nula(self)	:
+		usuario = User.objects.get(pk=1)
+		chamado = Chamado.objects.get(pk=2)
+		with self.assertRaises(IntegrityError):
+			resposta = ChamadoResposta.objects.create(usuario=usuario, chamado=chamado, resposta=None)
+
+	def test_insere_resposta_chamado_nulo(self)	:
+		usuario = User.objects.get(pk=1)
+		with self.assertRaises(IntegrityError):
+			resposta = ChamadoResposta.objects.create(usuario=usuario, chamado=None, resposta='O cabo estava desconectado. Tudo OK.')
