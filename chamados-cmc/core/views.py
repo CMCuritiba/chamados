@@ -35,6 +35,7 @@ class CadastroChamadosIndexView(CMCLoginRequired, SuccessMessageMixin, FormView)
     form_class = ChamadoForm
 
 
+<<<<<<< HEAD
 #--------------------------------------------------------------------------------------
 class CadastroChamadosCreateView(CMCLoginRequired, SuccessMessageMixin, CreateView):
     template_name = "cadastro/new.html"
@@ -67,13 +68,13 @@ def chamados_atendente_json(request,usuario_id, status):
         chamado_json['chamado_usuario'] = c.chamado.usuario.username
 
         resposta.append(chamado_json)
-    
+
     return JsonResponse(resposta, safe=False)       
 
 
 #--------------------------------------------------------------------------------------
 # Retorna JSON lista de chamados abertos do setor
-#--------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------
 def chamados_abertos_json(request, setor_id):
     resposta = []
 
@@ -98,7 +99,7 @@ def chamados_abertos_json(request, setor_id):
 
 #--------------------------------------------------------------------------------------
 # Retorna JSON estatistica chamados
-#--------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------
 def chamados_estatistica_json(request):
     resposta = []
 
@@ -118,16 +119,16 @@ def chamados_estatistica_json(request):
     oatendimento['atendimento'] = atendimento
     resposta.append(oatendimento)
 
-    return JsonResponse(resposta, safe=False)               
+    return JsonResponse(resposta, safe=False)
 
-#--------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------
 class FilaChamadosIndexView(CMCLoginRequired, SuccessMessageMixin, TemplateView):
-    template_name = 'fila/index.html'   
+    template_name = 'fila/index.html'
 
 
-#--------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------
 # Retorna JSON dos grupos de serviços para setor especificado
-#--------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------
 def grupo_servico_json(request, id_setor):
     resposta = []
 
@@ -145,9 +146,9 @@ def grupo_servico_json(request, id_setor):
     return JsonResponse(resposta, safe=False)
 
 
-#--------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------
 # Retorna JSON dos serviços para o grupo de serviço especificado
-#--------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------
 def servico_json(request, id_gs):
     resposta = []
 
@@ -186,7 +187,19 @@ def chamados_usuario_json(request, usuario_id):
 
         resposta.append(chamado_json)
 
+    if id_gs == None or id_gs == '' or id_gs == '0':
+        servicos = None
+    else:
+        servicos = Servico.objects.filter(grupo_servico=id_gs)
+
+    for s in servicos:
+        servico_json = {}
+        servico_json['servico_id'] = s.id
+        servico_json['servico_descricao'] = s.descricao
+        resposta.append(servico_json)
+
     return JsonResponse(resposta, safe=False)
+
 
 #--------------------------------------------------------------------------------------
 # Quando um atendente seleciona um chamado para atender
