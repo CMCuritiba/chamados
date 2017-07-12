@@ -34,8 +34,6 @@ class CadastroChamadosIndexView(CMCLoginRequired, SuccessMessageMixin, FormView)
     template_name = 'core/index.html'
     form_class = ChamadoForm
 
-
-<<<<<<< HEAD
 #--------------------------------------------------------------------------------------
 class CadastroChamadosCreateView(CMCLoginRequired, SuccessMessageMixin, CreateView):
     template_name = "cadastro/new.html"
