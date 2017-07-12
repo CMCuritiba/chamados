@@ -266,6 +266,7 @@ def respostas_json(request, id_chamado):
 
     for r in respostas:
         resposta_json = {}
+        resposta_json['resposta_id'] = r.id
         resposta_json['chamado_id'] = r.chamado.id
         resposta_json['data'] = r.data.strftime("%d/%m/%Y %H:%M")
         resposta_json['usuario'] = r.usuario.username
@@ -283,7 +284,12 @@ def responde_json(request):
     if request.method == 'POST' and request.is_ajax():
         if request.POST.get('id_chamado') != None and request.POST.get('id_chamado') != '':
             chamado = Chamado.objects.get(pk=request.POST.get('id_chamado'))
-            ChamadoResposta.objects.create(usuario=request.user, chamado=chamado, resposta=request.POST.get('resposta'))
+            if request.POST.get('resposta_id') != None and request.POST.get('resposta_id') != '':
+                cresposta = ChamadoResposta.objects.get(pk=request.POST.get('resposta_id'))
+                cresposta.resposta = request.POST.get('resposta')
+                cresposta.save()
+            else:
+                ChamadoResposta.objects.create(usuario=request.user, chamado=chamado, resposta=request.POST.get('resposta'))
             response = JsonResponse({'status':'true','message':'Chamado selecionado com sucesso'}, status=200)
         else:
             response = JsonResponse({'status':'false','message':'Chamado inválido'}, status=401)

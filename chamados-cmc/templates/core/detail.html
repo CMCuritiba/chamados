@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 
-{% block title %}Atualização de Chamados{% endblock %}
+{% block title %}Informações do Chamado{% endblock %}
 
 {% block content %}
 
@@ -72,7 +72,6 @@
                         <div class="form-group"> 
                             <div class="col-sm-12">
                                 <input type="button" onclick="javascript:volta_fila();" value="Voltar à fila" class="btn btn-default"/> 
-                                <input type="button" onclick="javascript:fecha_chamado();" value="Fechar chamado" class="btn btn-primary"/>
                             </div>
                         </div>
                     </div>
@@ -97,8 +96,6 @@
                         <div class="form-group"> 
                             <div class="col-sm-12">
                                 <input type="button" onclick="javascript:volta_fila();" value="Voltar à fila" class="btn btn-default"/> 
-                                <input type="button" onclick="javascript:fecha_chamado();" value="Fechar chamado" class="btn btn-primary"/>
-                                <input type="button" data-toggle="modal" data-target="#respostaModal" data-chamado_id="{{ object.id }}" value="Nova resposta" class="btn btn-default"/> 
                             </div>
                         </div>
                     </div>
@@ -117,23 +114,15 @@
         <h4 class="modal-title" id="exampleModalLabel">Nova resposta</h4>
       </div>
       <div class="modal-body">
-        <form class="resposta">{% csrf_token %}
-          <div class="form-group">
+        <div class="form-group">
             <input type="hidden" name="id_chamado" id="id_chamado" value="{{ object.id }}" />
             <input type="hidden" name="id_usuario" id="id_usuario" value="{{ user.id }}" />
-            <input type="hidden" name="resposta_id" id="resposta_id" value="" />
             <label for="resposta" class="control-label">Resposta:</label>
             <textarea class="form-control" id="resposta" name="resposta"></textarea>
           </div>
-        </form>
-        <form class="fecha" method="POST" action="/fila/fecha/">{% csrf_token %}
-            <input type="hidden" name="id_chamado" id="id_chamado" value="{{ object.id }}" />
-            <input type="hidden" name="id_usuario" id="id_usuario" value="{{ user.id }}" />
-        </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" id="submit">Salvar</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
       </div>
     </div>
   </div>
@@ -162,21 +151,21 @@
                     title: "Data",
                     data: 'data',
                     render: function(data, type, full, meta) {
-                        return '<a href="#" data-toggle="modal" data-target="#respostaModal" data-resposta_id="' + full.resposta_id + '" data-resposta="' + full.resposta + '" data-chamado_id="' + full.chamado_id + '">' + data + '</a>';
+                        return '<a href="#" data-toggle="modal" data-target="#respostaModal" data-resposta="' + full.resposta + '" data-chamado_id="' + full.chamado_id + '">' + data + '</a>';
                     }
                 },
                 { 
                     title: "Usuário",
                     data: 'usuario',
                     render: function(data, type, full, meta) {
-                        return '<a href="#" data-toggle="modal" data-target="#respostaModal" data-resposta_id="' + full.resposta_id + '" data-resposta="' + full.resposta + '" data-chamado_id="' + full.chamado_id + '">' + data + '</a>';
+                        return '<a href="#" data-toggle="modal" data-target="#respostaModal" data-resposta="' + full.resposta + '" data-chamado_id="' + full.chamado_id + '">' + data + '</a>';
                     }
                 },
                 { 
                     title: "Resposta",
                     data: 'resposta',
                     render: function(data, type, full, meta) {
-                        return '<a href="#" data-toggle="modal" data-target="#respostaModal" data-resposta_id="' + full.resposta_id + '" data-resposta="' + full.resposta + '" data-chamado_id="' + full.chamado_id + '">' + data + '</a>'; 
+                        return '<a href="#" data-toggle="modal" data-target="#respostaModal" data-resposta="' + full.resposta + '" data-chamado_id="' + full.chamado_id + '">' + data + '</a>';
                     }
                 },
             ],
@@ -225,10 +214,6 @@
             },
         });
 
-        $("button#submit").click(function() {
-            responde();
-            $("#respostaModal").modal('hide');
-        })
     });
 
     function desabilita() {
@@ -244,41 +229,15 @@
         $(location).attr('href', '/fila/');
     }
 
-    function fecha_chamado() {
-        $('form.fecha').submit();
-    }
-
     $('#respostaModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
         var recipient = button.data('chamado_id');
         var recipient2 = button.data('resposta');
-        var recipient3 = button.data('resposta_id');
         var modal = $(this);
-        modal.find('.modal-title').text('Resposta para o chamado:  ' + recipient);
-        modal.find('.modal-body textarea').val(recipient2);
-        modal.find('#resposta_id').val(recipient3);
+        modal.find('.modal-title').text('Resposta para o chamado:  ' + recipient)
+        modal.find('.modal-body textarea').val(recipient2)
     });
 
-    function responde() {
-        request_url = '/fila/api/responde/';
-
-        $.ajax({
-            url: request_url,
-            type: 'POST',
-            accepts: 'application/json',
-            dataType: 'json',
-            data: $('form.resposta').serialize(),
-            success: function(result){
-                console.log($('form.resposta').serialize());
-                tableRespostas.ajax.reload(null, false);
-            },
-            error: function(xhr, status, error) {
-                console.log(status);
-                console.log(error);
-                console.log(xhr);
-            }
-        })
-    }
 
 
 </script>

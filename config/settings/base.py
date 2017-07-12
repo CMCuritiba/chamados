@@ -94,6 +94,11 @@ FIXTURE_DIRS = (
 # EMAIL CONFIGURATION
 # ------------------------------------------------------------------------------
 EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = env('EMAIL_HOST', default='')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
+EMAIL_PORT = env('EMAIL_PORT', default='')
+EMAIL_USE_TLS = env('EMAIL_USE_TLS', default='')
 
 # MANAGER CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -318,8 +323,8 @@ LOGGING = {
 
 PIPELINE = {
     'PIPELINE_ENABLED': True,
-    'JS_COMPRESSOR': None,
-    'CSS_COMPRESSOR': None,
+    'JS_COMPRESSOR': False,
+    'CSS_COMPRESSOR': False,
     'STYLESHEETS': {
         'master': {
             'source_filenames': (
@@ -328,6 +333,7 @@ PIPELINE = {
               'datatables/media/css/jquery.dataTables.css',
               'datatables/media/css/dataTables.bootstrap.css',
               'login.css',
+              'font-awesome/css/font-awesome.css',
             ),
             'output_filename': 'css/master.css',
         },
@@ -341,6 +347,9 @@ PIPELINE = {
               'underscore/underscore.js',
               'datatables/media/js/jquery.dataTables.js',
               'datatables/media/js/dataTables.bootstrap.js',
+              'vue/dist/vue.js',
+              'vue-strap/dist/vue-strap.js',
+              'vue-strap/dist/vue-strap-lang.js',
             ),
             'output_filename': 'js/master.js',
         }
@@ -359,7 +368,10 @@ BOWER_INSTALLED_APPS = (
     'bootstrap',
     'jasny-bootstrap',
     'datatables',
-    'datatables-bootstrap3'
+    'datatables-bootstrap3',
+    'vue',
+    'vue-strap',
+    'fontawesome'
 )
 
 # ALTERAÇÕES NO USER PARA GUARDAR INFO DO LDAP
