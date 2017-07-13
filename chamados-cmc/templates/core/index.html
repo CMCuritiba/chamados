@@ -1,13 +1,11 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 
-{% block title %}Abertura de Chamados{% endblock %}
+{% block title %}Chamados{% endblock %}
 
 {% block content %}
-<form action="/chamado/" method="post" id="formulario">
-
-	<div class="panel panel-warning">
-		<div class="panel-heading">Teus chamados</div>
+	<div class="panel panel-primary">
+        <div class="panel-heading">Chamados realizados pelo usuário : <b>{{ user }}</b></div>
         <div class="panel-body">
         	<div class="row">
                 <div class="col-sm-12">
@@ -17,90 +15,20 @@
         </div>
 	</div>
 
-	{% crispy form %}
-
-	<div class="col-md-12 row">
-		<div class="col-md-6">
-			<div class="form-group">
-				<div class="controls "> <input type="submit" name="save" value="Salvar" class="btn btn-primary" id="submit-id-save"/> </div>
-			</div>
-		</div>
-	</div>
-</form>
+    <div class="panel panel-primary">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-sm-12">
+                    <button type="button" class="btn btn-primary" onclick="javascript:criaChamado();">Criar chamado</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block extra_javascript %}
 <script>
-	$(document).ready(function () {
-		$('#id_setor').on('change', function() {
-    		atualizaGrupoServico();
-    	})
-    	atualizaGrupoServico();
-		$('#id_grupo_servico').on('change', function() {
-    		atualizaServico();
-    	})
-        atualizaServico();
-	});
-	function atualizaGrupoServico() {
-		$('#id_grupo_servico').children().remove().end();
-		if ($('#id_setor option:selected').val() == '' || $('#id_setor option:selected').val() == '0') {
-			request_url = '/chamado/api/grupo_servico/99999';
-        }
-       	else {
-    		  request_url = '/chamado/api/grupo_servico/' + $('#id_setor option:selected').val();
-        }
-		$.ajax({
-			url: request_url,
-			dataType: 'json',
-			success: function(result){
-				var toAppend = '';
-				$.each(result, function(index, element) {
-					if ('{{form.grupo_servico.value}}' != 'None' && element.gs_id == '{{form.grupo_servico.value}}')
-						toAppend += '<option selected="selected" value="' + element.gs_id + '">' + element.gs_descricao + '</option>';
-					else
-						toAppend += '<option value="' + element.gs_id + '">' + element.gs_descricao + '</option>';
-				});
-				$('#id_grupo_servico').append(toAppend);
-			},
-			error: function(xhr, status, error) {
-				alert('Erro ao carregar Grupos de Serviços');
-				alert(xhr.readyState);
-				alert(status);
-				alert(error);
-			}
-		})
-    }
-	function atualizaServico() {
-		$('#id_servico').children().remove().end();
-		if ($('#id_grupo_servico option:selected').val() == '' ||
-		    $('#id_grupo_servico option:selected').val() == '0' ||
-		    typeof $('#id_grupo_servico option:selected').val() === "undefined"){
-			request_url = '/chamado/api/servico/99999';
-        }
-       	else {
-    		  request_url = '/chamado/api/servico/' + $('#id_grupo_servico option:selected').val();
-        }
-		$.ajax({
-			url: request_url,
-			dataType: 'json',
-			success: function(result){
-				var toAppend = '';
-				$.each(result, function(index, element) {
-					if ('{{form.servico.value}}' != 'None' && element.servico_id == '{{form.servico.value}}')
-						toAppend += '<option selected="selected" value="' + element.servico_id + '">' + element.servico_descricao + '</option>';
-					else
-						toAppend += '<option value="' + element.servico_id + '">' + element.servico_descricao + '</option>';
-				});
-				$('#id_servico').append(toAppend);
-			},
-			error: function(xhr, status, error) {
-				alert('Erro ao carregar Serviços');
-				alert(xhr.readyState);
-				alert(status);
-				alert(error);
-			}
-		})
-    }
+	
     $(document).ready(function() {
         var table = $('#tchamados').DataTable({
             responsive: true,
@@ -111,37 +39,48 @@
                 },
                 {
                     title: "Aberto",
-                    data: 'chamado_data_abertura'
+                    data: 'data_abertura', 
                     render: function(data, type, full, meta) {
-                            return '<a href="/chamado/edita/' + full.chamado_id + '/">'+ data + '</a>';
-                        }
+                        return '<a href="/chamado/detalhe/' + full.chamado_id + '/">'+ data + '</a>';
+                    }
+                    
                 },
                 {
                     title: "Setor",
-                    data: 'chamado_setor'
+                    data: 'setor',
                     render: function(data, type, full, meta) {
-                            return '<a href="/chamado/edita/' + full.chamado_id + '/">'+ data + '</a>';
-                        }
+                        return '<a href="/chamado/detalhe/' + full.chamado_id + '/">'+ data + '</a>';
+                    }
+                    
                 },
                 {
                     title: "Grupo Serviço",
-                    data: 'chamado_grupo_servico'
+                    data: 'grupo_servico',
                     render: function(data, type, full, meta) {
-                            return '<a href="/chamado/edita/' + full.chamado_id + '/">'+ data + '</a>';
-                        }
+                        return '<a href="/chamado/detalhe/' + full.chamado_id + '/">'+ data + '</a>';
+                    }
+                    
                 },
+                { 
+                        title: "Serviço",
+                        data: 'servico',
+                        render: function(data, type, full, meta) {
+                            return '<a href="/chamado/detalhe/' + full.chamado_id + '/">'+ data + '</a>';
+                        }
+                    },
                 {
                     title: "Status",
-                    data: 'chamado_status',
+                    data: 'status',
                     render: function(data, type, full, meta) {
-                            return '<a href="/chamado/edita/' + full.chamado_id + '/">'+ data + '</a>';
-                        }
+                        return '<a href="/chamado/detalhe/' + full.chamado_id + '/">'+ data + '</a>';
+                    }
+                    
                 },
             ],
             "columnDefs": [
                 {
                     "targets": [0],
-                    "visible": false,
+                    "visible": true,
                 },
                 {
                     "targets": [1],
@@ -158,6 +97,22 @@
                 {
                     "targets": [4],
                     "visible": true,
+                },
+                {
+                    "targets": [5],
+                    "visible": true,
+                },
+                {
+                    "targets": [6],
+                    "visible": true,
+                    "className": "dt-center",
+                    "data": null,
+                    render: function(data, type, full, meta) {
+                        if (full.novidade)
+                            return '<i class="fa fa-envelope" aria-hidden="true" style="color:red;"></i>';
+                        else
+                            return '';
+                    }
                 },
             ],
             "language": {
@@ -181,9 +136,16 @@
                 "dataSrc": "",
             },
         });
+
         var tim = setInterval(function() {
-				table.ajax.reload(null, false);
-			}, 10000);
+			table.ajax.reload(null, false);
+		}, 10000);
+
     });
+
+    function criaChamado() {
+        location.href = '/chamado/cria/';
+    }
+    </script>
 </script>
 {% endblock %}

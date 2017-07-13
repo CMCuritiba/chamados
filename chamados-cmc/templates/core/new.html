@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Chamados{% endblock %}
+
+{% block content %}
+	<div class="panel panel-primary">
+		<div class="panel-heading">Criar novo chamado</div>
+		<div class="panel-body">
+			<form name="formulario" id="formulario" method="post" action="">
+				{% crispy form %}
+				<input type="hidden" name="usuario_id" id="usuario_id" value="{{user.id}}"/>
+			</form>
+		</div>
+	</div>
+	<div class="panel panel-primary">
+		<div class="panel-body">
+	    	<div class="col-md-12 row">
+	    		<input type="button" onclick="javascript:volta_fila();" value="Voltar à fila" class="btn btn-default"/> 
+				<button type="button" class="btn btn-primary" onclick="javascript:salvarChamado();">Salvar</button>
+	    	</div>
+	    </div>
+	</div>
+    
+
+{% endblock %}
+
+{% block extra_javascript %}
+<script>
+	$(document).ready(function () {
+		$('#id_setor').on('change', function() {
+            atualizaGrupoServico();    
+    	});
+		$('#id_grupo_servico').on('change', function() {
+    		atualizaServico();
+    	});
+	});
+
+	function atualizaGrupoServico() {
+		$('#id_grupo_servico').children().remove().end();
+		if ($('#id_setor option:selected').val() == '' || $('#id_setor option:selected').val() == '0') {
+			request_url = '/chamado/api/grupo_servico/99999';
+        }
+       	else {
+    		  request_url = '/chamado/api/grupo_servico/' + $('#id_setor option:selected').val();
+        }
+		$.ajax({
+			url: request_url,
+			dataType: 'json',
+			success: function(result){
+				var toAppend = '';
+                var sel = 0;
+				$.each(result, function(index, element) {
+                    if (sel == 0) {
+					   toAppend += '<option value="' + element.gs_id + '" selected>' + element.gs_descricao + '</option>';
+                       $('#id_grupo_servico').val(element.gs_id);
+                       sel = 1;
+                    }
+                    else
+                        toAppend += '<option value="' + element.gs_id + '">' + element.gs_descricao + '</option>';
+				});
+				$('#id_grupo_servico').append(toAppend);
+                atualizaServico();
+			},
+			error: function(xhr, status, error) {
+				console.log('Erro ao carregar Grupos de Serviços');
+				console.log(xhr.readyState);
+				console.log(status);
+				console.log(error);
+			}
+		})
+        //$('#id_grupo_servico').trigger('change');
+    }
+	function atualizaServico() {
+		$('#id_servico').empty();
+        $('#id_servico').removeAttr('selected').find('option:first').attr('selected', 'selected');
+		if ($('#id_grupo_servico').val() == '' || $('#id_grupo_servico').val() == null) {
+			request_url = '/chamado/api/servico/99999';
+        }
+       	else {
+    		  request_url = '/chamado/api/servico/' + $('#id_grupo_servico').val();
+        }
+		$.ajax({
+			url: request_url,
+			dataType: 'json',
+			success: function(result){
+				var toAppend = '';
+				$.each(result, function(index, element) {
+					toAppend += '<option value="' + element.servico_id + '">' + element.servico_descricao + '</option>';
+				});
+                if (toAppend == '') {
+				    toAppend = '<option value="0">----------</option>'
+                }
+                $('#id_servico').append(toAppend);
+
+			},
+			error: function(xhr, status, error) {
+				console.log('Erro ao carregar Serviços');
+				console.log(xhr.readyState);
+				console.log(status);
+				console.log(error);
+			}
+		})
+    }
+
+    function volta_fila() {
+		location.href = '/chamado/';
+    }
+
+    function salvarChamado() {
+    	$('#formulario').submit();
+    }
+</script>
+{% endblock %}

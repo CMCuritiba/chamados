@@ -124,6 +124,7 @@ class Chamado(models.Model):
 								  default=PRIORIDADE_NORMAL)
 	status = models.CharField(max_length=15, null=False, blank=False, choices=STATUS_CHOICES, default=STATUS_ABERTO)
 	data_fechamento = models.DateTimeField(null=True)
+	novidade = models.BooleanField(default=False)
 
 	def __unicode__(self):
 		return self.descricao
@@ -159,6 +160,7 @@ class FilaChamadosManager(models.Manager):
 			fila.usuario = usuario
 			fila.save()
 		chamado.status = 'ATENDIMENTO'
+		chamado.novidade = True
 		chamado.save()
 
 		#historico = HistoricoChamados.objects.create(chamado=chamado, status='ABERTO')
@@ -175,6 +177,7 @@ class FilaChamadosManager(models.Manager):
 		fila.usuario = None
 		fila.save()
 		chamado.status = 'ABERTO'
+		chamado.novidade = True
 		chamado.save()
 
 		historico = HistoricoChamados.objects.create(chamado=chamado, status='ABERTO')
@@ -186,6 +189,7 @@ class FilaChamadosManager(models.Manager):
 		if chamado == None or chamado.status != 'ATENDIMENTO':
 			raise ValueError('Status do chamado não é ATENDIMENTO.')
 		chamado.status = 'FECHADO'
+		chamado.novidade = True
 		chamado.save()
 
 		historico = HistoricoChamados.objects.create(chamado=chamado, status='FECHADO')

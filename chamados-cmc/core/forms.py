@@ -20,7 +20,7 @@ from .models import Chamado, ChamadoResposta
 class ChamadoForm(forms.ModelForm):
     class Meta:
         model = Chamado
-        fields = ['usuario', 'setor', 'grupo_servico', 'servico', 'ramal', 'assunto', 'descricao']
+        fields = ['setor', 'grupo_servico', 'servico', 'ramal', 'assunto', 'descricao']
 
     def __init__(self, *args, **kwargs):
         super(ChamadoForm, self).__init__(*args, **kwargs)
@@ -49,10 +49,6 @@ class ChamadoForm(forms.ModelForm):
             Div(
                 Div('descricao', css_class='col-md-12',),
                 css_class='col-md-12 row',
-            ),
-            Div(
-                Div('usuario', css_class='col-md-12',),
-                css_class='col-md-12 row hidden',
             ),
         )
 

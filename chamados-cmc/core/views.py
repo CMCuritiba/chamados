@@ -36,11 +36,17 @@ class CadastroChamadosIndexView(CMCLoginRequired, SuccessMessageMixin, FormView)
 
 #--------------------------------------------------------------------------------------
 class CadastroChamadosCreateView(CMCLoginRequired, SuccessMessageMixin, CreateView):
-    template_name = "cadastro/new.html"
+    template_name = "core/new.html"
     form_class = ChamadoForm
     model = Chamado
-    success_url = '/cadastro/'
+    success_url = '/chamado/'
     success_message = "Chamado criado com sucesso"
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.usuario = self.request.user
+        obj.save()
+        return super(CadastroChamadosCreateView, self).form_valid(form)
 
 #--------------------------------------------------------------------------------------
 # Retorna JSON lista de chamados do usuario
@@ -177,27 +183,18 @@ def chamados_usuario_json(request, usuario_id):
 
     for c in chamados:
         chamado_json = {}
-        chamado_json['chamado_id'] = c.chamado.id
-        chamado_json['chamado_data_abertura'] = c.chamado.data_abertura
-        chamado_json['chamado_grupo_servico'] = c.chamado.grupo_servico.descricao
-        chamado_json['chamado_servico'] = c.chamado.servico.descricao
-        chamado_json['chamado_assunto'] = c.chamado.chamado_assunto
+        chamado_json['chamado_id'] = c.id
+        chamado_json['data_abertura'] = c.data_abertura.strftime("%d/%m/%Y")
+        chamado_json['grupo_servico'] = c.grupo_servico.descricao
+        chamado_json['setor'] = c.setor.setor.set_nome
+        chamado_json['servico'] = c.servico.descricao
+        chamado_json['assunto'] = c.assunto
+        chamado_json['status'] = c.status
+        chamado_json['novidade'] = c.novidade
 
         resposta.append(chamado_json)
 
-    if id_gs == None or id_gs == '' or id_gs == '0':
-        servicos = None
-    else:
-        servicos = Servico.objects.filter(grupo_servico=id_gs)
-
-    for s in servicos:
-        servico_json = {}
-        servico_json['servico_id'] = s.id
-        servico_json['servico_descricao'] = s.descricao
-        resposta.append(servico_json)
-
     return JsonResponse(resposta, safe=False)
-
 
 #--------------------------------------------------------------------------------------
 # Quando um atendente seleciona um chamado para atender
@@ -260,6 +257,9 @@ class ConsolidadoChamadoDetailView(CMCLoginRequired, SuccessMessageMixin, Detail
 
     def get_context_data(self, **kwargs):
         context = super(DetailView, self).get_context_data(**kwargs)
+        chamado = Chamado.objects.get(pk=self.get_object().id)
+        chamado.novidade = False
+        chamado.save()
         respostas = ChamadoResposta.objects.filter(chamado=self.get_object().id)
         context['respostas'] = respostas
         return context
@@ -295,6 +295,8 @@ def responde_json(request):
     if request.method == 'POST' and request.is_ajax():
         if request.POST.get('id_chamado') != None and request.POST.get('id_chamado') != '':
             chamado = Chamado.objects.get(pk=request.POST.get('id_chamado'))
+            chamado.novidade = True 
+            chamado.save()
             if request.POST.get('resposta_id') != None and request.POST.get('resposta_id') != '':
                 cresposta = ChamadoResposta.objects.get(pk=request.POST.get('resposta_id'))
                 cresposta.resposta = request.POST.get('resposta')
