@@ -9,6 +9,7 @@ from django.db import transaction
 from django.core.exceptions import ValidationError
 
 from ..autentica.models import User
+from ..lib.mail import envia_email
 #---------------------------------------------------------------------------------------------
 # Model para a view V_SETOR
 #---------------------------------------------------------------------------------------------
@@ -162,7 +163,7 @@ class FilaChamadosManager(models.Manager):
 		chamado.status = 'ATENDIMENTO'
 		chamado.novidade = True
 		chamado.save()
-
+		envia_email(chamado)
 		#historico = HistoricoChamados.objects.create(chamado=chamado, status='ABERTO')
 		#historico.save()
 		historico = HistoricoChamados.objects.create(chamado=chamado, status='ATENDIMENTO', usuario=usuario)
@@ -179,6 +180,7 @@ class FilaChamadosManager(models.Manager):
 		chamado.status = 'ABERTO'
 		chamado.novidade = True
 		chamado.save()
+		envia_email(chamado)
 
 		historico = HistoricoChamados.objects.create(chamado=chamado, status='ABERTO')
 		historico.save()
@@ -191,6 +193,7 @@ class FilaChamadosManager(models.Manager):
 		chamado.status = 'FECHADO'
 		chamado.novidade = True
 		chamado.save()
+		envia_email(chamado)
 
 		historico = HistoricoChamados.objects.create(chamado=chamado, status='FECHADO')
 		historico.save()
@@ -246,7 +249,7 @@ class ChamadoResposta(models.Model):
 	resposta = models.TextField()
 
 	def __unicode__(self):
-		return self.chamado.assunto
+		return self.resposta
 
 	def __str__(self):
-		return self.chamado.assunto				
+		return self.resposta

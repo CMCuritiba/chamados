@@ -24,6 +24,8 @@ from .models import GrupoServico, Servico, Chamado, FilaChamados, ChamadoRespost
 from ..autentica.util.mixin import CMCLoginRequired
 from .forms import ChamadoForm
 
+from ..lib.mail import envia_email
+
 
 
 class ChamadoDetailView(DetailView):
@@ -250,7 +252,7 @@ def devolve_json(request, id_chamado):
 
 #--------------------------------------------------------------------------------------
 class ConsolidadoChamadoDetailView(CMCLoginRequired, SuccessMessageMixin, DetailView):
-    template_name = "cadastro/edit.html"
+    template_name = "core/edit.html"
     model = Chamado
     success_url = '/fila/'
     success_message = "Chamado atualizadao com sucesso"
@@ -258,10 +260,13 @@ class ConsolidadoChamadoDetailView(CMCLoginRequired, SuccessMessageMixin, Detail
     def get_context_data(self, **kwargs):
         context = super(DetailView, self).get_context_data(**kwargs)
         chamado = Chamado.objects.get(pk=self.get_object().id)
-        chamado.novidade = False
-        chamado.save()
-        respostas = ChamadoResposta.objects.filter(chamado=self.get_object().id)
-        context['respostas'] = respostas
+        if self.template_name == "core/detail.html":
+            chamado.novidade = False
+            chamado.save()
+        fila = FilaChamados.objects.get(chamado=chamado)
+        #respostas = ChamadoResposta.objects.filter(chamado=self.get_object().id)
+        #context['respostas'] = respostas
+        context['atendente'] = fila.usuario
         return context
 
 #--------------------------------------------------------------------------------------
@@ -303,6 +308,7 @@ def responde_json(request):
                 cresposta.save()
             else:
                 ChamadoResposta.objects.create(usuario=request.user, chamado=chamado, resposta=request.POST.get('resposta'))
+            envia_email(chamado)
             response = JsonResponse({'status':'true','message':'Chamado selecionado com sucesso'}, status=200)
         else:
             response = JsonResponse({'status':'false','message':'Chamado inválido'}, status=401)

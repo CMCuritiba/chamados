@@ -28,8 +28,12 @@
                         <div class="col-sm-10"><h4><span class="label label-default">{{ object.data_abertura|date:"d/m/Y"  }}</span></h4></div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-2"><h4>Usuário:</h4></div>
+                        <div class="col-sm-2"><h4>Solicitante:</h4></div>
                         <div class="col-sm-10"><h4><span class="label label-default">{{ object.usuario }}</span></h4></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2"><h4>Atendente:</h4></div>
+                        <div class="col-sm-10"><h4><span class="label label-default">{{ atendente }}</span></h4></div>
                     </div>
                     <div class="row">
                         <div class="col-sm-2"><h4>Ramal:</h4></div>
@@ -123,7 +127,7 @@
             <input type="hidden" name="id_usuario" id="id_usuario" value="{{ user.id }}" />
             <input type="hidden" name="resposta_id" id="resposta_id" value="" />
             <label for="resposta" class="control-label">Resposta:</label>
-            <textarea class="form-control" id="resposta" name="resposta"></textarea>
+            <textarea class="form-control" id="resposta" name="resposta" autofocus></textarea>
           </div>
         </form>
         <form class="fecha" method="POST" action="/fila/fecha/">{% csrf_token %}
@@ -257,6 +261,7 @@
         modal.find('.modal-title').text('Resposta para o chamado:  ' + recipient);
         modal.find('.modal-body textarea').val(recipient2);
         modal.find('#resposta_id').val(recipient3);
+        $('#resposta').focus();
     });
 
     function responde() {
