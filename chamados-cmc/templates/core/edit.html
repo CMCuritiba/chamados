@@ -17,60 +17,59 @@
     <br/>
     <div class="tab-content">
         <div class="tab-pane active" id="1">
-            <div class="panel panel-default">
+            <div class="panel panel-primary">
+            <div class="panel-heading"><h4>Informações do chamado : {{ object.id }}</h4></div>
                 <div class="panel-body">
-                    <div class="row">
-                        <div class="col-sm-2"><h4>Chamado:</h4></div>
-                        <div class="col-sm-10"><h4><span class="label label-primary">{{ object.id }}</span></h4></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-2"><h4>Data de abertura:</h4></div>
-                        <div class="col-sm-10"><h4><span class="label label-default">{{ object.data_abertura|date:"d/m/Y"  }}</span></h4></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-2"><h4>Solicitante:</h4></div>
-                        <div class="col-sm-10"><h4><span class="label label-default">{{ object.usuario }}</span></h4></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-2"><h4>Atendente:</h4></div>
-                        <div class="col-sm-10"><h4><span class="label label-default">{{ atendente }}</span></h4></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-2"><h4>Ramal:</h4></div>
-                        <div class="col-sm-10"><h4><span class="label label-default">{{ object.ramal }}</span></h4></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-2"><h4>Setor:</h4></div>
-                        <div class="col-sm-10"><h4><span class="label label-default">{{ object.setor }}</span></h4></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-2"><h4>Grupo de serviço:</h4></div>
-                        <div class="col-sm-10"><h4><span class="label label-default">{{ object.grupo_servico }}</span></h4></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-2"><h4>Serviço:</h4></div>
-                        <div class="col-sm-10"><h4><span class="label label-default">{{ object.servico }}</span></h4></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-2"><h4>Assunto:</h4></div>
-                        <div class="col-sm-10"><h4><span class="label label-default">{{ object.assunto }}</span></h4></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-2"><h4>Descrição:</h4></div>
-                        <div class="col-sm-10"><h4><span class="label label-default">{{ object.descricao }}</span></h4></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-2"><h4>Prioridade:</h4></div>
-                        <div class="col-sm-10"><h4><span class="label label-default">{{ object.prioridade }}</span></h4></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-2"><h4>Status:</h4></div>
-                        <div class="col-sm-10"><h4><span class="label label-default">{{ object.status }}</span></h4></div>
-                    </div>
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <span class="badge">{{ object.data_abertura|date:"d/m/Y"  }}</span>
+                        Data de abertura
+                    </li>
+                    <li class="list-group-item">
+                        <span class="badge">{{ object.usuario }}</span>
+                        Solicitante
+                    </li>
+                    <li class="list-group-item">
+                        <span class="badge">{{ atendente }}</span>
+                        Atendente
+                    </li>
+                    <li class="list-group-item">
+                        <span class="badge">{{ object.ramal }}</span>
+                        Ramal
+                    </li>
+                    <li class="list-group-item">
+                        <span class="badge">{{ object.setor }}</span>
+                        Setor
+                    </li>
+                    <li class="list-group-item">
+                        <span class="badge">{{ object.grupo_servico }}</span>
+                        Grupo de serviço
+                    </li>
+                    <li class="list-group-item">
+                        <span class="badge">{{ object.servico }}</span>
+                        Serviço
+                    </li>
+                    <li class="list-group-item">
+                        <span class="badge">{{ object.assunto }}</span>
+                        Assunto
+                    </li>
+                    <li class="list-group-item">
+                        <span class="badge">{{ object.descricao }}</span>
+                        Descrição
+                    </li>
+                    <li class="list-group-item">
+                        <span class="badge">{{ object.prioridade }}</span>
+                        Prioridade
+                    </li>
+                    <li class="list-group-item">
+                        <span class="badge">{{ object.status }}</span>
+                        Status
+                    </li>
+                </ul>
                 </div>
             </div>
 
-            <div class="panel panel-default">
+            <div class="panel panel-primary">
                 <div class="panel-body">
                     <div class="row"> 
                         <div class="form-group"> 
@@ -82,11 +81,11 @@
                     </div>
                 </div>
             </div>
-
         </div>
 
         <div class="tab-pane" id="2">
-            <div class="panel panel-default">
+            <div class="panel panel-primary">
+            <div class="panel-heading"><h4>Respostas do chamado : {{ object.id }}</h4></div>
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-sm-12">
@@ -95,7 +94,7 @@
                     </div>
                 </div>
             </div>
-            <div class="panel panel-default">
+            <div class="panel panel-primary">
                 <div class="panel-body">
                     <div class="row"> 
                         <div class="form-group"> 
