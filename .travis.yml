@@ -14,8 +14,7 @@ install:
 before_script:
   - npm install -g bower
   - npm install -g grunt-cli
-  - bower init
-  - bower install -f
+  - bower install
   - psql -c 'create database chamados;' -U postgres
   - python manage.py makemigrations --settings=config.settings.travis
   - python manage.py migrate --settings=config.settings.travis
