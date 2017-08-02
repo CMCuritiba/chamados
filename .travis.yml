@@ -15,6 +15,7 @@ before_script:
   - psql -c 'create database chamados;' -U postgres
   - python manage.py makemigrations --settings=config.settings.travis
   - python manage.py migrate --settings=config.settings.travis
+  - python manage.py collectstatic
 
 # comando para rodas os testes
 script: 
