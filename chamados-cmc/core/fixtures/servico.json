@@ -30,5 +30,14 @@
             "grupo_servico": 3,
             "descricao": "Troca de tonner"
         }
+    },
+    {
+        "pk": 5,
+        "model": "core.servico",
+        "fields": {
+            "grupo_servico": 4,
+            "descricao": "Troca de mouse"
+        }
     }
+
 ]

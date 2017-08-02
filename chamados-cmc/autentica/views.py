@@ -13,6 +13,10 @@ from django.contrib.auth.decorators import login_required
 from django.utils.dateparse import parse_date
 from django import forms
 from django.db import connection, transaction
+from ..lib.msconsumer import Pessoa, MSCMCConsumer
+
+import urllib
+import environ
 
 def loga(request):
 	next = request.GET.get('next')
@@ -29,6 +33,7 @@ def valida_usuario(request):
 		if user is not None:
 			if user.is_active:
 				login(request, user)
+				atualiza(user, request)
 				if next != None and next != 'None':
 					return HttpResponseRedirect(next)
 				return render_to_response('index.html', context_instance=RequestContext(request))
@@ -42,3 +47,22 @@ def valida_usuario(request):
 def sair(request):
 	logout(request)
 	return HttpResponseRedirect('/autentica/loga/?next=/')			
+
+# ----------------------------------------------------------------------------------------------------------------
+# Atualiza setor do usuario de acordo com servico elotech
+# ----------------------------------------------------------------------------------------------------------------
+def atualiza(usuario, request):
+	cons = MSCMCConsumer()
+	pessoa = cons.consome_pessoa(usuario.matricula)
+	setor = cons.consome_setor(usuario.matricula)
+
+	request.session['pessoa_nome'] = pessoa.pes_nome
+	request.session['pessoa_matricula'] = pessoa.pes_matricula
+
+	request.session['setor_nome'] = setor.set_nome
+	request.session['setor_id'] = setor.set_id
+	usuario.lotado=pessoa.set_id
+	usuario.save()
+
+def index(request):
+	print('INDEX')

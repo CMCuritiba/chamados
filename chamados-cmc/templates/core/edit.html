@@ -1,0 +1,293 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Atualização de Chamados{% endblock %}
+
+{% block content %}
+
+<div id="chamadoTab" class="container">
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="#1" data-toggle="tab">Dados do chamado</a>
+        </li>
+        <li>
+            <a href="#2" data-toggle="tab">Respostas</a>
+        </li>
+    </ul>
+    <br/>
+    <div class="tab-content">
+        <div class="tab-pane active" id="1">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-2"><h4>Chamado:</h4></div>
+                        <div class="col-sm-10"><h4><span class="label label-primary">{{ object.id }}</span></h4></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2"><h4>Data de abertura:</h4></div>
+                        <div class="col-sm-10"><h4><span class="label label-default">{{ object.data_abertura|date:"d/m/Y"  }}</span></h4></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2"><h4>Solicitante:</h4></div>
+                        <div class="col-sm-10"><h4><span class="label label-default">{{ object.usuario }}</span></h4></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2"><h4>Atendente:</h4></div>
+                        <div class="col-sm-10"><h4><span class="label label-default">{{ atendente }}</span></h4></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2"><h4>Ramal:</h4></div>
+                        <div class="col-sm-10"><h4><span class="label label-default">{{ object.ramal }}</span></h4></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2"><h4>Setor:</h4></div>
+                        <div class="col-sm-10"><h4><span class="label label-default">{{ object.setor }}</span></h4></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2"><h4>Grupo de serviço:</h4></div>
+                        <div class="col-sm-10"><h4><span class="label label-default">{{ object.grupo_servico }}</span></h4></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2"><h4>Serviço:</h4></div>
+                        <div class="col-sm-10"><h4><span class="label label-default">{{ object.servico }}</span></h4></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2"><h4>Assunto:</h4></div>
+                        <div class="col-sm-10"><h4><span class="label label-default">{{ object.assunto }}</span></h4></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2"><h4>Descrição:</h4></div>
+                        <div class="col-sm-10"><h4><span class="label label-default">{{ object.descricao }}</span></h4></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2"><h4>Prioridade:</h4></div>
+                        <div class="col-sm-10"><h4><span class="label label-default">{{ object.prioridade }}</span></h4></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2"><h4>Status:</h4></div>
+                        <div class="col-sm-10"><h4><span class="label label-default">{{ object.status }}</span></h4></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="row"> 
+                        <div class="form-group"> 
+                            <div class="col-sm-12">
+                                <input type="button" onclick="javascript:volta_fila();" value="Voltar à fila" class="btn btn-default"/> 
+                                <input type="button" onclick="javascript:fecha_chamado();" value="Fechar chamado" class="btn btn-primary"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="tab-pane" id="2">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table id="trespostas" class="table table-striped table-hover table-bordered fonteTable" width="100%" cellspacing="0"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="row"> 
+                        <div class="form-group"> 
+                            <div class="col-sm-12">
+                                <input type="button" onclick="javascript:volta_fila();" value="Voltar à fila" class="btn btn-default"/> 
+                                <input type="button" onclick="javascript:fecha_chamado();" value="Fechar chamado" class="btn btn-primary"/>
+                                <input type="button" data-toggle="modal" data-target="#respostaModal" data-chamado_id="{{ object.id }}" value="Nova resposta" class="btn btn-default"/> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="respostaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="exampleModalLabel">Nova resposta</h4>
+      </div>
+      <div class="modal-body">
+        <form class="resposta">{% csrf_token %}
+          <div class="form-group">
+            <input type="hidden" name="id_chamado" id="id_chamado" value="{{ object.id }}" />
+            <input type="hidden" name="id_usuario" id="id_usuario" value="{{ user.id }}" />
+            <input type="hidden" name="resposta_id" id="resposta_id" value="" />
+            <label for="resposta" class="control-label">Resposta:</label>
+            <textarea class="form-control" id="resposta" name="resposta"></textarea>
+          </div>
+        </form>
+        <form class="fecha" method="POST" action="/fila/fecha/">{% csrf_token %}
+            <input type="hidden" name="id_chamado" id="id_chamado" value="{{ object.id }}" />
+            <input type="hidden" name="id_usuario" id="id_usuario" value="{{ user.id }}" />
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="submit">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_javascript %}
+
+<script type="text/javascript">
+    var tableRespostas;
+    $(document).ready(function() {
+        desabilita();
+        tableRespostas = $('#trespostas').DataTable({
+            responsive: true,
+            "columns": [
+                { 
+                    title: "id_resposta" ,
+                    data: 'resposta_id'
+                },
+                { 
+                    title: "id_chamado" ,
+                    data: 'chamado_id'
+                },
+                { 
+                    title: "Data",
+                    data: 'data',
+                    render: function(data, type, full, meta) {
+                        return '<a href="#" data-toggle="modal" data-target="#respostaModal" data-resposta_id="' + full.resposta_id + '" data-resposta="' + full.resposta + '" data-chamado_id="' + full.chamado_id + '">' + data + '</a>';
+                    }
+                },
+                { 
+                    title: "Usuário",
+                    data: 'usuario',
+                    render: function(data, type, full, meta) {
+                        return '<a href="#" data-toggle="modal" data-target="#respostaModal" data-resposta_id="' + full.resposta_id + '" data-resposta="' + full.resposta + '" data-chamado_id="' + full.chamado_id + '">' + data + '</a>';
+                    }
+                },
+                { 
+                    title: "Resposta",
+                    data: 'resposta',
+                    render: function(data, type, full, meta) {
+                        return '<a href="#" data-toggle="modal" data-target="#respostaModal" data-resposta_id="' + full.resposta_id + '" data-resposta="' + full.resposta + '" data-chamado_id="' + full.chamado_id + '">' + data + '</a>'; 
+                    }
+                },
+            ],
+            "columnDefs": [
+                {
+                    "targets": [0],
+                    "visible": false,
+                },
+                {
+                    "targets": [1],
+                    "visible": false,
+                },
+                {
+                    "targets": [2],
+                    "visible": true,
+                },
+                {
+                    "targets": [3],
+                    "visible": true,
+                },
+                {
+                    "targets": [4],
+                    "visible": true,
+                }
+
+            ],
+            "language": {
+                "info": "Páginas _PAGE_ de _PAGES_",
+                "emptyTable": "Sem respostas para o chamado",
+                "decimal": ",",
+                "thousands": ".",
+                "oPaginate": {
+                    "sFirst": '<span class="glyphicon glyphicon-fast-backward"></span>',
+                    "sLast": '<span class="glyphicon glyphicon-fast-forward"></span>',
+                    "sNext": '<span class="glyphicon glyphicon-forward"></span>',
+                    "sPrevious": '<span class="glyphicon glyphicon-backward"></span>'
+                }
+            },
+            "bPaginate" : true,
+            "bLengthChange": false,
+            "bFilter": false,
+            "bInfo": false,
+            "ajax": {
+                "url": "/fila/api/respostas/{{ object.id }}/",
+                "dataSrc": "",
+            },
+        });
+
+        $("button#submit").click(function() {
+            responde();
+            $("#respostaModal").modal('hide');
+        })
+    });
+
+    function desabilita() {
+        $("#id_setor").prop('disabled', true);
+        $("#id_grupo_servico").prop('disabled', true);
+        $("#id_servico").prop('disabled', true);
+        $("#id_ramal").prop('disabled', true);
+        $("#id_assunto").prop('disabled', true);
+        $("#id_descricao").prop('disabled', true);
+    }
+
+    function volta_fila() {
+        $(location).attr('href', '/fila/');
+    }
+
+    function fecha_chamado() {
+        $('form.fecha').submit();
+    }
+
+    $('#respostaModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var recipient = button.data('chamado_id');
+        var recipient2 = button.data('resposta');
+        var recipient3 = button.data('resposta_id');
+        var modal = $(this);
+        modal.find('.modal-title').text('Resposta para o chamado:  ' + recipient);
+        modal.find('.modal-body textarea').val(recipient2);
+        modal.find('#resposta_id').val(recipient3);
+        setTimeout(function (){
+            $('#resposta').focus();
+        }, 500);
+    });
+
+    function responde() {
+        request_url = '/fila/api/responde/';
+
+        $.ajax({
+            url: request_url,
+            type: 'POST',
+            accepts: 'application/json',
+            dataType: 'json',
+            data: $('form.resposta').serialize(),
+            success: function(result){
+                console.log($('form.resposta').serialize());
+                tableRespostas.ajax.reload(null, false);
+            },
+            error: function(xhr, status, error) {
+                console.log(status);
+                console.log(error);
+                console.log(xhr);
+            }
+        })
+    }
+
+
+</script>
+
+{% endblock %}

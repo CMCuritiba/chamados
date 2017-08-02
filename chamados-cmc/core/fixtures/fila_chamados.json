@@ -1,0 +1,26 @@
+[
+    {
+        "pk": 1,
+        "model": "core.filachamados",
+        "fields": {
+            "usuario" : 1,
+            "chamado" : 1
+        }
+    },
+    {
+        "pk": 2,
+        "model": "core.filachamados",
+        "fields": {
+            "usuario" : 1,
+            "chamado" : 2
+        }
+    },
+    {
+        "pk": 2,
+        "model": "core.filachamados",
+        "fields": {
+            "usuario" : 1,
+            "chamado" : 3
+        }
+    }
+ ]

@@ -94,6 +94,11 @@ FIXTURE_DIRS = (
 # EMAIL CONFIGURATION
 # ------------------------------------------------------------------------------
 EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = env('EMAIL_PORT')
+EMAIL_USE_TLS = env('EMAIL_USE_TLS')
 
 # MANAGER CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -127,7 +132,7 @@ DATABASE_ROUTERS = ['ldapdb.router.Router']
 # although not all choices may be available on all operating systems.
 # In a Windows environment this must be set to your system time zone.
 TIME_ZONE = 'America/Sao_Paulo'
-
+#USE_TZ=True
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#language-code
 LANGUAGE_CODE = 'pt-BR'
 
@@ -141,7 +146,7 @@ USE_I18N = True
 USE_L10N = True
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#use-tz
-USE_TZ = True
+#USE_TZ = True
 
 # TEMPLATE CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -318,8 +323,8 @@ LOGGING = {
 
 PIPELINE = {
     'PIPELINE_ENABLED': True,
-    'JS_COMPRESSOR': None,
-    'CSS_COMPRESSOR': None,
+    'JS_COMPRESSOR': False,
+    'CSS_COMPRESSOR': False,
     'STYLESHEETS': {
         'master': {
             'source_filenames': (
@@ -328,6 +333,7 @@ PIPELINE = {
               'datatables/media/css/jquery.dataTables.css',
               'datatables/media/css/dataTables.bootstrap.css',
               'login.css',
+              'font-awesome/css/font-awesome.css',
             ),
             'output_filename': 'css/master.css',
         },
@@ -341,6 +347,10 @@ PIPELINE = {
               'underscore/underscore.js',
               'datatables/media/js/jquery.dataTables.js',
               'datatables/media/js/dataTables.bootstrap.js',
+              #'vue/dist/vue.common.js',
+              'vue/dist/vue.js',
+              #'vue-strap/dist/vue-strap.js',
+              #'vue-strap/dist/vue-strap-lang.js',
             ),
             'output_filename': 'js/master.js',
         }
@@ -359,10 +369,17 @@ BOWER_INSTALLED_APPS = (
     'bootstrap',
     'jasny-bootstrap',
     'datatables',
-    'datatables-bootstrap3'
+    'datatables-bootstrap3',
+    'vue',
+    'vue-strap',
+    'fontawesome'
 )
 
 # ALTERAÇÕES NO USER PARA GUARDAR INFO DO LDAP
 # ------------------------------------------------------------------------------
 
 AUTH_USER_MODEL = 'autentica.User'
+
+# SERVIDOR DE MICRO SERVICOS
+# ------------------------------------------------------------------------------
+MSCMC_SERVER = env('MSCMC_SERVER')
