@@ -159,7 +159,7 @@ class FilaChamadosTestCase(TestCase):
 
 	def test_insere_fila_usuario_nulo(self):
 		chamado = Chamado.objects.get(pk=2)
-		with self.assertRaises(IntegrityError):
+		with self.assertRaises(ValueError):
 			fila = FilaChamados.objects.atende(usuario=None, chamado=chamado)
 
 	def test_insere_fila_chamado_nulo(self):

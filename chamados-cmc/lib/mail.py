@@ -8,6 +8,11 @@ def envia_email(chamado):
 	para = [chamado.usuario.email]
 	de = 'telefoniacamara@gmail.com'
 
+	try:
+		ultima_resposta = chamado.chamadoresposta_set.latest('id')
+	except:
+		ultima_resposta = ''
+
 	ctx = {
 		'chamado_id': chamado.id,
 		'usuario': chamado.usuario.username,
@@ -17,7 +22,7 @@ def envia_email(chamado):
 		'servico': chamado.servico,
 		'assunto': chamado.assunto,
 		'status': chamado.status,
-		'resposta': chamado.chamadoresposta_set.latest('id'),
+		'resposta': ultima_resposta,
 	}
 	mensagem = get_template('fila/email.txt').render(Context(ctx))
 			

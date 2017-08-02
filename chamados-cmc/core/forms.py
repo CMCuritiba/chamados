@@ -30,7 +30,7 @@ class ChamadoForm(forms.ModelForm):
 
         self.helper.layout = Layout(
             Div(
-                Div('setor', css_class='col-md-12',),
+                Div(Field('setor', v_model='setor'), css_class='col-md-12',),
                 css_class='col-md-12 row',
             ),
             Div(

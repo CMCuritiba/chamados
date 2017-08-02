@@ -127,7 +127,7 @@
             <input type="hidden" name="id_usuario" id="id_usuario" value="{{ user.id }}" />
             <input type="hidden" name="resposta_id" id="resposta_id" value="" />
             <label for="resposta" class="control-label">Resposta:</label>
-            <textarea class="form-control" id="resposta" name="resposta" autofocus></textarea>
+            <textarea class="form-control" id="resposta" name="resposta"></textarea>
           </div>
         </form>
         <form class="fecha" method="POST" action="/fila/fecha/">{% csrf_token %}
@@ -261,7 +261,9 @@
         modal.find('.modal-title').text('Resposta para o chamado:  ' + recipient);
         modal.find('.modal-body textarea').val(recipient2);
         modal.find('#resposta_id').val(recipient3);
-        $('#resposta').focus();
+        setTimeout(function (){
+            $('#resposta').focus();
+        }, 500);
     });
 
     function responde() {

@@ -153,6 +153,8 @@ class FilaChamadosManager(models.Manager):
 	def atende(self, usuario, chamado):
 		if chamado == None or chamado.status != 'ABERTO':
 			raise ValueError('Status do chamado não é ABERTO.')
+		if usuario == None:
+			raise ValueError('Usuário inválido')
 		fila = self.filter(chamado=chamado).first()
 		if fila == None:
 			fila = self.create(usuario=usuario, chamado=chamado)

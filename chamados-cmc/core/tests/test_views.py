@@ -48,7 +48,7 @@ class ChamadoViewTests(TestCase):
         response = CadastroChamadosIndexView.as_view()(request)
         response.render()
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Abertura de Chamados')
+        self.assertContains(response, 'Chamados')
         self.assertContains(response, 'Você nunca abriu algum chamado')
 
 
@@ -58,8 +58,8 @@ class ChamadoViewTests(TestCase):
         response = CadastroChamadosIndexView.as_view()(request)
         response.render()
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Abertura de Chamados')
-        self.assertContains(response, 'Teus Chamados')
+        self.assertContains(response, 'Chamados')
+        self.assertContains(response, 'Chamados realizados pelo usuário')
 
 
 class FilaChamadosViewTests(TestCase):

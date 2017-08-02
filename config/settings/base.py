@@ -347,9 +347,10 @@ PIPELINE = {
               'underscore/underscore.js',
               'datatables/media/js/jquery.dataTables.js',
               'datatables/media/js/dataTables.bootstrap.js',
+              #'vue/dist/vue.common.js',
               'vue/dist/vue.js',
-              'vue-strap/dist/vue-strap.js',
-              'vue-strap/dist/vue-strap-lang.js',
+              #'vue-strap/dist/vue-strap.js',
+              #'vue-strap/dist/vue-strap-lang.js',
             ),
             'output_filename': 'js/master.js',
         }
