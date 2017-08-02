@@ -45,3 +45,6 @@ django-pipeline==1.6.12
 
 # Django Bower
 django-bower==5.2.0
+
+# SimpleJSON
+simplejson
