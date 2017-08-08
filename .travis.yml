@@ -10,8 +10,8 @@ before_install:
 install: 
   - pip install -r requirements.txt
   - pip install codecov
-  - wget https://github.com/CMCuritiba/django-cmcldapauth/blob/master/dist/django-cmcldapauth-0.1.tar.gz?raw=true
-  - pip install django-cmcldapauth-0.1.tar.gz
+  - wget https://github.com/CMCuritiba/django-cmcldapauth/blob/master/dist/django-cmcldapauth-0.1.tar.gz?raw=true -P /tmp
+  - pip install /tmp/django-cmcldapauth-0.1.tar.gz
 
 before_script:
   - npm install -g bower
