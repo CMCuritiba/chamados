@@ -18,10 +18,9 @@ from django.views.generic.edit import FormView, CreateView, UpdateView
 from django.http import JsonResponse
 from django.db import transaction
 
-from ..autentica.util.mixin import CMCLoginRequired
 from .forms import ChamadoForm
 from .models import GrupoServico, Servico, Chamado, FilaChamados, ChamadoResposta, HistoricoChamados
-from ..autentica.util.mixin import CMCLoginRequired
+from autentica.util.mixin import CMCLoginRequired
 from .forms import ChamadoForm
 
 from ..lib.mail import envia_email

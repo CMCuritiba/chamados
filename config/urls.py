@@ -9,7 +9,7 @@ from django.views.generic import TemplateView
 from django.views import defaults as default_views
 
 urlpatterns = [
-    url(r'^autentica/', include('chamados-cmc.autentica.urls', namespace='autentica')),
+    url(r'^autentica/', include('autentica.urls', namespace='autentica')),
     url(r'^$', TemplateView.as_view(template_name='pages/home.html'), name='home'),
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name='about'),
     url(r'^fila/', include('chamados-cmc.core.urlsfila', namespace='fila')),

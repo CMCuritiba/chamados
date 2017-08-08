@@ -55,11 +55,11 @@ THIRD_PARTY_APPS = [
      'compressor',
      'django_python3_ldap',
      'ldapdb',
+     'autentica',
 ]
 
 # Apps specific for this project go here.
 LOCAL_APPS = [
-    'chamados-cmc.autentica.apps.AutenticaConfig',
     'chamados-cmc.core.apps.CoreConfig',
 ]
 
