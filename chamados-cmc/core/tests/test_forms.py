@@ -6,7 +6,7 @@ from django.db import IntegrityError, DataError
 from django.contrib.auth import get_user_model
 
 from ..forms import ChamadoForm, FilaChamadosForm
-from ...autentica.models import User
+from autentica.models import User
 from ..models import SetorChamado, GrupoServico, Servico
 
 import os

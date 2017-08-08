@@ -10,7 +10,7 @@ from django.contrib.messages.middleware import MessageMiddleware
 from django.test import TestCase, RequestFactory
 
 from ..views import CadastroChamadosIndexView, FilaChamadosIndexView, ChamadoDetailView
-from ...autentica.models import User
+from autentica.models import User
 
 
 class ChamadoViewTests(TestCase):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.test import TestCase, RequestFactory
-from ...autentica.models import User
+from autentica.models import User
 from django.db import IntegrityError, DataError
 from ..models import SetorChamado, GrupoServico, VSetor, Servico, Chamado, FilaChamados, ChamadoResposta
 
