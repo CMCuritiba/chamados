@@ -25,8 +25,6 @@ from .forms import ChamadoForm
 
 from ..lib.mail import envia_email
 
-
-
 class ChamadoDetailView(DetailView):
     model = Chamado
 
