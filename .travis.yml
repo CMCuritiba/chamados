@@ -5,13 +5,14 @@ python:
 
 before_install:
   - export DJANGO_SETTINGS_MODULE=config.settings.travis
-  - wget -P /tmp/ https://github.com/CMCuritiba/django-cmcldapauth/blob/master/dist/django-cmcldapauth-0.1.tar.gz?raw=true 
+  - mkdir -p /tmp/pacotes
+  - wget -P /tmp/pacotes https://github.com/CMCuritiba/django-cmcldapauth/blob/master/dist/django-cmcldapauth-0.1.tar.gz?raw=true 
 
 # comando para instalar dependencias
 install: 
   - pip install -r requirements.txt
   - pip install codecov
-  - pip install /tmp/django-cmcldapauth-0.1.tar.gz
+  - pip install /tmp/pacotes/django-cmcldapauth-0.1.tar.gz
 
 before_script:
   - npm install -g bower
