@@ -46,7 +46,6 @@ THIRD_PARTY_APPS = [
 
 # Apps specific for this project go here.
 LOCAL_APPS = [
-    'chamados-cmc.autentica.apps.AutenticaConfig',
     'chamados-cmc.core.apps.CoreConfig',
 ]
 
