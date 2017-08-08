@@ -128,19 +128,12 @@ TEMPLATES[0]['OPTIONS']['loaders'] = [
 # Use the Heroku-style specification
 # Raises ImproperlyConfigured exception if DATABASE_URL not in os.environ
 #DATABASES['default'] = env.db('DATABASE_URL')
-DATABASES = {
-    'ldap': {
-        'ENGINE': 'ldapdb.backends.ldap',
-        'NAME': env('LDAP_AUTH_URL'),
-     },
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': env('DATABASE_PROD_NAME'),
-        'USER': env('DATABASE_PROD_USER'),
-        'PASSWORD': env('DATABASE_PROD_PASSWORD'),
-        'HOST': env('DATABASE_PROD_HOST'),
-        'PORT': env('DATABASE_PROD_PORT'),
-    }
+#DATABASES = {
+#    'ldap': {
+#        'ENGINE': 'ldapdb.backends.ldap',
+#        'NAME': env('LDAP_AUTH_URL'),
+#     },
+#    'default': env.db(),
 }
 
 # CACHING
