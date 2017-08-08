@@ -19,13 +19,11 @@ from django.http import JsonResponse
 from django.db import transaction
 
 from .forms import ChamadoForm
-from .models import GrupoServico, Servico, Chamado, FilaChamados, ChamadoResposta, HistoricoChamados
+from .models import GrupoServico, Servico, Chamado, FilaChamados, ChamadoResposta, HistoricoChamados, SetorChamado
 from autentica.util.mixin import CMCLoginRequired
 from .forms import ChamadoForm
 
 from ..lib.mail import envia_email
-
-
 
 class ChamadoDetailView(DetailView):
     model = Chamado
@@ -97,6 +95,11 @@ def chamados_abertos_json(request, setor_id):
         chamado_json['chamado_assunto'] = c.assunto
         chamado_json['chamado_usuario'] = c.usuario.username
         chamado_json['status'] = c.status
+        fila = FilaChamados.objects.filter(chamado=c.id).first()
+        if fila == None or fila.usuario == None:
+            chamado_json['fila_usuario'] = ''
+        else:
+            chamado_json['fila_usuario'] = fila.usuario.username
 
         resposta.append(chamado_json)
     
@@ -332,3 +335,30 @@ def fecha(request):
         else:
             raise ValueError('Chamado inválido.')
     return HttpResponseRedirect('/fila/')
+
+#--------------------------------------------------------------------------------------
+# De acordo com o setor da pessoa logada, direciona para a página inicial
+#--------------------------------------------------------------------------------------
+class MyIndexView(SuccessMessageMixin, TemplateView):
+    template_name = 'core/index.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user .is_anonymous or not request.user.is_authenticated:
+            return HttpResponseRedirect('/autentica/loga/?next=/')
+        setor_chamado = SetorChamado.objects.get(setor_id=request.session['setor_id'])
+        if (setor_chamado.recebe_chamados):
+            return HttpResponseRedirect('/fila/')
+        else:
+            return HttpResponseRedirect('/chamado/')
+
+#--------------------------------------------------------------------------------------
+# Quando um atendente reabre um chamado
+#--------------------------------------------------------------------------------------
+def reabre_json(request, id_chamado):
+    if id_chamado != None and id_chamado != '':
+        chamado = Chamado.objects.get(pk=id_chamado)
+        FilaChamados.objects.reabre(request.user, chamado)
+        response = JsonResponse({'status':'true','message':'Chamado reaberto com sucesso'}, status=200)
+    else:
+        response = JsonResponse({'status':'false','message':'Nenhum chamado selecionado'}, status=401)
+    return response

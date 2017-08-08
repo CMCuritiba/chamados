@@ -147,7 +147,18 @@
                             if (full.status == 'FECHADO' || full.status == 'ATENDIMENTO')
                                 return '';
                             else
-                                return "<a href='#'><span id='atende' class='badge progress-bar-danger'>Atender</span></a>";
+                                return "<a href='#'><span id='atende' class='badge progress-bar-success'>Atender</span></a>";
+                        },
+                        "className": "dt-center"
+                    },
+                    {
+                        "targets": [8],
+                        "data": null,
+                        "render" : function(data, type, full, meta) {
+                            if (full.status == 'FECHADO' && full.fila_usuario == full.chamado_usuario)
+                                return "<a href='#'><span id='reabre' class='badge progress-bar-danger'>Reabrir</span></a>";
+                            else
+                                return "";
                         },
                         "className": "dt-center"
                     },
@@ -293,6 +304,11 @@
                 devolve(data.chamado_id);
             });
 
+            $('#tchamados tbody').on('click', '#reabre', function () {
+                var data = tableChamados.row( $(this).parents('tr') ).data();
+                reabre(data.chamado_id);
+            });
+
 			atualiza_estatisticas();
             montaComboFiltro();
 
@@ -389,6 +405,26 @@
             alert('Cria chamado');
         }
 
+        function reabre(id_chamado) {
+            request_url = '/fila/api/reabre/' + id_chamado + '/';
 
+            $.ajax({
+                url: request_url,
+                type: 'GET',
+                accepts: 'application/json',
+                dataType: 'json',
+                success: function(result){
+                    tableChamados.ajax.reload(null, false);
+                    tableFila.ajax.reload(null, false);
+                    atualiza_estatisticas();  
+                },
+                error: function(xhr, status, error) {
+                    console.log(status);
+                    console.log(error);
+                    console.log(xhr);
+                }
+            })
+        }
+        
 	</script>
 {% endblock %}

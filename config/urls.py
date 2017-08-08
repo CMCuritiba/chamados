@@ -7,13 +7,18 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views import defaults as default_views
+from django.views.generic import TemplateView
+from django.contrib.messages.views import SuccessMessageMixin
+from autentica.util.mixin import CMCLoginRequired
+from chamadoscmc.core.views import MyIndexView
+
 
 urlpatterns = [
     url(r'^autentica/', include('autentica.urls', namespace='autentica')),
-    url(r'^$', TemplateView.as_view(template_name='pages/home.html'), name='home'),
+    url(r'^$', MyIndexView.as_view(), name='index'),
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name='about'),
-    url(r'^fila/', include('chamados-cmc.core.urlsfila', namespace='fila')),
-    url(r'^chamado/', include('chamados-cmc.core.urls', namespace='chamado')),
+    url(r'^fila/', include('chamadoscmc.core.urlsfila', namespace='fila')),
+    url(r'^chamado/', include('chamadoscmc.core.urls', namespace='chamado')),
     # Django Admin, use {% url 'admin:index' %}
     url(settings.ADMIN_URL, admin.site.urls),
 
@@ -35,3 +40,5 @@ if settings.DEBUG:
         urlpatterns += [
             url(r'^__debug__/', include(debug_toolbar.urls)),
         ]
+
+

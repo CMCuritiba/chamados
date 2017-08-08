@@ -28,9 +28,10 @@
 
 {% block extra_javascript %}
 <script>
+    var tableChamados;
 	
     $(document).ready(function() {
-        var table = $('#tchamados').DataTable({
+        tableChamados = $('#tchamados').DataTable({
             responsive: true,
             "columns": [
                 {
@@ -114,6 +115,18 @@
                             return '';
                     }
                 },
+                {
+                    "targets": [7],
+                    "visible": true,
+                    "className": "dt-center",
+                    "data": null,
+                    render: function(data, type, full, meta) {
+                        if (full.status == 'FECHADO')
+                                return "<a href='#'><span id='reabre' class='badge progress-bar-danger'>Reabrir</span></a>";
+                            else
+                                return "";
+                    }
+                },
             ],
             "language": {
                 "info": "Páginas _PAGE_ de _PAGES_",
@@ -138,8 +151,32 @@
         });
 
         var tim = setInterval(function() {
-			table.ajax.reload(null, false);
+			tableChamados.ajax.reload(null, false);
 		}, 10000);
+
+        $('#tchamados tbody').on('click', '#reabre', function () {
+            var data = tableChamados.row( $(this).parents('tr') ).data();
+            reabre(data.chamado_id);
+        });
+
+        function reabre(id_chamado) {
+            request_url = '/fila/api/reabre/' + id_chamado + '/';
+
+            $.ajax({
+                url: request_url,
+                type: 'GET',
+                accepts: 'application/json',
+                dataType: 'json',
+                success: function(result){
+                    tableChamados.ajax.reload(null, false);
+                },
+                error: function(xhr, status, error) {
+                    console.log(status);
+                    console.log(error);
+                    console.log(xhr);
+                }
+            })
+        }
 
     });
 

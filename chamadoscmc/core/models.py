@@ -200,6 +200,22 @@ class FilaChamadosManager(models.Manager):
 		historico.save()
 		return fila
 
+	@transaction.atomic
+	def reabre(self, usuario, chamado):
+		if chamado == None or chamado.status != 'FECHADO':
+			raise ValueError('Status do chamado não é FECHADO.')
+		fila = self.filter(chamado=chamado).first()
+		fila.usuario = None
+		fila.save()
+		chamado.status = 'ABERTO'
+		chamado.novidade = True
+		chamado.save()
+		envia_email(chamado)
+
+		historico = HistoricoChamados.objects.create(chamado=chamado, status='ABERTO')
+		historico.save()
+		return fila
+
 
 @python_2_unicode_compatible
 class FilaChamados(models.Model):

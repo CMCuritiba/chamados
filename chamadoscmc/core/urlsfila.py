@@ -12,6 +12,7 @@ urlpatterns = [
 	url(r'^api/chamados_estatistica/$', views.chamados_estatistica_json, name='api-chamados-estatistica'),
 	url(r'^api/atende/(?P<id_chamado>[0-9]+)/$', views.atende_json, name='api-atende'),
 	url(r'^api/devolve/(?P<id_chamado>[0-9]+)/$', views.devolve_json, name='api-devolve'),
+	url(r'^api/reabre/(?P<id_chamado>[0-9]+)/$', views.reabre_json, name='api-reabre'),
 	url(r'^api/respostas/(?P<id_chamado>[0-9]+)/$', views.respostas_json, name='api-respostas'),
 	url(r'^atende/$', views.atende, name='atende'),
 	url(r'^devolve/$', views.devolve, name='devolve'),

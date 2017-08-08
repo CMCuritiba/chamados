@@ -13,7 +13,7 @@ from __future__ import absolute_import, unicode_literals
 import environ, os
 
 ROOT_DIR = environ.Path(__file__) - 3  # (chamados-cmc/config/settings/base.py - 3 = chamados-cmc/)
-APPS_DIR = ROOT_DIR.path('chamados-cmc')
+APPS_DIR = ROOT_DIR.path('chamadoscmc')
 
 # Load operating system environment variables and then prepare to use them
 env = environ.Env()
@@ -60,7 +60,7 @@ THIRD_PARTY_APPS = [
 
 # Apps specific for this project go here.
 LOCAL_APPS = [
-    'chamados-cmc.core.apps.CoreConfig',
+    'chamadoscmc.core.apps.CoreConfig',
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
