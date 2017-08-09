@@ -23,4 +23,7 @@ django-anymail==0.8
 # --------------------------
 raven==6.0.0
 
+# Celery para tarefas assíncronas
+# -------------------------------
+celery==4.1.0
 

@@ -56,6 +56,8 @@ THIRD_PARTY_APPS = [
      'django_python3_ldap',
      'ldapdb',
      'autentica',
+     'djcelery',
+     'djcelery_email',
 ]
 
 # Apps specific for this project go here.
@@ -93,7 +95,8 @@ FIXTURE_DIRS = (
 
 # EMAIL CONFIGURATION
 # ------------------------------------------------------------------------------
-EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
+#EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
+EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='djcelery_email.backends.CeleryEmailBackend')
 EMAIL_HOST = env('EMAIL_HOST')
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
@@ -383,3 +386,14 @@ AUTH_USER_MODEL = 'autentica.User'
 # SERVIDOR DE MICRO SERVICOS
 # ------------------------------------------------------------------------------
 MSCMC_SERVER = env('MSCMC_SERVER')
+
+########## CELERY
+INSTALLED_APPS += ['chamadoscmc.taskapp.celery.CeleryConfig']
+CELERY_BROKER_URL = env('CELERY_BROKER_URL', default='django://')
+if CELERY_BROKER_URL == 'django://':
+    CELERY_RESULT_BACKEND = 'redis://'
+else:
+    CELERY_RESULT_BACKEND = CELERY_BROKER_URL
+CELERYD_OPTS="--concurrency=1"
+
+########## END CELERY

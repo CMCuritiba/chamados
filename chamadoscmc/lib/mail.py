@@ -4,9 +4,9 @@ from django.template import Context
 from django.core.mail import EmailMessage
 
 def envia_email(chamado):
-	assunto = 'CMC - Controle de Chanados'
+	assunto = 'CMC - Controle de Chamados'
 	para = [chamado.usuario.email]
-	de = 'telefoniacamara@gmail.com'
+	de = 'chamados@cmc.pr.gov.br'
 
 	try:
 		ultima_resposta = chamado.chamadoresposta_set.latest('id')
@@ -26,4 +26,4 @@ def envia_email(chamado):
 	}
 	mensagem = get_template('fila/email.txt').render(Context(ctx))
 			
-	EmailMessage(assunto, mensagem, to=para, from_email=de).send()
+	result = EmailMessage(assunto, mensagem, to=para, from_email=de).send()

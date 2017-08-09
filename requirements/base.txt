@@ -48,3 +48,7 @@ django-bower==5.2.0
 
 # SimpleJSON
 simplejson
+
+# Django Celery Email
+django-celery==3.2.1
+django-celery-email==2.0.0

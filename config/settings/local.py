@@ -28,18 +28,31 @@ SECRET_KEY = env('DJANGO_SECRET_KEY', default='<+DK-t}tT0`F/tn<.#2f4EYv+1}/Nnp(h
 # Mail settings
 # ------------------------------------------------------------------------------
 
-EMAIL_PORT = 1025
+#EMAIL_PORT = 1025
 
-EMAIL_HOST = 'localhost'
-EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
+#EMAIL_HOST = 'localhost'
+#EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
 
 
 # CACHING
 # ------------------------------------------------------------------------------
+#CACHES = {
+#    'default': {
+#        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+#        'LOCATION': ''
+#    }
+#}
+
+REDIS_LOCATION = '{0}/{1}'.format(env('REDIS_URL', default='redis://127.0.0.1:6379'), 0)
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': ''
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': REDIS_LOCATION,
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'IGNORE_EXCEPTIONS': True,  # mimics memcache behavior.
+                                        # http://niwinz.github.io/django-redis/latest/#_memcached_exceptions_behavior
+        }
     }
 }
 
@@ -71,3 +84,8 @@ TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 # Your local stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
+
+########## CELERY
+# In development, all tasks will be executed locally by blocking until the task returns
+#CELERY_ALWAYS_EAGER = True
+########## END CELERY

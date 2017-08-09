@@ -329,6 +329,7 @@ def fecha(request):
             chamado = Chamado.objects.get(pk=request.POST.get('id_chamado'))
             chamado.status = 'FECHADO'
             chamado.save()
+            envia_email(chamado)
 
             historico = HistoricoChamados.objects.create(chamado=chamado, status='FECHADO')
             historico.save()
