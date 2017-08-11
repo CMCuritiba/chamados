@@ -67,6 +67,7 @@ class GrupoServico(models.Model):
 
 	descricao = models.CharField(max_length=300)
 	setor = models.ForeignKey(SetorChamado)
+	patrimonio_obrigatorio = models.BooleanField(default=False)
 
 	def __unicode__(self):
 		return self.descricao
@@ -125,6 +126,17 @@ class Chamado(models.Model):
 	status = models.CharField(max_length=15, null=False, blank=False, choices=STATUS_CHOICES, default=STATUS_ABERTO)
 	data_fechamento = models.DateTimeField(null=True)
 	novidade = models.BooleanField(default=False)
+	patrimonio = models.CharField(max_length=100, null=True, blank=True)
+
+	def clean(self):
+		if self.grupo_servico.patrimonio_obrigatorio:
+			if self.patrimonio == '' or self.patrimonio == None:
+				raise ValidationError('Patrimônio obrigatório para ' + self.grupo_servico.descricao)
+
+	@transaction.atomic
+	def save(self, *args, **kwargs):
+		super(Chamado, self).save(*args, **kwargs)
+		FilaChamados.objects.create(usuario=None, chamado=self)
 
 	def __unicode__(self):
 		return self.descricao

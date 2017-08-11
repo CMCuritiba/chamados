@@ -17,6 +17,8 @@ from django.views.generic import DetailView
 from django.views.generic.edit import FormView, CreateView, UpdateView
 from django.http import JsonResponse
 from django.db import transaction
+from django import forms
+from django.forms.utils import ErrorList
 
 from .forms import ChamadoForm
 from .models import GrupoServico, Servico, Chamado, FilaChamados, ChamadoResposta, HistoricoChamados, SetorChamado
@@ -261,13 +263,13 @@ class ConsolidadoChamadoDetailView(CMCLoginRequired, SuccessMessageMixin, Detail
 
     def get_context_data(self, **kwargs):
         context = super(DetailView, self).get_context_data(**kwargs)
-        chamado = Chamado.objects.get(pk=self.get_object().id)
+        chamado = Chamado.objects.filter(id=self.get_object().id).first()
         if self.template_name == "core/detail.html":
             chamado.novidade = False
             chamado.save()
-        fila = FilaChamados.objects.get(chamado=chamado)
-        #respostas = ChamadoResposta.objects.filter(chamado=self.get_object().id)
-        #context['respostas'] = respostas
+        fila = FilaChamados.objects.filter(chamado=chamado).first()
+        respostas = ChamadoResposta.objects.filter(chamado=self.get_object().id)
+        context['respostas'] = respostas
         context['atendente'] = fila.usuario
         return context
 
@@ -363,3 +365,20 @@ def reabre_json(request, id_chamado):
     else:
         response = JsonResponse({'status':'false','message':'Nenhum chamado selecionado'}, status=401)
     return response
+
+# --------------------------------------------------------------------------------------
+# Retorna JSON com informação de patrimônio do grupo de serviço
+# --------------------------------------------------------------------------------------
+def patrimonio_servico_json(request, id_gs):
+    resposta = []
+
+    if id_gs == None or id_gs == '' or id_gs == '99999':
+        gs_json = {}
+    else:
+        gs_json = {}
+        grupo = GrupoServico.objects.get(pk=id_gs)
+        gs_json['patrimonio_obrigatorio'] = grupo.patrimonio_obrigatorio
+
+    resposta.append(gs_json)
+
+    return JsonResponse(resposta, safe=False)    
