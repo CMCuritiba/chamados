@@ -7,7 +7,9 @@ from django.utils import timezone
 from django.db import transaction
 from django.core.exceptions import ValidationError
 
-from autentica.models import User
+from datetime import datetime
+
+from autentica.models import User as Usuario
 from ..lib.mail import envia_email
 #---------------------------------------------------------------------------------------------
 # Model para a view V_SETOR
@@ -113,7 +115,7 @@ class Chamado(models.Model):
 		(STATUS_ATENDIMENTO, 'Em Atendimento'),
 		(STATUS_FECHADO, 'Fechado')
 	)
-	usuario = models.ForeignKey(User)
+	usuario = models.ForeignKey(Usuario)
 	setor = models.ForeignKey(SetorChamado)
 	grupo_servico = models.ForeignKey(GrupoServico)
 	servico = models.ForeignKey(Servico)
@@ -133,11 +135,6 @@ class Chamado(models.Model):
 			if self.patrimonio == '' or self.patrimonio == None:
 				raise ValidationError('Patrimônio obrigatório para ' + self.grupo_servico.descricao)
 
-	@transaction.atomic
-	def save(self, *args, **kwargs):
-		super(Chamado, self).save(*args, **kwargs)
-		FilaChamados.objects.create(usuario=None, chamado=self)
-
 	def __unicode__(self):
 		return self.descricao
 
@@ -154,90 +151,14 @@ class Chamado(models.Model):
 									 str(self.ramal),
 									 str(self.data_abertura))
 
-#---------------------------------------------------------------------------------------------
-# Model FilaChamados
-#---------------------------------------------------------------------------------------------
-@python_2_unicode_compatible
-class FilaChamadosManager(models.Manager):
-
-	@transaction.atomic
-	def atende(self, usuario, chamado):
-		if chamado == None or chamado.status != 'ABERTO':
-			raise ValueError('Status do chamado não é ABERTO.')
-		if usuario == None:
-			raise ValueError('Usuário inválido')
-		fila = self.filter(chamado=chamado).first()
-		if fila == None:
-			fila = self.create(usuario=usuario, chamado=chamado)
-		else:
-			fila.chamado = chamado
-			fila.usuario = usuario
-			fila.save()
-		chamado.status = 'ATENDIMENTO'
-		chamado.novidade = True
-		chamado.save()
-		envia_email(chamado)
-		#historico = HistoricoChamados.objects.create(chamado=chamado, status='ABERTO')
-		#historico.save()
-		historico = HistoricoChamados.objects.create(chamado=chamado, status='ATENDIMENTO', usuario=usuario)
-		historico.save()
-		return fila
-
-	@transaction.atomic
-	def devolve(self, usuario, chamado):
-		if chamado == None or chamado.status != 'ATENDIMENTO':
-			raise ValueError('Status do chamado não é ATENDIMENTO.')
-		fila = self.filter(chamado=chamado).first()
-		fila.usuario = None
-		fila.save()
-		chamado.status = 'ABERTO'
-		chamado.novidade = True
-		chamado.save()
-		envia_email(chamado)
-
-		historico = HistoricoChamados.objects.create(chamado=chamado, status='ABERTO')
-		historico.save()
-		return fila
-
-	@transaction.atomic
-	def fecha(self, usuario, chamado):
-		if chamado == None or chamado.status != 'ATENDIMENTO':
-			raise ValueError('Status do chamado não é ATENDIMENTO.')
-		chamado.status = 'FECHADO'
-		chamado.novidade = True
-		chamado.save()
-		envia_email(chamado)
-
-		historico = HistoricoChamados.objects.create(chamado=chamado, status='FECHADO')
-		historico.save()
-		return fila
-
-	@transaction.atomic
-	def reabre(self, usuario, chamado):
-		if chamado == None or chamado.status != 'FECHADO':
-			raise ValueError('Status do chamado não é FECHADO.')
-		fila = self.filter(chamado=chamado).first()
-		fila.usuario = None
-		fila.save()
-		chamado.status = 'ABERTO'
-		chamado.novidade = True
-		chamado.save()
-		envia_email(chamado)
-
-		historico = HistoricoChamados.objects.create(chamado=chamado, status='ABERTO')
-		historico.save()
-		return fila
-
 
 @python_2_unicode_compatible
 class FilaChamados(models.Model):
 	class Meta:
 		verbose_name_plural = 'Fila de Chamados'
 
-	usuario = models.ForeignKey(User, blank=True, null=True)
+	usuario = models.ForeignKey(Usuario, blank=True, null=True)
 	chamado = models.ForeignKey(Chamado)
-
-	objects = FilaChamadosManager()
 
 	def __unicode__(self):
 		return self.chamado.assunto
@@ -256,7 +177,7 @@ class HistoricoChamados(models.Model):
 	chamado = models.ForeignKey(Chamado)
 	data = models.DateTimeField(default=timezone.now)
 	status = models.CharField(max_length=15)
-	usuario = models.ForeignKey(User, blank=True, null=True)
+	usuario = models.ForeignKey(Usuario, blank=True, null=True)
 
 	def __unicode__(self):
 		return self.chamado.assunto
@@ -274,7 +195,7 @@ class ChamadoResposta(models.Model):
 
 	chamado = models.ForeignKey(Chamado)
 	data = models.DateTimeField(default=timezone.now)
-	usuario = models.ForeignKey(User)
+	usuario = models.ForeignKey(Usuario)
 	resposta = models.TextField()
 
 	def __unicode__(self):

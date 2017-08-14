@@ -18,6 +18,7 @@ from .base import *  # noqa
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 # Raises ImproperlyConfigured exception if DJANGO_SECRET_KEY not in os.environ
 SECRET_KEY = env('SECRET_KEY_PROD', default='')
+DEBUG=False
 
 
 # SECURITY CONFIGURATION
@@ -134,7 +135,7 @@ TEMPLATES[0]['OPTIONS']['loaders'] = [
 #        'NAME': env('LDAP_AUTH_URL'),
 #     },
 #    'default': env.db(),
-}
+#}
 
 # CACHING
 # ------------------------------------------------------------------------------

@@ -26,6 +26,7 @@ from autentica.util.mixin import CMCLoginRequired
 from .forms import ChamadoForm
 
 from ..lib.mail import envia_email
+from ..lib.fila import FilaManager
 
 class ChamadoDetailView(DetailView):
     model = Chamado
@@ -47,7 +48,8 @@ class CadastroChamadosCreateView(CMCLoginRequired, SuccessMessageMixin, CreateVi
         obj = form.save(commit=False)
         obj.usuario = self.request.user
         obj.save()
-        return super(CadastroChamadosCreateView, self).form_valid(form)
+        #return super(CadastroChamadosCreateView, self).form_valid(form)
+        return HttpResponseRedirect(self.success_url)
 
 #--------------------------------------------------------------------------------------
 # Retorna JSON lista de chamados do usuario
@@ -213,7 +215,8 @@ def atende(request):
             chamado = Chamado.objects.get(pk=id_chamado)
             if chamado.status != 'ABERTO':
                 raise ValueError('Chamado selecionado por outro atendente.')
-            FilaChamados.objects.atende(request.user, chamado)
+            fila = FilaManager()
+            fila.atende(request.user, chamado)
     return HttpResponseRedirect('/fila/')
 
 #--------------------------------------------------------------------------------------
@@ -225,7 +228,8 @@ def devolve(request):
 
         if id_chamado != None and id_chamado != '':
             chamado = Chamado.objects.get(pk=id_chamado)
-            FilaChamados.objects.devolve(request.user, chamado)
+            fila = FilaManager()
+            fila.devolve(request.user, chamado)
     return HttpResponseRedirect('/fila/')    
 
 #--------------------------------------------------------------------------------------
@@ -236,7 +240,8 @@ def atende_json(request, id_chamado):
         chamado = Chamado.objects.get(pk=id_chamado)
         if chamado.status != 'ABERTO':
             response = JsonResponse({'status':'false','message':'Chamado selecionado por outro atendente'}, status=401)
-        FilaChamados.objects.atende(request.user, chamado)
+        fila = FilaManager()
+        fila.atende(request.user, chamado)
         response = JsonResponse({'status':'true','message':'Chamado selecionado com sucesso'}, status=200)
     else:
         response = JsonResponse({'status':'false','message':'Nenhum chamado selecionado'}, status=401)
@@ -248,7 +253,8 @@ def atende_json(request, id_chamado):
 def devolve_json(request, id_chamado):
     if id_chamado != None and id_chamado != '':
         chamado = Chamado.objects.get(pk=id_chamado)
-        FilaChamados.objects.devolve(request.user, chamado)
+        fila = FilaManager()
+        fila.devolve(request.user, chamado)
         response = JsonResponse({'status':'true','message':'Chamado devolvido com sucesso'}, status=200)
     else:
         response = JsonResponse({'status':'false','message':'Nenhum chamado selecionado'}, status=401)
@@ -329,12 +335,14 @@ def fecha(request):
     if request.method == 'POST':
         if request.POST.get('id_chamado') != None and request.POST.get('id_chamado') != '':
             chamado = Chamado.objects.get(pk=request.POST.get('id_chamado'))
-            chamado.status = 'FECHADO'
-            chamado.save()
-            envia_email(chamado)
+            fila = FilaManager()
+            fila.fecha(request.user, chamado)
+            #chamado.status = 'FECHADO'
+            #chamado.save()
+            #envia_email(chamado)
 
-            historico = HistoricoChamados.objects.create(chamado=chamado, status='FECHADO')
-            historico.save()
+            #historico = HistoricoChamados.objects.create(chamado=chamado, status='FECHADO')
+            #historico.save()
         else:
             raise ValueError('Chamado inválido.')
     return HttpResponseRedirect('/fila/')
@@ -360,7 +368,8 @@ class MyIndexView(SuccessMessageMixin, TemplateView):
 def reabre_json(request, id_chamado):
     if id_chamado != None and id_chamado != '':
         chamado = Chamado.objects.get(pk=id_chamado)
-        FilaChamados.objects.reabre(request.user, chamado)
+        fila = FilaManager()
+        fila.reabre(request.user, chamado)
         response = JsonResponse({'status':'true','message':'Chamado reaberto com sucesso'}, status=200)
     else:
         response = JsonResponse({'status':'false','message':'Nenhum chamado selecionado'}, status=401)
