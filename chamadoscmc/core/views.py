@@ -89,6 +89,10 @@ def chamados_abertos_json(request, setor_id):
         chamados = None
     else:
         chamados = Chamado.objects.filter(setor__setor_id=setor_id)
+        #chamados = Chamado.objects.filter(setor__setor_id=27)
+    if len(chamados) == 0:
+        chamados = Chamado.objects.filter(setor__setor_id_superior=setor_id)
+        #chamados = Chamado.objects.filter(setor__setor__set_id_superior=27)
 
     for c in chamados:
         chamado_json = {}
