@@ -17,7 +17,7 @@ from chamadoscmc.lib.mail import envia_email
 class FilaManager(object):
 
 	@transaction.atomic
-	def atende(usuario, chamado):
+	def atende(self, usuario, chamado):
 		if chamado == None or chamado.status != 'ABERTO':
 			raise ValueError('Status do chamado não é ABERTO.')
 		if usuario == None:
@@ -36,11 +36,11 @@ class FilaManager(object):
 		chamado.save()
 		envia_email(chamado)
 		historico = HistoricoChamados.objects.create(chamado=chamado, status='ATENDIMENTO', usuario=usuario)
-		historico.save()
+		#historico.save()
 		return fila
 
 	@transaction.atomic
-	def devolve(usuario, chamado):
+	def devolve(self, usuario, chamado):
 		if chamado == None or chamado.status != 'ATENDIMENTO':
 			raise ValueError('Status do chamado não é ATENDIMENTO.')
 		fila = FilaChamados.objects.filter(chamado=chamado).first()
@@ -52,11 +52,11 @@ class FilaManager(object):
 		envia_email(chamado)
 
 		historico = HistoricoChamados.objects.create(chamado=chamado, status='ABERTO')
-		historico.save()
+		#historico.save()
 		return fila
 
 	@transaction.atomic
-	def fecha(usuario, chamado):
+	def fecha(self, usuario, chamado):
 		if chamado == None or chamado.status != 'ATENDIMENTO':
 			raise ValueError('Status do chamado não é ATENDIMENTO.')
 		chamado.status = 'FECHADO'
@@ -73,7 +73,7 @@ class FilaManager(object):
 		return None
 
 	@transaction.atomic
-	def reabre(usuario, chamado):
+	def reabre(self, usuario, chamado):
 		if chamado == None or chamado.status != 'FECHADO':
 			raise ValueError('Status do chamado não é FECHADO.')
 		fila = FilaChamados.objects.filter(chamado=chamado).first()
@@ -86,11 +86,11 @@ class FilaManager(object):
 		envia_email(chamado)
 
 		historico = HistoricoChamados.objects.create(chamado=chamado, status='ABERTO')
-		historico.save()
+		#historico.save()
 		return fila
 
 	@transaction.atomic
-	def cria(usuario, chamado):
+	def cria(self, usuario, chamado):
 		if chamado == None:
 			raise ValueError('Chamado inválido')
 		fila = FilaChamados.objects.filter(chamado=chamado).first()

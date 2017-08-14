@@ -276,7 +276,8 @@ class ConsolidadoChamadoDetailView(CMCLoginRequired, SuccessMessageMixin, Detail
         fila = FilaChamados.objects.filter(chamado=chamado).first()
         respostas = ChamadoResposta.objects.filter(chamado=self.get_object().id)
         context['respostas'] = respostas
-        context['atendente'] = fila.usuario
+        if fila != None:
+            context['atendente'] = fila.usuario
         return context
 
 #--------------------------------------------------------------------------------------
