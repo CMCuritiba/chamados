@@ -8,6 +8,7 @@ def envia_email(chamado):
 	para = [chamado.usuario.email]
 	de = 'chamados@cmc.pr.gov.br'
 
+
 	try:
 		ultima_resposta = chamado.chamadoresposta_set.latest('id')
 	except:

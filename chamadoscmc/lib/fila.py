@@ -14,8 +14,33 @@ from chamadoscmc.core.models import GrupoServico, Servico, Chamado, FilaChamados
 from chamadoscmc.lib.mail import envia_email
 
 
+def enviaEmail(function):
+	def wrap(*args, **kwargs):
+		retorno = function(*args, **kwargs)
+		envia_email(args[2])
+		return retorno
+	wrap.__doc__ = function.__doc__
+	wrap.__name__ = function.__name__
+
+	return wrap
+
+def novidade(function):
+	def wrap(*args, **kwargs):
+		retorno = function(*args, **kwargs)
+		chamado = args[2]
+		chamado.novidade = True
+		chamado.save()
+		return retorno
+	wrap.__doc__ = function.__doc__
+	wrap.__name__ = function.__name__
+
+	return wrap
+
+
 class FilaManager(object):
 
+	@novidade
+	@enviaEmail
 	@transaction.atomic
 	def atende(self, usuario, chamado):
 		if chamado == None or chamado.status != 'ABERTO':
@@ -30,15 +55,13 @@ class FilaManager(object):
 			fila.chamado = chamado
 			fila.usuario = usuario
 			fila.save()
-		
 		chamado.status = 'ATENDIMENTO'
-		chamado.novidade = True
 		chamado.save()
-		envia_email(chamado)
 		historico = HistoricoChamados.objects.create(chamado=chamado, status='ATENDIMENTO', usuario=usuario)
-		#historico.save()
 		return fila
 
+	@novidade
+	@enviaEmail
 	@transaction.atomic
 	def devolve(self, usuario, chamado):
 		if chamado == None or chamado.status != 'ATENDIMENTO':
@@ -47,31 +70,24 @@ class FilaManager(object):
 		fila.usuario = None
 		fila.save()
 		chamado.status = 'ABERTO'
-		chamado.novidade = True
 		chamado.save()
-		envia_email(chamado)
-
 		historico = HistoricoChamados.objects.create(chamado=chamado, status='ABERTO')
-		#historico.save()
 		return fila
 
+	@novidade
+	@enviaEmail
 	@transaction.atomic
 	def fecha(self, usuario, chamado):
 		if chamado == None or chamado.status != 'ATENDIMENTO':
 			raise ValueError('Status do chamado não é ATENDIMENTO.')
 		chamado.status = 'FECHADO'
-		chamado.novidade = True
 		chamado.data_fechamento = datetime.now()
 		chamado.save()
-		envia_email(chamado)
-
-		historico = HistoricoChamados()
-		historico.chamado = chamado
-		historico.status = 'FECHADO'
-		historico.usuario = usuario
-		historico.save()
+		historico = HistoricoChamados.objects.create(chamado=chamado, status='FECHADO', usuario=usuario)
 		return None
 
+	@novidade
+	@enviaEmail
 	@transaction.atomic
 	def reabre(self, usuario, chamado):
 		if chamado == None or chamado.status != 'FECHADO':
@@ -80,13 +96,9 @@ class FilaManager(object):
 		fila.usuario = None
 		fila.save()
 		chamado.status = 'ABERTO'
-		chamado.novidade = True
 		chamado.data_fechamento = None
 		chamado.save()
-		envia_email(chamado)
-
 		historico = HistoricoChamados.objects.create(chamado=chamado, status='ABERTO')
-		#historico.save()
 		return fila
 
 	@transaction.atomic
