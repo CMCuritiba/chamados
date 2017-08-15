@@ -61,9 +61,15 @@ def chown():
 	sudo('chown -R {}:{} {}'.format(USERAPP, USERAPP, ENVS))
 	sudo('chown -R {}:{} {}'.format(USERAPP, env.wwwdata, HTML + '/' + PROJECT_NAME))	
 
+def des_chown():
+	''' Seta permissões ao usuário/grupo corretos '''
+	sudo('chown -R {} {}'.format(env.user, PROJECT_ROOT))
+	sudo('chown -R {} {}'.format(env.user, ENVS))
+	sudo('chown -R {} {}'.format(env.user, HTML + '/' + PROJECT_NAME))	
+
 def cria_webapps():
 	sudo('mkdir -p {}'.format(WEBAPPS))
-	sudo('mkdir -p {}'.format(PROJECT_ROOT))
+	sudo('mkdir -p {}'.format(PROJECT_ROOT), user=USERAPP)
 	#sudo('chown -R {}:{} {}'.format(USERAPP, USERAPP, WEBAPPS))
 
 def cria_envs():
@@ -71,7 +77,6 @@ def cria_envs():
 	#sudo('chown -R {}:{} {}'.format(USERAPP, USERAPP, ENVS))
 
 def cria_html():
-	sudo('mkdir -p {}'.format(HTML))
 	sudo('mkdir -p {}'.format(HTML + '/' + PROJECT_NAME))
 	sudo('mkdir -p {}'.format(HTML + '/' + PROJECT_NAME + '/logs'))
 	#sudo('chown -R {}:{} {}'.format(USERAPP, env.wwwdata, HTML + '/' + PROJECT_NAME))	
@@ -151,9 +156,9 @@ def bootstrap():
 
 	sudo('aptitude install curl')
 	# baixar o node e instalar
-	# sudo('curl -sL https://deb.nodesource.com/setup_6.x | bash -')
-	# sudo('aptitude install -y nodejs')
-	# sudo('npm install -g bower')
+	sudo('curl -sL https://deb.nodesource.com/setup_6.x | bash -')
+	sudo('aptitude install -y nodejs')
+	sudo('npm install -g bower')
 
 	# Cria os diretórios e permissões necessários 
 
@@ -163,14 +168,14 @@ def bootstrap():
 	cria_envs()
 	cria_html()
 	sudo('git clone {} {}'.format(REPO, PROJECT_ROOT))
-
+	
 	with cd(PROJECT_ROOT):
 		# Cria o ambiente virtual do projeto 
 		sudo('virtualenv --python={} {}'.format(env.python_location, env.virtualenv))
 
 		with source_virtualenv():
 			# Ativa o ambiente virtual 
-			sudo(env.activate, user='cmc-apps')
+			run(env.activate)
 
 			# Instala todos os pacotes no servidor 
 			sudo('pip install -r requirements/production.txt')
@@ -179,26 +184,57 @@ def bootstrap():
 	chown()
 
 @task
+def manage_bower():
+	des_chown()
+	with cd(PROJECT_ROOT):
+		with source_virtualenv():
+			# Roda o bower install
+			run('./manage.py bower_install --settings=config.settings.production')
+	chown()
+
+@task
 def manage_collectstatic():
 	with cd(PROJECT_ROOT):
 		with source_virtualenv():
 			# Gera todos os arquivos css/js
-			sudo('python manage.py collectstatic --settings=config.settings.production', user='cmc-apps')
+			sudo('./manage.py collectstatic --noinput --settings=config.settings.production', user=USERAPP)
 
 @task
 def git_update():
 	with cd(PROJECT_ROOT):
 		# Atualiza servidor com última versão do master
-		sudo('git pull origin master', user='cmc-apps')
+		sudo('git pull origin master')
 
 @task 
 def cria_links():
-	sudo('ln -sf {}/deploy/staging/supervisor.conf /etc/supervisor/conf.d/mscmc.conf'.format(PROJECT_ROOT))
-	sudo('ln -sf {}/deploy/staging/nginx.conf /etc/nginx/sites-enabled/mscmc'.format(PROJECT_ROOT))
+	sudo('ln -sf {}/deploy/staging/supervisor.conf /etc/supervisor/conf.d/chamados_cmc.conf'.format(PROJECT_ROOT))
+	sudo('ln -sf {}/deploy/staging/nginx.conf /etc/nginx/sites-enabled/chamados_cmc'.format(PROJECT_ROOT))
 	sudo('chmod a+x {}/deploy/staging/run.sh'.format(PROJECT_ROOT))
 
 @task
 def restart_nginx_supervisor():
 	sudo('supervisorctl reload')
-	sudo('supervisorctl restart {}'.format(ENV_NAME))
-	sudo('service nginx restart')	
+	sudo('supervisorctl restart {}'.format(PROJECT_NAME))
+	sudo('service nginx restart')
+
+@task
+def manage_makemigrations():
+	des_chown()
+	with cd(PROJECT_ROOT):
+		with source_virtualenv():
+			# Roda o bower install
+			run('./manage.py makemigrations --settings=config.settings.production')
+			#run('./manage.py makemigrations autentica --settings=config.settings.production')
+			#run('./manage.py makemigrations cadastro --settings=config.settings.production')
+	chown()	
+
+@task
+def manage_migrate():
+	des_chown()
+	with cd(PROJECT_ROOT):
+		with source_virtualenv():
+			# Roda o bower install
+			run('./manage.py migrate --settings=config.settings.production')
+			#run('./manage.py migrate autentica --settings=config.settings.production')
+			#run('./manage.py migrate cadastro --settings=config.settings.production')
+	chown()		
