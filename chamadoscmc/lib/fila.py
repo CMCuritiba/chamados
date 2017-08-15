@@ -26,11 +26,9 @@ def enviaEmail(function):
 
 def novidade(function):
 	def wrap(*args, **kwargs):
-		retorno = function(*args, **kwargs)
 		chamado = args[2]
 		chamado.novidade = True
-		chamado.save()
-		return retorno
+		return function(*args, **kwargs)
 	wrap.__doc__ = function.__doc__
 	wrap.__name__ = function.__name__
 
