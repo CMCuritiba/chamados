@@ -238,3 +238,7 @@ def manage_migrate():
 			#run('./manage.py migrate autentica --settings=config.settings.production')
 			#run('./manage.py migrate cadastro --settings=config.settings.production')
 	chown()		
+
+@task
+def temp():
+	des_chown()

@@ -168,8 +168,7 @@ CACHES = {
         'OPTIONS': {
             'DB': 1,
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-            'IGNORE_EXCEPTIONS': True,  # mimics memcache behavior.
-                                        # http://niwinz.github.io/django-redis/latest/#_memcached_exceptions_behavior
+            'IGNORE_EXCEPTIONS': True
         }
     }
 }

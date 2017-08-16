@@ -52,3 +52,21 @@ simplejson
 # Django Celery Email
 django-celery==3.2.1
 django-celery-email==2.0.0
+
+# Autentica
+https://github.com/CMCuritiba/django-cmcldapauth/raw/master/dist/django-cmcldapauth-0.1.tar.gz
+
+# Unipath
+unipath
+
+# Django database url
+dj-database-url==0.4.2
+
+# Django Celery
+django-celery==3.2.1
+
+# Django Celery Email
+django-celery-mail==2.0.0
+
+# Celery
+celery==3.1.25
