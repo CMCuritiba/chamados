@@ -20,6 +20,19 @@ from .base import *  # noqa
 SECRET_KEY = env('SECRET_KEY_PROD', default='')
 DEBUG=False
 
+MIDDLEWARE = [
+    'django.middleware.cache.UpdateCacheMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
+]
+
 
 # SECURITY CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -148,15 +161,14 @@ TEMPLATES[0]['OPTIONS']['loaders'] = [
 #    }
 #}
 
-REDIS_LOCATION = '{0}/{1}'.format(env('REDIS_URL', default='redis://127.0.0.1:6379'), 0)
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': REDIS_LOCATION,
+        'LOCATION': '/var/run/redis/redis.sock',
         'OPTIONS': {
+            'DB': 1,
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-            'IGNORE_EXCEPTIONS': True,  # mimics memcache behavior.
-                                        # http://niwinz.github.io/django-redis/latest/#_memcached_exceptions_behavior
+            'IGNORE_EXCEPTIONS': True
         }
     }
 }
