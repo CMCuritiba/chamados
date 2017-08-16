@@ -27,7 +27,13 @@
 
 {% block extra_javascript %}
 <script>
+	var valor_grupo;
+	var valor_servico;
+
 	$(document).ready(function () {
+		atualizaGrupoServico();
+		atualizaServico();
+
 		$('#id_setor').on('change', function() {
             atualizaGrupoServico();    
     	});
@@ -37,7 +43,9 @@
 	});
 
 	function atualizaGrupoServico() {
-		$('#id_grupo_servico').children().remove().end();
+		valor_grupo = $('#id_grupo_servico').val();
+		valor_servico = $('#id_servico').val();
+		$('#id_grupo_servico').empty();
 		if ($('#id_setor option:selected').val() == '' || $('#id_setor option:selected').val() == '0') {
 			request_url = '/chamado/api/grupo_servico/99999';
         }
@@ -49,12 +57,10 @@
 			dataType: 'json',
 			success: function(result){
 				var toAppend = '';
-                var sel = 0;
 				$.each(result, function(index, element) {
-                    if (sel == 0) {
+                    if (element.gs_id == valor_grupo) {
 					   toAppend += '<option value="' + element.gs_id + '" selected>' + element.gs_descricao + '</option>';
                        $('#id_grupo_servico').val(element.gs_id);
-                       sel = 1;
                     }
                     else
                         toAppend += '<option value="' + element.gs_id + '">' + element.gs_descricao + '</option>';
@@ -69,11 +75,9 @@
 				console.log(error);
 			}
 		})
-        //$('#id_grupo_servico').trigger('change');
     }
 	function atualizaServico() {
 		$('#id_servico').empty();
-        $('#id_servico').removeAttr('selected').find('option:first').attr('selected', 'selected');
 		if ($('#id_grupo_servico').val() == '' || $('#id_grupo_servico').val() == null) {
 			request_url = '/chamado/api/servico/99999';
         }
@@ -86,12 +90,18 @@
 			success: function(result){
 				var toAppend = '';
 				$.each(result, function(index, element) {
-					toAppend += '<option value="' + element.servico_id + '">' + element.servico_descricao + '</option>';
+					if (element.servico_id == valor_servico)
+						toAppend += '<option value="' + element.servico_id + '" selected>' + element.servico_descricao + '</option>';
+					else
+						toAppend += '<option value="' + element.servico_id + '">' + element.servico_descricao + '</option>';
 				});
+				/*
                 if (toAppend == '') {
 				    toAppend = '<option value="0">----------</option>'
                 }
+                */
                 $('#id_servico').append(toAppend);
+                setaPatrimonio();
 
 			},
 			error: function(xhr, status, error) {
@@ -109,6 +119,40 @@
 
     function salvarChamado() {
     	$('#formulario').submit();
+    }
+
+    function setaPatrimonio() {
+    	if ($('#id_grupo_servico').val() == '' || $('#id_grupo_servico').val() == null) {
+			request_url = '/chamado/api/patrimonio/99999';
+        }
+       	else {
+    		  request_url = '/chamado/api/patrimonio/' + $('#id_grupo_servico').val();
+        }
+		$.ajax({
+			url: request_url,
+			dataType: 'json',
+			success: function(result){
+				var patrimonio = false;
+				$.each(result, function(index, element) {
+					patrimonio = ! element.patrimonio_obrigatorio;
+				});
+				if (patrimonio) {
+					$('#id_patrimonio').removeAttr('required');
+					$('#id_patrimonio').attr('disabled', true);
+				}
+				else {
+					$('#id_patrimonio').attr('required', 'required');
+					$('#id_patrimonio').attr('disabled', false);
+				}
+			},
+			error: function(xhr, status, error) {
+				console.log('Erro ao carregar Serviços');
+				console.log(xhr.readyState);
+				console.log(status);
+				console.log(error);
+			}
+		})
+
     }
 </script>
 {% endblock %}

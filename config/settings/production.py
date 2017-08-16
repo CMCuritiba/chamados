@@ -18,6 +18,7 @@ from .base import *  # noqa
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 # Raises ImproperlyConfigured exception if DJANGO_SECRET_KEY not in os.environ
 SECRET_KEY = env('SECRET_KEY_PROD', default='')
+DEBUG=False
 
 
 # SECURITY CONFIGURATION
@@ -134,32 +135,31 @@ TEMPLATES[0]['OPTIONS']['loaders'] = [
 #        'NAME': env('LDAP_AUTH_URL'),
 #     },
 #    'default': env.db(),
-}
+#}
 
 # CACHING
 # ------------------------------------------------------------------------------
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '127.0.0.1:11211',
-        'TIMEOUT': 60,
-        'KEY_PREFIX': 'djcache',
-    }
-}
-
-#REDIS_LOCATION = '{0}/{1}'.format(env('REDIS_URL', default='redis://127.0.0.1:6379'), 0)
-# Heroku URL does not pass the DB number, so we parse it in
 #CACHES = {
 #    'default': {
-#        'BACKEND': 'django_redis.cache.RedisCache',
-#        'LOCATION': REDIS_LOCATION,
-#        'OPTIONS': {
-#            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-#            'IGNORE_EXCEPTIONS': True,  # mimics memcache behavior.
-#                                        # http://niwinz.github.io/django-redis/latest/#_memcached_exceptions_behavior
-#        }
+#        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+#        'LOCATION': '127.0.0.1:11211',
+#        'TIMEOUT': 60,
+#        'KEY_PREFIX': 'djcache',
 #    }
 #}
+
+REDIS_LOCATION = '{0}/{1}'.format(env('REDIS_URL', default='redis://127.0.0.1:6379'), 0)
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': REDIS_LOCATION,
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'IGNORE_EXCEPTIONS': True,  # mimics memcache behavior.
+                                        # http://niwinz.github.io/django-redis/latest/#_memcached_exceptions_behavior
+        }
+    }
+}
 
 
 # Sentry Configuration

@@ -17,6 +17,8 @@ from django.views.generic import DetailView
 from django.views.generic.edit import FormView, CreateView, UpdateView
 from django.http import JsonResponse
 from django.db import transaction
+from django import forms
+from django.forms.utils import ErrorList
 
 from .forms import ChamadoForm
 from .models import GrupoServico, Servico, Chamado, FilaChamados, ChamadoResposta, HistoricoChamados, SetorChamado
@@ -24,6 +26,7 @@ from autentica.util.mixin import CMCLoginRequired
 from .forms import ChamadoForm
 
 from ..lib.mail import envia_email
+from ..lib.fila import FilaManager
 
 class ChamadoDetailView(DetailView):
     model = Chamado
@@ -45,7 +48,8 @@ class CadastroChamadosCreateView(CMCLoginRequired, SuccessMessageMixin, CreateVi
         obj = form.save(commit=False)
         obj.usuario = self.request.user
         obj.save()
-        return super(CadastroChamadosCreateView, self).form_valid(form)
+        #return super(CadastroChamadosCreateView, self).form_valid(form)
+        return HttpResponseRedirect(self.success_url)
 
 #--------------------------------------------------------------------------------------
 # Retorna JSON lista de chamados do usuario
@@ -85,6 +89,10 @@ def chamados_abertos_json(request, setor_id):
         chamados = None
     else:
         chamados = Chamado.objects.filter(setor__setor_id=setor_id)
+        #chamados = Chamado.objects.filter(setor__setor_id=27)
+    if len(chamados) == 0:
+        chamados = Chamado.objects.filter(setor__setor_id_superior=setor_id)
+        #chamados = Chamado.objects.filter(setor__setor__set_id_superior=27)
 
     for c in chamados:
         chamado_json = {}
@@ -211,7 +219,8 @@ def atende(request):
             chamado = Chamado.objects.get(pk=id_chamado)
             if chamado.status != 'ABERTO':
                 raise ValueError('Chamado selecionado por outro atendente.')
-            FilaChamados.objects.atende(request.user, chamado)
+            fila = FilaManager()
+            fila.atende(request.user, chamado)
     return HttpResponseRedirect('/fila/')
 
 #--------------------------------------------------------------------------------------
@@ -223,7 +232,8 @@ def devolve(request):
 
         if id_chamado != None and id_chamado != '':
             chamado = Chamado.objects.get(pk=id_chamado)
-            FilaChamados.objects.devolve(request.user, chamado)
+            fila = FilaManager()
+            fila.devolve(request.user, chamado)
     return HttpResponseRedirect('/fila/')    
 
 #--------------------------------------------------------------------------------------
@@ -234,7 +244,8 @@ def atende_json(request, id_chamado):
         chamado = Chamado.objects.get(pk=id_chamado)
         if chamado.status != 'ABERTO':
             response = JsonResponse({'status':'false','message':'Chamado selecionado por outro atendente'}, status=401)
-        FilaChamados.objects.atende(request.user, chamado)
+        fila = FilaManager()
+        fila.atende(request.user, chamado)
         response = JsonResponse({'status':'true','message':'Chamado selecionado com sucesso'}, status=200)
     else:
         response = JsonResponse({'status':'false','message':'Nenhum chamado selecionado'}, status=401)
@@ -246,7 +257,8 @@ def atende_json(request, id_chamado):
 def devolve_json(request, id_chamado):
     if id_chamado != None and id_chamado != '':
         chamado = Chamado.objects.get(pk=id_chamado)
-        FilaChamados.objects.devolve(request.user, chamado)
+        fila = FilaManager()
+        fila.devolve(request.user, chamado)
         response = JsonResponse({'status':'true','message':'Chamado devolvido com sucesso'}, status=200)
     else:
         response = JsonResponse({'status':'false','message':'Nenhum chamado selecionado'}, status=401)
@@ -261,14 +273,15 @@ class ConsolidadoChamadoDetailView(CMCLoginRequired, SuccessMessageMixin, Detail
 
     def get_context_data(self, **kwargs):
         context = super(DetailView, self).get_context_data(**kwargs)
-        chamado = Chamado.objects.get(pk=self.get_object().id)
+        chamado = Chamado.objects.filter(id=self.get_object().id).first()
         if self.template_name == "core/detail.html":
             chamado.novidade = False
             chamado.save()
-        fila = FilaChamados.objects.get(chamado=chamado)
-        #respostas = ChamadoResposta.objects.filter(chamado=self.get_object().id)
-        #context['respostas'] = respostas
-        context['atendente'] = fila.usuario
+        fila = FilaChamados.objects.filter(chamado=chamado).first()
+        respostas = ChamadoResposta.objects.filter(chamado=self.get_object().id)
+        context['respostas'] = respostas
+        if fila != None:
+            context['atendente'] = fila.usuario
         return context
 
 #--------------------------------------------------------------------------------------
@@ -327,11 +340,14 @@ def fecha(request):
     if request.method == 'POST':
         if request.POST.get('id_chamado') != None and request.POST.get('id_chamado') != '':
             chamado = Chamado.objects.get(pk=request.POST.get('id_chamado'))
-            chamado.status = 'FECHADO'
-            chamado.save()
+            fila = FilaManager()
+            fila.fecha(request.user, chamado)
+            #chamado.status = 'FECHADO'
+            #chamado.save()
+            #envia_email(chamado)
 
-            historico = HistoricoChamados.objects.create(chamado=chamado, status='FECHADO')
-            historico.save()
+            #historico = HistoricoChamados.objects.create(chamado=chamado, status='FECHADO')
+            #historico.save()
         else:
             raise ValueError('Chamado inválido.')
     return HttpResponseRedirect('/fila/')
@@ -357,8 +373,26 @@ class MyIndexView(SuccessMessageMixin, TemplateView):
 def reabre_json(request, id_chamado):
     if id_chamado != None and id_chamado != '':
         chamado = Chamado.objects.get(pk=id_chamado)
-        FilaChamados.objects.reabre(request.user, chamado)
+        fila = FilaManager()
+        fila.reabre(request.user, chamado)
         response = JsonResponse({'status':'true','message':'Chamado reaberto com sucesso'}, status=200)
     else:
         response = JsonResponse({'status':'false','message':'Nenhum chamado selecionado'}, status=401)
     return response
+
+# --------------------------------------------------------------------------------------
+# Retorna JSON com informação de patrimônio do grupo de serviço
+# --------------------------------------------------------------------------------------
+def patrimonio_servico_json(request, id_gs):
+    resposta = []
+
+    if id_gs == None or id_gs == '' or id_gs == '99999':
+        gs_json = {}
+    else:
+        gs_json = {}
+        grupo = GrupoServico.objects.get(pk=id_gs)
+        gs_json['patrimonio_obrigatorio'] = grupo.patrimonio_obrigatorio
+
+    resposta.append(gs_json)
+
+    return JsonResponse(resposta, safe=False)    

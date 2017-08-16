@@ -54,14 +54,14 @@
     </div>
 
     
-
-    
 {% endblock %}
 
 {% block extra_javascript %}
 	<script>
         var tableChamados;
         var tableFila;
+        var chefia = {{ request.session.pessoa_chefia|lower }};
+        
 		$(document).ready(function() {
 
 			tableChamados = $('#tchamados').DataTable({
@@ -145,7 +145,10 @@
                         "data": null,
                         "render" : function(data, type, full, meta) {
                             if (full.status == 'FECHADO' || full.status == 'ATENDIMENTO')
-                                return '';
+                                if (full.status == 'ATENDIMENTO' && chefia)
+                                    return "<a href='#'><span id='devolve' class='badge progress-bar-danger'>Devolver</span></a>";
+                                else
+                                    return '';
                             else
                                 return "<a href='#'><span id='atende' class='badge progress-bar-success'>Atender</span></a>";
                         },
@@ -402,7 +405,7 @@
         }
 
         function criaChamado() {
-            alert('Cria chamado');
+            location.href = '/chamado/cria/';
         }
 
         function reabre(id_chamado) {
