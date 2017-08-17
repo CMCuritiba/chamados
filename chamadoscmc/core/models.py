@@ -10,7 +10,6 @@ from django.core.exceptions import ValidationError
 from datetime import datetime
 
 from autentica.models import User as Usuario
-from ..lib.mail import envia_email
 #---------------------------------------------------------------------------------------------
 # Model para a view V_SETOR
 #---------------------------------------------------------------------------------------------

@@ -11,13 +11,15 @@ from datetime import datetime
 
 from autentica.models import User as Usuario
 from chamadoscmc.core.models import GrupoServico, Servico, Chamado, FilaChamados, ChamadoResposta, HistoricoChamados, SetorChamado
-from chamadoscmc.lib.mail import envia_email
+from chamadoscmc.lib.mail import Mailer
 
 
 def enviaEmail(function):
 	def wrap(*args, **kwargs):
+		mail = Mailer()
+		mail.send_messages(args[2])
 		retorno = function(*args, **kwargs)
-		envia_email(args[2])
+		#envia_email(args[2])
 		return retorno
 	wrap.__doc__ = function.__doc__
 	wrap.__name__ = function.__name__
@@ -38,7 +40,7 @@ def novidade(function):
 class FilaManager(object):
 
 	@novidade
-	#@enviaEmail
+	@enviaEmail
 	@transaction.atomic
 	def atende(self, usuario, chamado):
 		if chamado == None or chamado.status != 'ABERTO':
@@ -59,10 +61,9 @@ class FilaManager(object):
 		return fila
 
 	@novidade
-	#@enviaEmail
+	@enviaEmail
 	@transaction.atomic
 	def devolve(self, usuario, chamado):
-		print('0000000000000000000000000')
 		if chamado == None or chamado.status != 'ATENDIMENTO':
 			raise ValueError('Status do chamado não é ATENDIMENTO.')
 		fila = FilaChamados.objects.filter(chamado=chamado).first()
@@ -71,12 +72,10 @@ class FilaManager(object):
 		chamado.status = 'ABERTO'
 		chamado.save()
 		historico = HistoricoChamados.objects.create(chamado=chamado, status='ABERTO')
-		print('111111111111111111111111111')
-		print('22222222222222222222222')
 		return fila
 
 	@novidade
-	#@enviaEmail
+	@enviaEmail
 	@transaction.atomic
 	def fecha(self, usuario, chamado):
 		if chamado == None or chamado.status != 'ATENDIMENTO':
@@ -88,7 +87,7 @@ class FilaManager(object):
 		return None
 
 	@novidade
-	#@enviaEmail
+	@enviaEmail
 	@transaction.atomic
 	def reabre(self, usuario, chamado):
 		if chamado == None or chamado.status != 'FECHADO':

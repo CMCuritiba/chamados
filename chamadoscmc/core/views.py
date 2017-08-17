@@ -25,7 +25,6 @@ from .models import GrupoServico, Servico, Chamado, FilaChamados, ChamadoRespost
 from autentica.util.mixin import CMCLoginRequired
 from .forms import ChamadoForm
 
-from ..lib.mail import envia_email
 from ..lib.fila import FilaManager
 
 class ChamadoDetailView(DetailView):
