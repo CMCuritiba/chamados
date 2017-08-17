@@ -38,7 +38,7 @@ def novidade(function):
 class FilaManager(object):
 
 	@novidade
-	@enviaEmail
+	#@enviaEmail
 	@transaction.atomic
 	def atende(self, usuario, chamado):
 		if chamado == None or chamado.status != 'ABERTO':
@@ -72,12 +72,11 @@ class FilaManager(object):
 		chamado.save()
 		historico = HistoricoChamados.objects.create(chamado=chamado, status='ABERTO')
 		print('111111111111111111111111111')
-		envia_email(chamado)
 		print('22222222222222222222222')
 		return fila
 
 	@novidade
-	@enviaEmail
+	#@enviaEmail
 	@transaction.atomic
 	def fecha(self, usuario, chamado):
 		if chamado == None or chamado.status != 'ATENDIMENTO':
@@ -89,7 +88,7 @@ class FilaManager(object):
 		return None
 
 	@novidade
-	@enviaEmail
+	#@enviaEmail
 	@transaction.atomic
 	def reabre(self, usuario, chamado):
 		if chamado == None or chamado.status != 'FECHADO':
