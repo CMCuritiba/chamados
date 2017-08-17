@@ -194,6 +194,7 @@ def manage_bower():
 
 @task
 def manage_collectstatic():
+	chown()
 	with cd(PROJECT_ROOT):
 		with source_virtualenv():
 			# Gera todos os arquivos css/js
@@ -203,6 +204,9 @@ def manage_collectstatic():
 def git_update():
 	with cd(PROJECT_ROOT):
 		# Atualiza servidor com última versão do master
+		#des_chown()
+		#cria_webapps()
+		sudo('git clone {} {}'.format(REPO, PROJECT_ROOT))
 		sudo('git pull origin master')
 
 @task 
