@@ -17,9 +17,8 @@ from chamadoscmc.lib.mail import Mailer
 def enviaEmail(function):
 	def wrap(*args, **kwargs):
 		mail = Mailer()
-		mail.send_messages(args[2])
 		retorno = function(*args, **kwargs)
-		#envia_email(args[2])
+		mail.send_messages(args[2])
 		return retorno
 	wrap.__doc__ = function.__doc__
 	wrap.__name__ = function.__name__

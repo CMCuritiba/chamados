@@ -206,7 +206,7 @@ def git_update():
 		# Atualiza servidor com última versão do master
 		#des_chown()
 		#cria_webapps()
-		sudo('git clone {} {}'.format(REPO, PROJECT_ROOT))
+		#sudo('git clone {} {}'.format(REPO, PROJECT_ROOT))
 		sudo('git pull origin master')
 
 @task 

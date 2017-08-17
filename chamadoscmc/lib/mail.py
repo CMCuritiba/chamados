@@ -16,6 +16,10 @@ class Mailer:
 
     def send_messages(self, chamado):
         messages = self.__generate_messages(chamado)
+        print('enviando')
+        print(messages)
+        print(chamado)
+        print(chamado.status)
         self.__send_mail(messages)
 
     def __send_mail(self, mail_messages):
@@ -48,7 +52,7 @@ class Mailer:
         }
         mensagem_template = get_template('fila/email.txt').render(Context(ctx))
         message = EmailMessage(assunto, mensagem_template, to=para, from_email=de)
-        message.content_subtype = 'html'
+        #message.content_subtype = 'text'
         messages.append(message)
 
         return messages
