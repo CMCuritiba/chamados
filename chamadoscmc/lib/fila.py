@@ -38,7 +38,7 @@ def novidade(function):
 class FilaManager(object):
 
 	@novidade
-	@enviaEmail
+	#@enviaEmail
 	@transaction.atomic
 	def atende(self, usuario, chamado):
 		if chamado == None or chamado.status != 'ABERTO':
@@ -59,9 +59,10 @@ class FilaManager(object):
 		return fila
 
 	@novidade
-	@enviaEmail
+	#@enviaEmail
 	@transaction.atomic
 	def devolve(self, usuario, chamado):
+		print('0000000000000000000000000')
 		if chamado == None or chamado.status != 'ATENDIMENTO':
 			raise ValueError('Status do chamado não é ATENDIMENTO.')
 		fila = FilaChamados.objects.filter(chamado=chamado).first()
@@ -70,10 +71,12 @@ class FilaManager(object):
 		chamado.status = 'ABERTO'
 		chamado.save()
 		historico = HistoricoChamados.objects.create(chamado=chamado, status='ABERTO')
+		print('111111111111111111111111111')
+		print('22222222222222222222222')
 		return fila
 
 	@novidade
-	@enviaEmail
+	#@enviaEmail
 	@transaction.atomic
 	def fecha(self, usuario, chamado):
 		if chamado == None or chamado.status != 'ATENDIMENTO':
@@ -85,7 +88,7 @@ class FilaManager(object):
 		return None
 
 	@novidade
-	@enviaEmail
+	#@enviaEmail
 	@transaction.atomic
 	def reabre(self, usuario, chamado):
 		if chamado == None or chamado.status != 'FECHADO':

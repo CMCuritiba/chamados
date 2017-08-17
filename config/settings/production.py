@@ -21,7 +21,6 @@ SECRET_KEY = env('SECRET_KEY_PROD', default='')
 DEBUG=False
 
 MIDDLEWARE = [
-    'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -30,7 +29,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
-    'django.middleware.cache.FetchFromCacheMiddleware',
 ]
 
 
@@ -236,4 +234,4 @@ LOGGING = {
 # Your production stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
 
-CELERY_ACCEPT_CONTENT = ['json']
+#CELERY_ACCEPT_CONTENT = ['json']
