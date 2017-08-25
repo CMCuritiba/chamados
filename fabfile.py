@@ -246,3 +246,5 @@ def manage_migrate():
 @task
 def temp():
 	des_chown()
+	#sudo('pip install https://github.com/CMCuritiba/django-cmcldapauth/raw/master/dist/django-cmcldapauth-0.1.tar.gz --upgrade')
+	#chown()
