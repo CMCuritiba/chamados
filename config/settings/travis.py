@@ -43,6 +43,8 @@ THIRD_PARTY_APPS = [
      'django_python3_ldap',
      'ldapdb',
      'autentica',
+     'djcelery',
+     'djcelery_email',
 ]
 
 # Apps specific for this project go here.
