@@ -13,7 +13,7 @@ from __future__ import absolute_import, unicode_literals
 import environ, os
 
 ROOT_DIR = environ.Path(__file__) - 3  # (chamados-cmc/config/settings/base.py - 3 = chamados-cmc/)
-APPS_DIR = ROOT_DIR.path('chamados-cmc')
+APPS_DIR = ROOT_DIR.path('chamadoscmc')
 
 SECRET_KEY = 'TRAVIS'
 
@@ -43,6 +43,8 @@ THIRD_PARTY_APPS = [
      'django_python3_ldap',
      'ldapdb',
      'autentica',
+     'djcelery',
+     'djcelery_email',
 ]
 
 # Apps specific for this project go here.

@@ -12,18 +12,18 @@ from ..models import SetorChamado, GrupoServico, Servico
 import os
 
 class FilaChamadosFormTest(TestCase):
-	fixtures = ['user.json', 'setor_chamado.json', 'grupo_servico.json', 'servico.json', 'chamado.json']
+    fixtures = ['user.json', 'setor_chamado.json', 'grupo_servico.json', 'servico.json', 'chamado.json']
 
-	def setUp(self):
-		self.user = get_user_model().objects.create_user('zaquinha', password='zaca')
-		self.user.is_staff = True
-		self.user.lotado = 171
-		self.user.matricula = 2179
-		self.user.save()
-		self.factory = RequestFactory()
+    def setUp(self):
+        self.user = get_user_model().objects.create_user('zaquinha', password='zaca')
+        self.user.is_staff = True
+        self.user.lotado = 171
+        self.user.matricula = 2179
+        self.user.save()
+        self.factory = RequestFactory()
 
-	def test_init(self):
-		form = FilaChamadosForm()
+    def test_init(self):
+        form = FilaChamadosForm()
 
 
 class ChamadoFormTest(TestCase):
@@ -51,18 +51,6 @@ class ChamadoFormTest(TestCase):
         form = ChamadoForm(data=form_data)
         self.assertFalse(form.is_valid())
         #self.assertEqual(form.cleaned_data['usuario'], usuario)
-
-    def test_inclui_grupo_servico_vazio(self):
-        setor_chamado = SetorChamado.objects.get(pk=1)
-        servico = Servico.objects.get(pk=1)
-
-        form_data = {'usuario':"1", 'setor':"1", 'servico':"1", 'ramal':"4813",
-                     'assunto':"mouse não funciona", 'descricao':"já tentei de tudo mas não vai"}
-        form = ChamadoForm(data=form_data)
-        self.assertFalse(form.is_valid())
-        self.assertEqual(form.cleaned_data['setor'], setor_chamado)
-        self.assertEqual(form.cleaned_data['servico'], servico)
-
 
     def test_inclui_servico_vazio(self):
         grupo = GrupoServico.objects.get(pk=1)

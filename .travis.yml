@@ -17,14 +17,15 @@ before_script:
   - npm install -g grunt-cli
   - bower install
   - psql -c 'create database chamados;' -U postgres
-  - python manage.py makemigrations --settings=config.settings.travis
+  - python manage.py makemigrations autentica core --settings=config.settings.travis
   - python manage.py migrate --settings=config.settings.travis
+  - python manage.py migrate core 0001_initial --settings=config.settings.travis
   - python manage.py bower_install
   - python manage.py collectstatic --noinput
 
 # comando para rodas os testes
 script: 
-  - coverage run manage.py test
+  - coverage run manage.py test --settings=config.settings.travis
 
 after_success:
   codecov

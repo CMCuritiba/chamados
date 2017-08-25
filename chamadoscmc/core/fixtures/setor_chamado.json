@@ -1,28 +1,5 @@
 [
     {
-        "model": "core.vsetor", 
-        "fields": {
-            "set_id": 171, 
-            "set_nome": "Divisão de Desenvolvimento De Sistemas",
-            "set_sigla": "DDS-1",
-            "set_id_superior": 1,
-            "set_ativo": 1,
-            "set_tipo": "N"
-        }
-    },
-
-    {
-        "model": "core.vsetor", 
-        "fields": {
-            "set_id": 172, 
-            "set_nome": "Divisão de Suporte em Informática",
-            "set_sigla": "DSI-2",
-            "set_id_superior": 1,
-            "set_ativo": 1,
-            "set_tipo": "N"
-        }
-    },
-    {
         "pk": 1, 
         "model": "core.setorchamado", 
         "fields": {
