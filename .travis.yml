@@ -25,7 +25,7 @@ before_script:
 
 # comando para rodas os testes
 script: 
-  - coverage run manage.py test
+  - coverage run manage.py test --settings=config.settings.travis
 
 after_success:
   codecov
