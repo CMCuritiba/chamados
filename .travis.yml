@@ -17,6 +17,14 @@ before_script:
   - npm install -g grunt-cli
   - bower install
   - psql -c 'create database chamados;' -U postgres
+  - psql -c 'CREATE TABLE v_setor (
+                set_id serial primary key,
+                set_nome character varying(500) not null,
+                set_sigla character varying(100) not null,
+                set_id_superior integer,
+                set_ativo boolean not null, 
+                set_tipo character varying(1)
+            );' -U postgres
   - python manage.py makemigrations autentica core --settings=config.settings.travis
   - python manage.py migrate --settings=config.settings.travis
   - python manage.py bower_install
