@@ -25,5 +25,5 @@ raven==6.0.0
 
 # Celery para tarefas assíncronas
 # -------------------------------
-celery==4.1.0
+#celery==4.1.0
 
