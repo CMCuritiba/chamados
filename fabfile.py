@@ -138,8 +138,8 @@ def bootstrap():
 	# bibliotecas diversas usadas pelo projeto (ldap, xmlm, ssl, etc) 
 	sudo('aptitude install libpq-dev')
 	sudo('aptitude install python-dev')
-	#sudo('apt-get install python3.5-dev')
-	sudo('aptitude install python3.4-dev')
+	sudo('apt-get install python3.5-dev')
+	#sudo('aptitude install python3.4-dev')
 	sudo('aptitude install python-pip')
 	sudo('aptitude install python-virtualenv')
 	sudo('aptitude install libfreetype6-dev')
@@ -158,7 +158,7 @@ def bootstrap():
 
 	sudo('aptitude install curl')
 	# baixar o node e instalar
-	sudo('curl -sL https://deb.nodesource.com/setup_6.x | bash -')
+	sudo('curl -sL https://deb.nodesource.com/setup_8.x | bash -')
 	sudo('aptitude install -y nodejs')
 	sudo('npm install -g bower')
 
