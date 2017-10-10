@@ -35,11 +35,13 @@ def staging():
 
 @task
 def production():
-	env.hosts = []
+	env.hosts = ['sucupira.cmc.pr.gov.br']
 	env.environment = 'production'	
-	env.user = 'www-data'
-	env.virtualenv = ''
-	env.activate = ''
+	env.user = 'suporte'
+	env.virtualenv = '/usr/share/envs/{}'.format(ENV_NAME)
+	env.activate = 'source /usr/share/envs/{}/bin/activate'.format(ENV_NAME)
+	env.wwwdata = 'www-data'
+	env.python_location = '/usr/bin/python3.5'
 
 # ---------------------------------------------------------------------------------------------------------------
 # NÃO MUDE NADA ABAIXO !!!!!!!
@@ -211,9 +213,16 @@ def git_update():
 
 @task 
 def cria_links():
-	sudo('ln -sf {}/deploy/staging/supervisor.conf /etc/supervisor/conf.d/chamados_cmc.conf'.format(PROJECT_ROOT))
-	sudo('ln -sf {}/deploy/staging/nginx.conf /etc/nginx/sites-enabled/chamados_cmc'.format(PROJECT_ROOT))
-	sudo('chmod a+x {}/deploy/staging/run.sh'.format(PROJECT_ROOT))
+	if env.environment == 'staging':
+		sudo('ln -sf {}/deploy/staging/supervisor.conf /etc/supervisor/conf.d/chamados_cmc.conf'.format(PROJECT_ROOT))
+		sudo('ln -sf {}/deploy/staging/nginx.conf /etc/nginx/sites-enabled/chamados_cmc'.format(PROJECT_ROOT))
+		sudo('chmod a+x {}/deploy/staging/run.sh'.format(PROJECT_ROOT))
+	elif env.environment == 'production':
+		sudo('ln -sf {}/deploy/production/supervisor.conf /etc/supervisor/conf.d/chamados_cmc.conf'.format(PROJECT_ROOT))
+		sudo('ln -sf {}/deploy/production/nginx.conf /etc/nginx/sites-enabled/chamados_cmc'.format(PROJECT_ROOT))
+		sudo('chmod a+x {}/deploy/production/run.sh'.format(PROJECT_ROOT))
+	else:
+		print('Nenhum ambiente selecionado. Defina staging ou production.')
 
 @task
 def restart_nginx_supervisor():

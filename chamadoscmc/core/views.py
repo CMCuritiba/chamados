@@ -75,7 +75,7 @@ def chamados_atendente_json(request,usuario_id, status):
 
         resposta.append(chamado_json)
 
-    return JsonResponse(resposta, safe=False)       
+    return JsonResponse(resposta, safe=False)
 
 
 #--------------------------------------------------------------------------------------
