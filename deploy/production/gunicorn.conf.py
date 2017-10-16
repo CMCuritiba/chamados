@@ -1,3 +1,3 @@
-bind = '127.0.0.1:8055'
+bind = 'unix:/var/run/webapps/chamados/gunicorn.sock'
 workers = 2
 timeout = 30
