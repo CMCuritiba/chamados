@@ -31,7 +31,7 @@ def staging():
 	env.virtualenv = '/usr/share/envs/{}'.format(ENV_NAME)
 	env.activate = 'source /usr/share/envs/{}/bin/activate'.format(ENV_NAME)
 	env.wwwdata = 'www-data'
-	env.python_location = '/usr/bin/python3.4'
+	env.python_location = '/usr/bin/python3.5'
 
 @task
 def production():
