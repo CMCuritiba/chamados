@@ -322,7 +322,9 @@ def responde_json(request):
                 cresposta.save()
             else:
                 ChamadoResposta.objects.create(usuario=request.user, chamado=chamado, resposta=request.POST.get('resposta'))
-            envia_email(chamado)
+            fila = FilaManager()
+            fila.responde(request.user, chamado)
+            #envia_email(chamado)
             response = JsonResponse({'status':'true','message':'Chamado selecionado com sucesso'}, status=200)
         else:
             response = JsonResponse({'status':'false','message':'Chamado inválido'}, status=401)

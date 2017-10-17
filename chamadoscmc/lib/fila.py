@@ -112,3 +112,8 @@ class FilaManager(object):
 			fila.usuario = usuario
 			fila.save()
 		return fila
+
+	@novidade
+	@enviaEmail
+	def responde(self, usuario, chamado):
+		return None
