@@ -1,3 +1,3 @@
 bind = 'unix:/var/run/webapps/chamados/gunicorn.sock'
-workers = 1
+workers = 2
 timeout = 30
