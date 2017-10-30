@@ -16,7 +16,8 @@ Aplicação Django para controle de chamados Câmara Municipal de Curitiba
 
 :License: MIT
 
-postgres:///chamados-testContribuindo
+
+Contribuindo
 ------------
 
 Crie um fork e clone o repositório:
