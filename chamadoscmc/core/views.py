@@ -23,7 +23,7 @@ from django.forms.utils import ErrorList
 from .forms import ChamadoForm
 from .models import GrupoServico, Servico, Chamado, FilaChamados, ChamadoResposta, HistoricoChamados, SetorChamado, Localizacao, Pavimento
 from autentica.util.mixin import CMCLoginRequired
-from .forms import ChamadoForm, ServicoSearchForm, ServicoForm
+from .forms import ChamadoForm, ServicoSearchForm, ServicoForm, GrupoServicoForm
 
 from ..lib.fila import FilaManager
 
@@ -528,3 +528,40 @@ def exclui_servico_json(request, pk):
     else:
         response = JsonResponse({'status':'false','message':'Não foi possível localizar o serviço'}, status=401)
     return response             
+
+#--------------------------------------------------------------------------------------
+class GrupoServicoIndexView(CMCLoginRequired, SuccessMessageMixin, TemplateView):
+    template_name = 'core/cadastro/grupo_servico/index.html'
+
+class GrupoServicoCreateView(CMCLoginRequired, SuccessMessageMixin, CreateView):
+    model = GrupoServico
+    form_class = GrupoServicoForm
+    success_url = '/cadastro/grupo_servico/'
+    success_message = "Grupo Serviço criado com sucesso"
+    template_name = 'core/cadastro/grupo_servico/create.html'   
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.setor = SetorChamado.objects.get(setor=self.request.session['setor_id'])
+        obj.save()
+        return HttpResponseRedirect(self.success_url)
+
+class GrupoServicoUpdateView(CMCLoginRequired, SuccessMessageMixin, UpdateView):
+    model = GrupoServico
+    form_class = GrupoServicoForm
+    success_url = '/cadastro/grupo_servico/'
+    success_message = "Grupo Serviço alterado com sucesso"
+    template_name = 'core/cadastro/grupo_servico/update.html'
+
+def exclui_grupo_servico_json(request, pk):
+
+    if request.method == 'POST' and request.is_ajax():
+        if pk != None and pk != '':
+            grupo = GrupoServico.objects.get(pk=pk)
+            grupo.delete()
+            response = JsonResponse({'status':'true','message':'Grupo Serviço excluído com sucesso'}, status=200)
+        else:
+            response = JsonResponse({'status':'false','message':'Erro ao excluir grupo serviço'}, status=401)
+    else:
+        response = JsonResponse({'status':'false','message':'Não foi possível localizar o grupo serviço'}, status=401)
+    return response                 

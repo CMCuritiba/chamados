@@ -146,6 +146,7 @@ class GrupoServicoForm(forms.ModelForm):
     class Meta:
         model = GrupoServico
         fields = ['descricao', 'setor', 'patrimonio_obrigatorio']
+        exclude = ('setor',)
 
     def __init__(self, *args, **kwargs):
         super(GrupoServicoForm, self).__init__(*args, **kwargs)

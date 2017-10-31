@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+
+	<div class="panel panel-primary">
+		<div class="panel-heading">Grupos de Serviço</div>
+        <div class="panel-body">
+        	<form name="formulario" id="formulario" method="post" action="">
+                {% crispy form %}
+            </form>
+        </div>
+	</div>
+    <div class="panel panel-primary">
+        <div class="panel-body">
+            <div class="col-md-12 row">
+                <input type="button" onclick="javascript:voltar();" value="Voltar" class="btn btn-default"/> 
+                <button type="button" class="btn btn-primary" onclick="javascript:salvar();">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block extra_javascript %}
+
+	<script>
+        function salvar() {
+            $('#formulario').submit();
+        }
+
+        function voltar() {
+            location.href = '/cadastro/grupo_servico/';
+        }
+	</script>
+
+{% endblock %}
