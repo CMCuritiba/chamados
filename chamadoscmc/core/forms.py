@@ -13,18 +13,19 @@ from crispy_forms.bootstrap import StrictButton
 from django.conf import settings
 from decimal import Decimal
 
-from .models import Chamado, ChamadoResposta
-
+from .models import Chamado, ChamadoResposta, Localizacao, Pavimento, Servico, GrupoServico
 
 
 class ChamadoForm(forms.ModelForm):
     class Meta:
         model = Chamado
-        fields = ['setor', 'grupo_servico', 'servico', 'ramal', 'assunto', 'descricao', 'patrimonio']
+        fields = ['setor', 'grupo_servico', 'servico', 'ramal', 'assunto', 'descricao', 'patrimonio', 'localizacao', 'pavimento']
         exclude = ('user',)
 
     def __init__(self, *args, **kwargs):
         super(ChamadoForm, self).__init__(*args, **kwargs)
+        self.fields['localizacao'].empty_label = "Selecione..."
+        self.fields['pavimento'].empty_label = "Selecione..."
 
         self.helper = FormHelper()
         self.helper.form_tag = False
@@ -52,7 +53,22 @@ class ChamadoForm(forms.ModelForm):
                 Div('descricao', css_class='col-md-12',),
                 css_class='col-md-12 row',
             ),
+            Div(
+                Div('localizacao', css_class='col-md-6',),
+                Div('pavimento', css_class='col-md-6',),
+                css_class='col-md-12 row',
+            ),
         )
+
+    def clean(self):
+        data = self.cleaned_data
+        if 'grupo_servico' in data:
+            if data['grupo_servico'] is None:
+                raise ValidationError('Grupo Serviço Obrigatório')
+            if data['grupo_servico'].patrimonio_obrigatorio:
+                if data['patrimonio'] == '' or data['patrimonio'] is None:
+                    raise ValidationError('Patrimônio obrigatório para grupo de serviço : ' + data['grupo_servico'].descricao)
+        return data
 
 class FilaChamadosForm(forms.Form):
 
@@ -84,3 +100,66 @@ class ChamadoRespostaForm(forms.ModelForm):
 				css_class='col-md-12 row',
 			),
 		)
+
+class GrupoServicoSearchForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        super(GrupoServicoSearchForm, self).__init__(*args, **kwargs)
+
+        self.fields['grupo_servico'] = forms.ChoiceField(label="Grupo Serviço", widget=forms.Select(attrs={'data-live-search': 'true'}))
+
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+
+        self.helper.layout = Layout(
+            Div(
+                Div('grupo_servico', css_class='col-md-12',),
+                css_class='col-md-12 row',
+            ),
+        )
+
+class ServicoForm(forms.ModelForm):
+
+    class Meta:
+        model = Servico
+        fields = ['grupo_servico', 'descricao']
+
+    def __init__(self, *args, **kwargs):
+        super(ServicoForm, self).__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+
+        self.helper.layout = Layout(
+            Div(
+                Div('grupo_servico', css_class='col-md-12',),
+                css_class='col-md-12 row',
+            ),
+            Div(
+                Div('descricao', css_class='col-md-12',),
+                css_class='col-md-12 row',
+            ),
+        )        
+
+class GrupoServicoForm(forms.ModelForm):
+
+    class Meta:
+        model = GrupoServico
+        fields = ['descricao', 'setor', 'patrimonio_obrigatorio']
+
+    def __init__(self, *args, **kwargs):
+        super(GrupoServicoForm, self).__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+
+        self.helper.layout = Layout(
+            Div(
+                Div('descricao', css_class='col-md-12',),
+                css_class='col-md-12 row',
+            ),
+            Div(
+                Div('patrimonio_obrigatorio', css_class='col-md-12',),
+                css_class='col-md-12 row',
+            ),
+        )                

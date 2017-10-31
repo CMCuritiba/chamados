@@ -117,3 +117,7 @@ class FilaManager(object):
 	@enviaEmail
 	def responde(self, usuario, chamado):
 		return None
+
+	@enviaEmail
+	def cria(self, usuario, chamado):
+		return None

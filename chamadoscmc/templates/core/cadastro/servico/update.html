@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+
+	<div class="panel panel-primary">
+		<div class="panel-heading">Serviços</div>
+        <div class="panel-body">
+        	<form name="formulario" id="formulario" method="post" action="">
+                {% crispy form %}
+            </form>
+        </div>
+	</div>
+    <div class="panel panel-primary">
+        <div class="panel-body">
+            <div class="col-md-12 row">
+                <input type="button" onclick="javascript:voltar();" value="Voltar" class="btn btn-default"/> 
+                <button type="button" class="btn btn-primary" onclick="javascript:salvar();">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block extra_javascript %}
+
+	<script>
+        $(document).ready(function () {
+            $('#id_grupo_servico').attr('data-live-search', 'true');
+            montaComboFiltro();
+        });
+
+        function salvar() {
+            $('#formulario').submit();
+        }
+
+        function voltar() {
+            location.href = '/cadastro/servico/';
+        }
+
+        function montaComboFiltro() {
+            var request_url = '/chamado/api/grupo_servico_todos/{{ request.session.setor_id }}/';
+
+            $.ajax({
+                url: request_url,
+                dataType: 'json',
+                success: function(result){
+                    var toAppend = '';
+                    $.each(result, function(index, element) {
+                        if (window.sessionStorage.getItem('combo_filtro_grupo') != null && window.sessionStorage.getItem('combo_filtro_grupo') == element.gs_id)
+                            toAppend += '<option value="' + element.gs_id + '" selected>' + element.gs_descricao + '</option>';
+                        else
+                            toAppend += '<option value="' + element.gs_id + '">' + element.gs_descricao + '</option>';
+                    });
+                    $('#id_grupo_servico').empty();
+                    $('#id_grupo_servico').append(toAppend);
+                    $('#id_grupo_servico').selectpicker();
+
+                },
+                error: function(xhr, status, error) {
+                    console.log('Erro ao carregar grupos de serviço');
+                    console.log(xhr.readyState);
+                    console.log(status);
+                    console.log(error);
+                }
+            })
+        }
+
+
+	</script>
+
+{% endblock %}

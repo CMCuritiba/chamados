@@ -33,12 +33,17 @@
 	$(document).ready(function () {
 		atualizaGrupoServico();
 		atualizaServico();
+		atualizaLocalizacao();
+		atualizaPavimento();
 
 		$('#id_setor').on('change', function() {
             atualizaGrupoServico();    
     	});
 		$('#id_grupo_servico').on('change', function() {
     		atualizaServico();
+    	});
+    	$('#id_localizacao').on('change', function() {
+    		atualizaLocalizacao();
     	});
 	});
 
@@ -67,6 +72,7 @@
 				});
 				$('#id_grupo_servico').append(toAppend);
                 atualizaServico();
+                setaLocalizacao();
 			},
 			error: function(xhr, status, error) {
 				console.log('Erro ao carregar Grupos de Serviços');
@@ -147,6 +153,112 @@
 			},
 			error: function(xhr, status, error) {
 				console.log('Erro ao carregar Serviços');
+				console.log(xhr.readyState);
+				console.log(status);
+				console.log(error);
+			}
+		})
+
+    }
+
+    function atualizaLocalizacao() {
+		valor_localizacao = $('#id_localizacao').val();
+		valor_pavimento = $('#id_pavimento').val();
+		$('#id_localizacao').empty();
+		request_url = '/chamado/api/localizacao/';
+		$.ajax({
+			url: request_url,
+			dataType: 'json',
+			success: function(result){
+				var toAppend = '';
+				$.each(result, function(index, element) {
+                    if (element.localizacao_id == valor_localizacao) {
+					   toAppend += '<option value="' + element.localizacao_id + '" selected>' + element.localizacao_descricao + '</option>';
+                       $('#id_localizacao').val(element.localizacao_id);
+                    }
+                    else
+                        toAppend += '<option value="' + element.localizacao_id + '">' + element.localizacao_descricao + '</option>';
+				});
+				$('#id_localizacao').append(toAppend);
+                atualizaPavimento();
+			},
+			error: function(xhr, status, error) {
+				console.log('Erro ao carregar Localizações');
+				console.log(xhr.readyState);
+				console.log(status);
+				console.log(error);
+			}
+		})
+    }
+	function atualizaPavimento() {
+		$('#id_pavimento').empty();
+		if ($('#id_localizacao').val() == '' || $('#id_localizacao').val() == null) {
+			request_url = '/chamado/api/pavimento/99999';
+        }
+       	else {
+    		  request_url = '/chamado/api/pavimento/' + $('#id_localizacao').val();
+        }
+		$.ajax({
+			url: request_url,
+			dataType: 'json',
+			success: function(result){
+				var toAppend = '';
+				$.each(result, function(index, element) {
+					if (element.pavimento_id == valor_pavimento) {
+						toAppend += '<option value="' + element.pavimento_id + '" selected>' + element.pavimento_descricao + '</option>';
+						$('#id_pavimento').val(element.pavimento_id);
+					}
+					else
+						toAppend += '<option value="' + element.pavimento_id + '">' + element.pavimento_descricao + '</option>';
+				});
+				/*
+                if (toAppend == '') {
+				    toAppend = '<option value="0">----------</option>'
+                }
+                */
+                $('#id_pavimento').append(toAppend);
+                //setaPatrimonio();
+
+			},
+			error: function(xhr, status, error) {
+				console.log('Erro ao carregar Pavimentos');
+				console.log(xhr.readyState);
+				console.log(status);
+				console.log(error);
+			}
+		})
+    }
+
+    function setaLocalizacao() {
+    	if ($('#id_setor').val() == '' || $('#id_setor').val() == null) {
+			request_url = '/chamado/api/localizacao_setor/99999';
+        }
+       	else {
+    		  request_url = '/chamado/api/localizacao_setor/' + $('#id_setor').val();
+        }
+		$.ajax({
+			url: request_url,
+			dataType: 'json',
+			success: function(result){
+				var localizacao = false;
+				$.each(result, function(index, element) {
+					localizacao = ! element.localizacao;
+				});
+				if (localizacao) {
+					$('#id_localizacao').removeAttr('required');
+					$('#id_localizacao').attr('disabled', true);
+					$('#id_pavimento').removeAttr('required');
+					$('#id_pavimento').attr('disabled', true);
+				}
+				else {
+					$('#id_localizacao').attr('required', 'required');
+					$('#id_localizacao').attr('disabled', false);
+					$('#id_pavimento').attr('required', 'required');
+					$('#id_pavimento').attr('disabled', false);
+				}
+			},
+			error: function(xhr, status, error) {
+				console.log('Erro ao carregar dados do Setor');
 				console.log(xhr.readyState);
 				console.log(status);
 				console.log(error);

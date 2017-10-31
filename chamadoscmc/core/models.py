@@ -10,6 +10,39 @@ from django.core.exceptions import ValidationError
 from datetime import datetime
 
 from autentica.models import User as Usuario
+
+#---------------------------------------------------------------------------------------------
+# Model Localizacao
+#---------------------------------------------------------------------------------------------
+@python_2_unicode_compatible
+class Localizacao(models.Model):
+	class Meta:
+		verbose_name_plural = 'Localizações'
+
+	descricao = models.CharField(max_length=300)
+
+	def __unicode__(self):
+		return self.descricao
+
+	def __str__(self):
+		return self.descricao		
+
+#---------------------------------------------------------------------------------------------
+# Model Pavimento
+#---------------------------------------------------------------------------------------------
+@python_2_unicode_compatible
+class Pavimento(models.Model):
+	class Meta:
+		verbose_name_plural = 'Pavimentos'
+
+	localizacao = models.ForeignKey(Localizacao)
+	descricao = models.CharField(max_length=300)
+
+	def __unicode__(self):
+		return self.descricao
+
+	def __str__(self):
+		return self.descricao				
 #---------------------------------------------------------------------------------------------
 # Model para a view V_SETOR
 #---------------------------------------------------------------------------------------------
@@ -51,6 +84,7 @@ class SetorChamado(models.Model):
 
 	setor = models.OneToOneField(VSetor, to_field='set_id', db_constraint=False)
 	recebe_chamados = models.BooleanField(default=False)
+	localizacao = models.BooleanField(default=False)
 
 	def __unicode__(self):
 		return self.setor.set_nome
@@ -128,27 +162,27 @@ class Chamado(models.Model):
 	data_fechamento = models.DateTimeField(null=True)
 	novidade = models.BooleanField(default=False)
 	patrimonio = models.CharField(max_length=100, null=True, blank=True)
+	localizacao = models.ForeignKey(Localizacao, blank=True, null=True)
+	pavimento = models.ForeignKey(Pavimento,  blank=True, null=True)
 
+	'''
 	def clean(self):
+		data = self.cleaned_data
+		print('---------------------------')
+		print(data)
+		print('---------------------------')
+		if self.grupo_servico is None:
+			raise ValidationError('Grupo Serviço Obrigatório')
 		if self.grupo_servico.patrimonio_obrigatorio:
-			if self.patrimonio == '' or self.patrimonio == None:
+			if self.patrimonio == '' or self.patrimonio is None:
 				raise ValidationError('Patrimônio obrigatório para ' + self.grupo_servico.descricao)
+	'''
 
 	def __unicode__(self):
 		return self.descricao
 
 	def __str__(self):
-		return 'usuario:%s ' \
-			   'setor:%s ' \
-			   'grupo_servico:%s ' \
-			   'servico:%s ' \
-			   'ramal:%s ' \
-			   'data_abertura:%s' % (str(self.usuario),
-									 str(self.setor),
-									 str(self.grupo_servico),
-									 str(self.servico),
-									 str(self.ramal),
-									 str(self.data_abertura))
+		return self.descricao
 
 
 @python_2_unicode_compatible

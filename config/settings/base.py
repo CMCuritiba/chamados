@@ -73,14 +73,15 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 # MIDDLEWARE CONFIGURATION
 # ------------------------------------------------------------------------------
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+    'django.middleware.security.SecurityMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+    
 ]
 
 # DEBUG
@@ -327,7 +328,7 @@ LOGGING = {
 # ------------------------------------------------------------------------------
 
 PIPELINE = {
-    'PIPELINE_ENABLED': True,
+    'PIPELINE_ENABLED': False,
     'JS_COMPRESSOR': False,
     'CSS_COMPRESSOR': False,
     'STYLESHEETS': {
@@ -339,6 +340,7 @@ PIPELINE = {
               'datatables/media/css/dataTables.bootstrap.css',
               'login.css',
               'font-awesome/css/font-awesome.css',
+              'bootstrap-select/dist/css/bootstrap-select.css',
             ),
             'output_filename': 'css/master.css',
         },
@@ -354,6 +356,7 @@ PIPELINE = {
               'datatables/media/js/dataTables.bootstrap.js',
               #'vue/dist/vue.common.js',
               'vue/dist/vue.js',
+              'bootstrap-select/dist/js/bootstrap-select.js',
               #'vue-strap/dist/vue-strap.js',
               #'vue-strap/dist/vue-strap-lang.js',
             ),
@@ -377,7 +380,8 @@ BOWER_INSTALLED_APPS = (
     'datatables-bootstrap3',
     'vue',
     'vue-strap',
-    'fontawesome'
+    'fontawesome',
+    'bootstrap-select'
 )
 
 # ALTERAÇÕES NO USER PARA GUARDAR INFO DO LDAP
