@@ -21,7 +21,7 @@ before_script:
   - python manage.py migrate --settings=config.settings.travis
   - python manage.py migrate core 0001_initial --settings=config.settings.travis
   - python manage.py bower_install
-  - python manage.py collectstatic --noinput
+  #- python manage.py collectstatic --noinput
 
 # comando para rodas os testes
 script: 
