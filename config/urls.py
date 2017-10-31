@@ -19,6 +19,8 @@ urlpatterns = [
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name='about'),
     url(r'^fila/', include('chamadoscmc.core.urlsfila', namespace='fila')),
     url(r'^chamado/', include('chamadoscmc.core.urls', namespace='chamado')),
+    url(r'^cadastro/', include('chamadoscmc.core.cadastro_urls', namespace='cadastro')),
+
     # Django Admin, use {% url 'admin:index' %}
     url(settings.ADMIN_URL, admin.site.urls),
 

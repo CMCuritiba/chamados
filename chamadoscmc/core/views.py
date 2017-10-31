@@ -21,9 +21,9 @@ from django import forms
 from django.forms.utils import ErrorList
 
 from .forms import ChamadoForm
-from .models import GrupoServico, Servico, Chamado, FilaChamados, ChamadoResposta, HistoricoChamados, SetorChamado
+from .models import GrupoServico, Servico, Chamado, FilaChamados, ChamadoResposta, HistoricoChamados, SetorChamado, Localizacao, Pavimento
 from autentica.util.mixin import CMCLoginRequired
-from .forms import ChamadoForm
+from .forms import ChamadoForm, ServicoSearchForm, ServicoForm, GrupoServicoForm
 
 from ..lib.fila import FilaManager
 
@@ -47,6 +47,8 @@ class CadastroChamadosCreateView(CMCLoginRequired, SuccessMessageMixin, CreateVi
         obj = form.save(commit=False)
         obj.usuario = self.request.user
         obj.save()
+        fila = FilaManager()
+        fila.cria(self.request.user, obj)
         #return super(CadastroChamadosCreateView, self).form_valid(form)
         return HttpResponseRedirect(self.success_url)
 
@@ -181,6 +183,46 @@ def servico_json(request, id_gs):
 
     return JsonResponse(resposta, safe=False)
 
+# --------------------------------------------------------------------------------------
+# Retorna JSON dos serviços para o grupo de serviço especificado
+# --------------------------------------------------------------------------------------
+def servico_todos_json(request, setor_id):
+    resposta = []
+
+    if setor_id == None or setor_id == '' or setor_id == '0':
+        servicos = None
+    else:
+        servicos = Servico.objects.filter(grupo_servico__setor__setor_id=setor_id)
+
+    for s in servicos:
+        servico_json = {}
+        servico_json['servico_id'] = s.id
+        servico_json['grupo_id'] = s.grupo_servico.id
+        servico_json['servico_descricao'] = s.descricao
+        resposta.append(servico_json)
+
+
+    return JsonResponse(resposta, safe=False)    
+
+# --------------------------------------------------------------------------------------
+# Retorna JSON dos grupos de serviços para setor especificado
+# --------------------------------------------------------------------------------------
+def grupo_servico_todos_json(request, id_setor):
+    resposta = []
+
+    if id_setor == None or id_setor == '' or id_setor == '0':
+        grupos_servicos = None
+    else:
+        grupos_servicos = GrupoServico.objects.filter(setor__setor_id=id_setor).order_by('descricao')
+
+    for gs in grupos_servicos:
+        grupo_servico_json = {}
+        grupo_servico_json['gs_id'] = gs.id
+        grupo_servico_json['gs_descricao'] = gs.descricao
+        resposta.append(grupo_servico_json)
+
+    return JsonResponse(resposta, safe=False)    
+
 #--------------------------------------------------------------------------------------
 # Retorna JSON lista de chamados do usuario
 #--------------------------------------------------------------------------------------
@@ -290,7 +332,7 @@ def respostas_json(request, id_chamado):
     resposta = []
 
     if id_chamado == None or id_chamado == '' or id_chamado == '0':
-        respostas = None
+        respostas = ChamadoResposta.objects.filter(chamado_id=None)
     else:
         respostas = ChamadoResposta.objects.filter(chamado_id=id_chamado)
 
@@ -360,7 +402,7 @@ class MyIndexView(SuccessMessageMixin, TemplateView):
     template_name = 'core/index.html'
 
     def dispatch(self, request, *args, **kwargs):
-        if request.user .is_anonymous or not request.user.is_authenticated:
+        if request.user .is_anonymous or not request.user.is_authenticated or 'setor_id' not in request.session:
             return HttpResponseRedirect('/autentica/loga/?next=/')
         setor_chamado = SetorChamado.objects.get(setor_id=request.session['setor_id'])
         if (setor_chamado.recebe_chamados):
@@ -397,3 +439,129 @@ def patrimonio_servico_json(request, id_gs):
     resposta.append(gs_json)
 
     return JsonResponse(resposta, safe=False)    
+# --------------------------------------------------------------------------------------
+# Retorna JSON das localizacoes cadastradas
+# --------------------------------------------------------------------------------------
+def localizacao_json(request):
+    resposta = [{"localizacao_id": 0, "localizacao_descricao": "----------"}]
+
+    localizacoes = Localizacao.objects.all().order_by('descricao')
+
+    for l in localizacoes:
+        localizacao_json = {}
+        localizacao_json['localizacao_id'] = l.id
+        localizacao_json['localizacao_descricao'] = l.descricao
+        resposta.append(localizacao_json)
+
+
+    return JsonResponse(resposta, safe=False)    
+#--------------------------------------------------------------------------------------
+# Retorna JSON dos pavimentos da localizacao
+#--------------------------------------------------------------------------------------
+def pavimentos_json(request, id_localizacao):
+    resposta = [{"localizacao_id": 0, "pavimento_descricao": "----------", "pavimento_id": 0}]
+
+    if id_localizacao == None or id_localizacao == '' or id_localizacao == '0':
+        respostas = Pavimento.objects.filter(localizacao_id=None).order_by('descricao')
+    else:
+        respostas = Pavimento.objects.filter(localizacao_id=id_localizacao).order_by('descricao')
+
+    for r in respostas:
+        resposta_json = {}
+        resposta_json['pavimento_id'] = r.id
+        resposta_json['localizacao_id'] = r.localizacao.id
+        resposta_json['pavimento_descricao'] = r.descricao
+        
+        resposta.append(resposta_json)
+
+    return JsonResponse(resposta, safe=False)            
+# --------------------------------------------------------------------------------------
+# Retorna JSON com informação de localizacao do setor
+# --------------------------------------------------------------------------------------
+def localizacao_setor_json(request, id_setor):
+    resposta = []
+
+    if id_setor == None or id_setor == '' or id_setor == '99999':
+        l_json = {}
+    else:
+        l_json = {}
+        setor = SetorChamado.objects.filter(id=id_setor)
+        if setor.exists():
+            setor = setor.first()
+            l_json['localizacao'] = setor.localizacao
+        else:
+            l_json['localizacao'] = False
+
+    resposta.append(l_json)
+
+    return JsonResponse(resposta, safe=False)        
+
+#--------------------------------------------------------------------------------------
+class ServicoIndexView(CMCLoginRequired, SuccessMessageMixin, FormView):
+    template_name = 'core/cadastro/servico/index.html'
+    form_class = ServicoSearchForm
+
+
+class ServicoCreateView(CMCLoginRequired, SuccessMessageMixin, CreateView):
+    model = Servico
+    form_class = ServicoForm
+    success_url = '/cadastro/servico/'
+    success_message = "Serviço criado com sucesso"
+    template_name = 'core/cadastro/servico/create.html'   
+
+class ServicoUpdateView(CMCLoginRequired, SuccessMessageMixin, UpdateView):
+    model = Servico
+    form_class = ServicoForm
+    success_url = '/cadastro/servico/'
+    success_message = "Serviço alterado com sucesso"
+    template_name = 'core/cadastro/servico/update.html'
+
+def exclui_servico_json(request, pk):
+
+    if request.method == 'POST' and request.is_ajax():
+        if pk != None and pk != '':
+            servico = Servico.objects.get(pk=pk)
+            servico.delete()
+            response = JsonResponse({'status':'true','message':'Serviço excluído com sucesso'}, status=200)
+        else:
+            response = JsonResponse({'status':'false','message':'Erro ao excluir serviço'}, status=401)
+    else:
+        response = JsonResponse({'status':'false','message':'Não foi possível localizar o serviço'}, status=401)
+    return response             
+
+#--------------------------------------------------------------------------------------
+class GrupoServicoIndexView(CMCLoginRequired, SuccessMessageMixin, TemplateView):
+    template_name = 'core/cadastro/grupo_servico/index.html'
+
+class GrupoServicoCreateView(CMCLoginRequired, SuccessMessageMixin, CreateView):
+    model = GrupoServico
+    form_class = GrupoServicoForm
+    success_url = '/cadastro/grupo_servico/'
+    success_message = "Grupo Serviço criado com sucesso"
+    template_name = 'core/cadastro/grupo_servico/create.html'   
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.setor = SetorChamado.objects.get(setor=self.request.session['setor_id'])
+        obj.save()
+        return HttpResponseRedirect(self.success_url)
+
+class GrupoServicoUpdateView(CMCLoginRequired, SuccessMessageMixin, UpdateView):
+    model = GrupoServico
+    form_class = GrupoServicoForm
+    success_url = '/cadastro/grupo_servico/'
+    success_message = "Grupo Serviço alterado com sucesso"
+    template_name = 'core/cadastro/grupo_servico/update.html'
+
+def exclui_grupo_servico_json(request, pk):
+
+    if request.method == 'POST' and request.is_ajax():
+        if pk != None and pk != '':
+            grupo = GrupoServico.objects.get(pk=pk)
+            grupo.delete()
+            response = JsonResponse({'status':'true','message':'Grupo Serviço excluído com sucesso'}, status=200)
+        else:
+            response = JsonResponse({'status':'false','message':'Erro ao excluir grupo serviço'}, status=401)
+    else:
+        response = JsonResponse({'status':'false','message':'Não foi possível localizar o grupo serviço'}, status=401)
+    return response                 
