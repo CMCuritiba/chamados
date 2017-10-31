@@ -23,7 +23,7 @@ from django.forms.utils import ErrorList
 from .forms import ChamadoForm
 from .models import GrupoServico, Servico, Chamado, FilaChamados, ChamadoResposta, HistoricoChamados, SetorChamado, Localizacao, Pavimento
 from autentica.util.mixin import CMCLoginRequired
-from .forms import ChamadoForm, GrupoServicoSearchForm, ServicoForm
+from .forms import ChamadoForm, ServicoSearchForm, ServicoForm
 
 from ..lib.fila import FilaManager
 
@@ -497,19 +497,19 @@ def localizacao_setor_json(request, id_setor):
     return JsonResponse(resposta, safe=False)        
 
 #--------------------------------------------------------------------------------------
-class GrupoServicoIndexView(CMCLoginRequired, SuccessMessageMixin, FormView):
+class ServicoIndexView(CMCLoginRequired, SuccessMessageMixin, FormView):
     template_name = 'core/cadastro/servico/index.html'
-    form_class = GrupoServicoSearchForm
+    form_class = ServicoSearchForm
 
 
-class GrupoServicoCreateView(CMCLoginRequired, SuccessMessageMixin, CreateView):
+class ServicoCreateView(CMCLoginRequired, SuccessMessageMixin, CreateView):
     model = Servico
     form_class = ServicoForm
     success_url = '/cadastro/servico/'
     success_message = "Serviço criado com sucesso"
     template_name = 'core/cadastro/servico/create.html'   
 
-class GrupoServicoUpdateView(CMCLoginRequired, SuccessMessageMixin, UpdateView):
+class ServicoUpdateView(CMCLoginRequired, SuccessMessageMixin, UpdateView):
     model = Servico
     form_class = ServicoForm
     success_url = '/cadastro/servico/'

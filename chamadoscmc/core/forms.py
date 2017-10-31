@@ -101,10 +101,10 @@ class ChamadoRespostaForm(forms.ModelForm):
 			),
 		)
 
-class GrupoServicoSearchForm(forms.Form):
+class ServicoSearchForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
-        super(GrupoServicoSearchForm, self).__init__(*args, **kwargs)
+        super(ServicoSearchForm, self).__init__(*args, **kwargs)
 
         self.fields['grupo_servico'] = forms.ChoiceField(label="Grupo Serviço", widget=forms.Select(attrs={'data-live-search': 'true'}))
 
