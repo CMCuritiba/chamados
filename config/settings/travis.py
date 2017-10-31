@@ -307,9 +307,9 @@ LOGGING = {
 # ------------------------------------------------------------------------------
 
 PIPELINE = {
-    'PIPELINE_ENABLED': True,
-    'JS_COMPRESSOR': None,
-    'CSS_COMPRESSOR': None,
+    'PIPELINE_ENABLED': False,
+    'JS_COMPRESSOR': False,
+    'CSS_COMPRESSOR': False,
     'STYLESHEETS': {
         'master': {
             'source_filenames': (
@@ -318,6 +318,8 @@ PIPELINE = {
               'datatables/media/css/jquery.dataTables.css',
               'datatables/media/css/dataTables.bootstrap.css',
               'login.css',
+              'font-awesome/css/font-awesome.css',
+              'bootstrap-select/dist/css/bootstrap-select.css',
             ),
             'output_filename': 'css/master.css',
         },
@@ -331,6 +333,11 @@ PIPELINE = {
               'underscore/underscore.js',
               'datatables/media/js/jquery.dataTables.js',
               'datatables/media/js/dataTables.bootstrap.js',
+              #'vue/dist/vue.common.js',
+              'vue/dist/vue.js',
+              'bootstrap-select/dist/js/bootstrap-select.js',
+              #'vue-strap/dist/vue-strap.js',
+              #'vue-strap/dist/vue-strap-lang.js',
             ),
             'output_filename': 'js/master.js',
         }
