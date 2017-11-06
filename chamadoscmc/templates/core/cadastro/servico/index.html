@@ -65,6 +65,8 @@
         var tableServicos;
 
         $(document).ready(function() {
+
+
             $("button#submit").click(function() {
                 exclui();
                 $("#confirmaModal").modal('hide');
@@ -101,10 +103,8 @@
                     },
                     {
                         "targets": [1],
-                        "visible": true,
-                        "searchable": true,
-                        "regex": false,
-                        "smart": false
+                        "visible": false,
+                        "searchable": true
                     },
                     {
                         "targets": [2],
@@ -204,7 +204,7 @@
                     });
                     $('#id_filtro').append(toAppend);
                     $('#id_filtro').selectpicker();
-                    tableServicos.columns(1).search($('#id_filtro').val()).draw();
+                    atualizaFiltro();
 
                 },
                 error: function(xhr, status, error) {
@@ -214,6 +214,11 @@
                     console.log(error);
                 }
             })
+        }
+
+        function atualizaFiltro() {
+            tableServicos.columns(1).search('^'+'5'+'$', true, false).draw();
+            //tableServicos.ajax.reload(null, false);
         }
 
     </script>
