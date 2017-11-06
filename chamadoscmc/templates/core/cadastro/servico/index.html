@@ -101,8 +101,10 @@
                     },
                     {
                         "targets": [1],
-                        "visible": false,
-                        "searchable": true
+                        "visible": true,
+                        "searchable": true,
+                        "regex": false,
+                        "smart": false
                     },
                     {
                         "targets": [2],
@@ -145,7 +147,7 @@
             });
 
             $('#id_filtro').change(function() {
-                tableServicos.columns(1).search(this.value).draw();
+                tableServicos.columns(1).search('^'+this.value+'$', true, false).draw();
                 window.sessionStorage.setItem('combo_filtro_grupo', this.value);
             });
 
