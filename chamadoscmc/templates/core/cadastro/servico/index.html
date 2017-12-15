@@ -10,7 +10,7 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <h4>Filtrar por grupo :</h4><select id="id_filtro" name="id_filtro" data-live-search="true" data-width="100%"></select>
+                    <h4>Filtrar por grupo :</h4><select id="id_filtro" name="id_filtro" data-live-search="true" data-width="50%"></select>
                     <br/><br/>
                 </div>
             </div>
@@ -217,7 +217,7 @@
         }
 
         function atualizaFiltro() {
-            tableServicos.columns(1).search('^'+'5'+'$', true, false).draw();
+            tableServicos.columns(1).search('^'+ $('#id_filtro').val() + '$', true, false).draw();
             //tableServicos.ajax.reload(null, false);
         }
 
