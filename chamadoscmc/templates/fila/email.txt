@@ -1,13 +1,20 @@
 Este é um email automático enviado pelo Controle de Chamados da CMC.
 
-
 Seu chamado foi atualizado e agora encontra-se desta maneira : 
+
+--------------------------------------------------------------------
+
+Status : {{ status }}
+Última resposta : {{ resposta }}
+
+--------------------------------------------------------------------
 
 Número do chamado : {{ chamado_id }}
 Data de abertura : {{ data_abertura }}
 Solicitado ao setor : {{ setor }}
 Serviço : {{ grupo_servico }}/{{ servico }}
 Assunto : {{ assunto }}
-Status : {{ status }}
-Última resposta : {{ resposta }}
 
+--------------------------------------------------------------------
+
+Este é um e-mail automático enviado pelo Controle de Chamados da CMC, por favor não responda.

@@ -280,7 +280,8 @@ LDAP_AUTH_USER_FIELDS = {
     "first_name": env('LDAP_AUTH_USER_FIELDS_FIRST_NAME', default=''),
     "last_name": env('LDAP_AUTH_USER_FIELDS_LAST_NAME', default=''),
     "email": env('LDAP_AUTH_USER_FIELDS_EMAIL', default=''),
-    "matricula": env('LDAP_AUTH_USER_FIELDS_MATRICULA', default=''),
+    #"matricula": env('LDAP_AUTH_USER_FIELDS_MATRICULA', default=''),
+    "pessoa": env('LDAP_AUTH_USER_FIELDS_PESSOA', default=''),
     "lotado": env('LDAP_AUTH_USER_FIELDS_LOTADO', default=''),
     "chefia": env('LDAP_AUTH_USER_FIELDS_CHEFIA', default=''),
 }
