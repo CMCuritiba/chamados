@@ -54,7 +54,7 @@ django-celery==3.2.1
 django-celery-email==2.0.0
 
 # Autentica
-https://github.com/CMCuritiba/django-cmcldapauth/raw/master/dist/django-cmcldapauth-0.1.tar.gz
+https://github.com/CMCuritiba/django-cmcldapauth/raw/master/dist/django-cmcldapauth-0.2.tar.gz
 
 # Unipath
 unipath
