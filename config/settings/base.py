@@ -329,7 +329,7 @@ LOGGING = {
 # ------------------------------------------------------------------------------
 
 PIPELINE = {
-    'PIPELINE_ENABLED': False,
+    'PIPELINE_ENABLED': True,
     'JS_COMPRESSOR': False,
     'CSS_COMPRESSOR': False,
     'STYLESHEETS': {
