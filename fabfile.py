@@ -11,7 +11,7 @@ HTML = '/var/www/html'
 ENVS = '/usr/share/envs'
 PROJECT_ROOT = WEBAPPS + '/%s' % PROJECT_NAME
 REPO = 'https://github.com/CMCuritiba/chamados.git'
-USERAPP = 'cmc-apps'
+USERAPP = 'www-data'
 ENV_NAME = 'chamados'
 
 env.hosts = []
@@ -210,6 +210,12 @@ def git_update():
 		#cria_webapps()
 		#sudo('git clone {} {}'.format(REPO, PROJECT_ROOT))
 		sudo('git pull origin master')
+		if env.environment == 'staging':
+			sudo('chmod a+x {}/deploy/staging/run.sh'.format(PROJECT_ROOT))
+		elif env.environment == 'production':
+			sudo('chmod a+x {}/deploy/production/run.sh'.format(PROJECT_ROOT))
+		else:
+			print('Nenhum ambiente selecionado. Defina staging ou production.')
 
 @task 
 def cria_links():
