@@ -46,6 +46,7 @@ class CadastroChamadosCreateView(CMCLoginRequired, SuccessMessageMixin, CreateVi
     def form_valid(self, form):
         obj = form.save(commit=False)
         obj.usuario = self.request.user
+        #obj.save()
         obj.save()
         fila = FilaManager()
         fila.cria(self.request.user, obj)

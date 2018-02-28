@@ -184,7 +184,9 @@ class Chamado(models.Model):
 	def __str__(self):
 		return self.descricao
 
-
+#---------------------------------------------------------------------------------------------
+# Model FilaChamados
+#---------------------------------------------------------------------------------------------
 @python_2_unicode_compatible
 class FilaChamados(models.Model):
 	class Meta:
@@ -236,3 +238,10 @@ class ChamadoResposta(models.Model):
 
 	def __str__(self):
 		return self.resposta
+
+#---------------------------------------------------------------------------------------------
+# Model ChamadoAnexo
+#---------------------------------------------------------------------------------------------		
+#class ChamadoAnexo(models.Model):
+#	chamado = models.ForeignKey(Chamado, related_name='anexos')
+#	arquivo = models.FileField()

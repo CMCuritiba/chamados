@@ -17,8 +17,10 @@ from .models import Chamado, ChamadoResposta, Localizacao, Pavimento, Servico, G
 
 
 class ChamadoForm(forms.ModelForm):
+    #anexo = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
     class Meta:
         model = Chamado
+        #fields = ['setor', 'grupo_servico', 'servico', 'ramal', 'assunto', 'descricao', 'patrimonio', 'localizacao', 'pavimento', 'anexo']
         fields = ['setor', 'grupo_servico', 'servico', 'ramal', 'assunto', 'descricao', 'patrimonio', 'localizacao', 'pavimento']
         exclude = ('user',)
 
@@ -58,6 +60,10 @@ class ChamadoForm(forms.ModelForm):
                 Div('pavimento', css_class='col-md-6',),
                 css_class='col-md-12 row',
             ),
+            #Div(
+            #    Div('anexo', css_class='col-md-12',),
+            #    css_class='col-md-12 row',
+            #),
         )
 
     def clean(self):
