@@ -360,6 +360,9 @@ PIPELINE = {
               'bootstrap-select/dist/js/bootstrap-select.js',
               #'vue-strap/dist/vue-strap.js',
               #'vue-strap/dist/vue-strap-lang.js',
+              'blueimp-file-upload/js/vendor/jquery.ui.widget.js',
+              'blueimp-file-upload/js/jquery.iframe-transport.js',
+              'blueimp-file-upload/js/jquery.fileupload.js',
             ),
             'output_filename': 'js/master.js',
         }
@@ -382,7 +385,8 @@ BOWER_INSTALLED_APPS = (
     'vue',
     'vue-strap',
     'fontawesome',
-    'bootstrap-select'
+    'bootstrap-select',
+    'jquery-file-upload',
 )
 
 # ALTERAÇÕES NO USER PARA GUARDAR INFO DO LDAP

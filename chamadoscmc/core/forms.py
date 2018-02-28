@@ -13,17 +13,20 @@ from crispy_forms.bootstrap import StrictButton
 from django.conf import settings
 from decimal import Decimal
 
-from .models import Chamado, ChamadoResposta, Localizacao, Pavimento, Servico, GrupoServico
+from .models import Chamado, ChamadoResposta, Localizacao, Pavimento, Servico, GrupoServico, SetorChamado
 
 
 class ChamadoForm(forms.ModelForm):
+    #anexo = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
     class Meta:
         model = Chamado
+        #fields = ['setor', 'grupo_servico', 'servico', 'ramal', 'assunto', 'descricao', 'patrimonio', 'localizacao', 'pavimento', 'anexo']
         fields = ['setor', 'grupo_servico', 'servico', 'ramal', 'assunto', 'descricao', 'patrimonio', 'localizacao', 'pavimento']
         exclude = ('user',)
 
     def __init__(self, *args, **kwargs):
         super(ChamadoForm, self).__init__(*args, **kwargs)
+        self.fields['setor'] = forms.ModelChoiceField(queryset=SetorChamado.objects.filter(recebe_chamados=True))
         self.fields['localizacao'].empty_label = "Selecione..."
         self.fields['pavimento'].empty_label = "Selecione..."
 
@@ -32,7 +35,7 @@ class ChamadoForm(forms.ModelForm):
 
         self.helper.layout = Layout(
             Div(
-                Div(Field('setor', v_model='setor'), css_class='col-md-12',),
+                Div(Field('setor'), css_class='col-md-12',),
                 css_class='col-md-12 row',
             ),
             Div(
@@ -58,6 +61,10 @@ class ChamadoForm(forms.ModelForm):
                 Div('pavimento', css_class='col-md-6',),
                 css_class='col-md-12 row',
             ),
+            #Div(
+            #    Div('anexo', css_class='col-md-12',),
+            #    css_class='col-md-12 row',
+            #),
         )
 
     def clean(self):

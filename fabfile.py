@@ -213,14 +213,11 @@ def git_update():
 
 @task 
 def cria_links():
-	if env.environment == 'staging':
-		sudo('ln -sf {}/deploy/staging/supervisor.conf /etc/supervisor/conf.d/chamados_cmc.conf'.format(PROJECT_ROOT))
-		sudo('ln -sf {}/deploy/staging/nginx.conf /etc/nginx/sites-enabled/chamados_cmc'.format(PROJECT_ROOT))
-		sudo('chmod a+x {}/deploy/staging/run.sh'.format(PROJECT_ROOT))
-	elif env.environment == 'production':
-		sudo('ln -sf {}/deploy/production/supervisor.conf /etc/supervisor/conf.d/chamados_cmc.conf'.format(PROJECT_ROOT))
-		sudo('ln -sf {}/deploy/production/nginx.conf /etc/nginx/sites-enabled/chamados_cmc'.format(PROJECT_ROOT))
-		sudo('chmod a+x {}/deploy/production/run.sh'.format(PROJECT_ROOT))
+	if env.environment == 'staging' or env.environment == 'production':
+		sudo('ln -sf {}/deploy/{}/supervisor.conf /etc/supervisor/conf.d/chamados_cmc.conf'.format(PROJECT_ROOT,env.environment))
+		sudo('ln -sf {}/deploy/{}/nginx.conf /etc/nginx/sites-enabled/chamados_cmc'.format(PROJECT_ROOT,env.environment))
+		sudo('chmod a+x {}/deploy/{}/bootstrap.sh'.format(PROJECT_ROOT,env.environment))
+		sudo('chmod a+x {}/deploy/{}/run.sh'.format(PROJECT_ROOT,env.environment))
 	else:
 		print('Nenhum ambiente selecionado. Defina staging ou production.')
 

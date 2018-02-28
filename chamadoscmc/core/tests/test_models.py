@@ -3,6 +3,7 @@
 from django.test import TestCase, RequestFactory
 from autentica.models import User
 from django.db import IntegrityError, DataError
+#from ..models import SetorChamado, GrupoServico, VSetor, Servico, Chamado, FilaChamados, ChamadoResposta, ChamadoAnexo
 from ..models import SetorChamado, GrupoServico, VSetor, Servico, Chamado, FilaChamados, ChamadoResposta
 
 
@@ -71,6 +72,17 @@ class ChamadoTestCase(TestCase):
 										 ramal="4813", assunto="pau no relatório",descricao="copiei texto do editor do "
 													"SPL e colei em nova proposição mas quando vou imprimir aparecem "
 																			"caracteres estranhos e não imprime PDF.")
+#	def test_chamado_arquivos_anexo_ok(self):
+#		usuario = User.objects.get(pk=1)
+#		setor_chamado = SetorChamado.objects.get(pk=1)
+#		grupo = GrupoServico.objects.get(pk=1)
+#		servico = Servico.objects.get(pk=1)
+#
+#		chamado = Chamado.objects.create(usuario=usuario, setor=setor_chamado, grupo_servico=grupo, servico=servico,
+#										 ramal="4813", assunto="pau no relatório",descricao="copiei texto do editor do "
+#													"SPL e colei em nova proposição mas quando vou imprimir aparecem "
+#																			"caracteres estranhos e não imprime PDF.")
+#		anexo = ChamadoAnexo.objects.create(chamado=chamado, arquivo="hadhsdhasdds.pdf")
 
 class SetorChamadoTestCase(TestCase):
 	fixtures = ['setor_chamado.json']
