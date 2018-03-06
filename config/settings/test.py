@@ -63,8 +63,8 @@ TEMPLATES[0]['OPTIONS']['loaders'] = [
 
 # LDAP
 # ------------------------------------------------------------------------------
-LDAP_AUTH_URL = "ldap://ldap-desenv"
-LDAP_AUTH_SEARCH_BASE = "ou=Usuarios,dc=cmc,dc=pr,dc=gov,dc=br"
+LDAP_AUTH_URL = "ldap://ldap"
+LDAP_AUTH_SEARCH_BASE = "ou=Usuarios,dc=pr,dc=gov,dc=br"
 
 # DATABASE CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -72,7 +72,7 @@ LDAP_AUTH_SEARCH_BASE = "ou=Usuarios,dc=cmc,dc=pr,dc=gov,dc=br"
 DATABASES = {
     'ldap': {
         'ENGINE': 'ldapdb.backends.ldap',
-        'NAME': 'ldap://ldap-desenv',
+        'NAME': 'ldap://ldap',
         #'USER': 'ou=Usuarios,dc=cmc,dc=pr,dc=gov,dc=br',
         #'PASSWORD': '',
         #'USER': 'uid=alexandre.odoni,ou=Usuarios,dc=cmc,dc=pr,dc=gov,dc=br',
@@ -84,4 +84,4 @@ DATABASES = {
      },
     'default': env.db('DATABASE_URL', default='postgres:///chamados-cmc-test'),
 }
-DATABASES['default']['ATOMIC_REQUESTS'] = True
+#DATABASES['default']['ATOMIC_REQUESTS'] = True
