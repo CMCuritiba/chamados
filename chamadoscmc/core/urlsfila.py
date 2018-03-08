@@ -19,4 +19,3 @@ urlpatterns = [
 	url(r'^fecha/$', views.fecha, name='fecha'),
 	url(r'^api/responde/$', views.responde_json, name='responde'),
 ]
-
