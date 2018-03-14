@@ -12,6 +12,7 @@ from datetime import datetime
 from autentica.models import User as Usuario
 from chamadoscmc.core.models import GrupoServico, Servico, Chamado, FilaChamados, ChamadoResposta, HistoricoChamados, SetorChamado
 from chamadoscmc.lib.mail import Mailer
+from chamadoscmc.lib.exceptions import BusinessLogicException
 
 
 def enviaEmail(function):
@@ -43,9 +44,9 @@ class FilaManager(object):
 	@transaction.atomic
 	def atende(self, usuario, chamado):
 		if chamado == None or chamado.status != 'ABERTO':
-			raise ValueError('Status do chamado não é ABERTO.')
+			raise BusinessLogicException('Status do chamado não é ABERTO.')
 		if usuario == None:
-			raise ValueError('Usuário inválido')
+			raise BusinessLogicException('Usuário inválido')
 		fila = FilaChamados.objects.filter(chamado=chamado).first()
 		if fila == None:
 			fila = FilaChamados.objects.create(usuario=usuario, chamado=chamado)
@@ -64,7 +65,7 @@ class FilaManager(object):
 	@transaction.atomic
 	def devolve(self, usuario, chamado):
 		if chamado == None or chamado.status != 'ATENDIMENTO':
-			raise ValueError('Status do chamado não é ATENDIMENTO.')
+			raise BusinessLogicException('Status do chamado não é ATENDIMENTO.')
 		fila = FilaChamados.objects.filter(chamado=chamado).first()
 		fila.usuario = None
 		fila.save()
@@ -78,7 +79,9 @@ class FilaManager(object):
 	@transaction.atomic
 	def fecha(self, usuario, chamado):
 		if chamado == None or chamado.status != 'ATENDIMENTO':
-			raise ValueError('Status do chamado não é ATENDIMENTO.')
+			raise BusinessLogicException('Status do chamado não é ATENDIMENTO.')
+		if chamado.chamadoresposta_set.count() == 0:
+			raise BusinessLogicException('Chamado sem nenhuma resposta. É necessário registrar uma resposta para poder fechá-lo.')
 		chamado.status = 'FECHADO'
 		chamado.data_fechamento = datetime.now()
 		chamado.save()
@@ -90,7 +93,7 @@ class FilaManager(object):
 	@transaction.atomic
 	def reabre(self, usuario, chamado):
 		if chamado == None or chamado.status != 'FECHADO':
-			raise ValueError('Status do chamado não é FECHADO.')
+			raise BusinessLogicException('Status do chamado não é FECHADO.')
 		fila = FilaChamados.objects.filter(chamado=chamado).first()
 		fila.usuario = None
 		fila.save()
@@ -103,7 +106,7 @@ class FilaManager(object):
 	@transaction.atomic
 	def cria(self, usuario, chamado):
 		if chamado == None:
-			raise ValueError('Chamado inválido')
+			raise BusinessLogicException('Chamado inválido')
 		fila = FilaChamados.objects.filter(chamado=chamado).first()
 		if fila == None:
 			fila = FilaChamados.objects.create(usuario=usuario, chamado=chamado)
