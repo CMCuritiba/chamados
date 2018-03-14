@@ -16,10 +16,6 @@ class Mailer:
 
     def send_messages(self, chamado):
         messages = self.__generate_messages(chamado)
-        print('enviando')
-        print(messages)
-        print(chamado)
-        print(chamado.status)
         self.__send_mail(messages)
 
     def __send_mail(self, mail_messages):
