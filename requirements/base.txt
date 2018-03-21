@@ -70,3 +70,6 @@ django-celery-email==2.0.0
 
 # Celery
 celery==3.1.25
+
+# Template Docs para criar relatorios
+templated-docs
