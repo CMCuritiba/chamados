@@ -71,8 +71,8 @@ def des_chown():
 
 def cria_webapps():
 	sudo('mkdir -p {}'.format(WEBAPPS))
-	sudo('mkdir -p {}'.format(PROJECT_ROOT), user=USERAPP)
-	#sudo('chown -R {}:{} {}'.format(USERAPP, USERAPP, WEBAPPS))
+	sudo('mkdir -p {}'.format(PROJECT_ROOT))
+	sudo('chown -R {}:{} {}'.format(USERAPP, USERAPP, WEBAPPS))
 
 def cria_envs():
 	sudo('mkdir -p {}'.format(ENVS))
@@ -162,10 +162,14 @@ def bootstrap():
 	sudo('apt-get install -y nodejs')
 	sudo('npm install -g bower')
 
+	#instalar bibliotecas do libreoffice para geracao de documentos
+	sudo('apt-get install libreoffice-core')
+	sudo('apt-get install libreoffice-writer')
+
 	# Cria os diretórios e permissões necessários 
 
-	cria_grupo()
-	cria_userapp()
+	#cria_grupo()
+	#cria_userapp()
 	cria_webapps()	
 	cria_envs()
 	cria_html()

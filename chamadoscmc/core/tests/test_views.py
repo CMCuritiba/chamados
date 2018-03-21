@@ -9,7 +9,7 @@ from django.contrib.sessions.middleware import SessionMiddleware
 from django.contrib.messages.middleware import MessageMiddleware
 from django.test import TestCase, RequestFactory
 
-from ..views import CadastroChamadosIndexView, FilaChamadosIndexView, ChamadoDetailView, GrupoServicoIndexView
+from ..views import CadastroChamadosIndexView, FilaChamadosIndexView, ChamadoDetailView, GrupoServicoIndexView, RelatorioChamadoIndexView
 from autentica.models import User
 
 
@@ -167,3 +167,40 @@ class GrupoServicoViewTests(TestCase):
         response = GrupoServicoIndexView.as_view()(request)
         response.render()
         self.assertEqual(response.status_code, 200)
+
+
+class RelatoriosViewTests(TestCase):
+    fixtures = ['user.json', 'chamado.json', 'setor_chamado.json', 'grupo_servico.json', 'servico.json']
+
+    nome_usuario = 'tora'
+    senha = 'mandioca'
+
+
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(self.nome_usuario, password=self.senha)
+        self.user.is_staff = True
+        self.user.save()
+        self.factory = RequestFactory()
+
+
+    def setup_request(self, request):
+        request.user = self.user
+
+        middleware = SessionMiddleware()
+        middleware.process_request(request)
+        request.session.save()
+
+        middleware = MessageMiddleware()
+        middleware.process_request(request)
+        request.session.save()
+
+        request.session['some'] = 'some'
+        request.session.save()
+
+
+    def test_index(self):
+        request = self.factory.get('/relatorio/chamado/')
+        request.user = self.user
+        response = RelatorioChamadoIndexView.as_view()(request)
+        response.render()
+        self.assertEqual(response.status_code, 200)        

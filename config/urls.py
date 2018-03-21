@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^fila/', include('chamadoscmc.core.urlsfila', namespace='fila')),
     url(r'^chamado/', include('chamadoscmc.core.urls', namespace='chamado')),
     url(r'^cadastro/', include('chamadoscmc.core.cadastro_urls', namespace='cadastro')),
+    url(r'^relatorio/', include('chamadoscmc.core.relatorio_urls', namespace='relatorio')),
 
     # Django Admin, use {% url 'admin:index' %}
     url(settings.ADMIN_URL, admin.site.urls),

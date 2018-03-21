@@ -90,7 +90,7 @@ class SetorChamado(models.Model):
 		return self.setor.set_nome
 
 	def __str__(self):
-		return self.setor.set_nome
+		return self.setor.set_sigla
 
 #---------------------------------------------------------------------------------------------
 # Model GrupoServico
@@ -164,6 +164,7 @@ class Chamado(models.Model):
 	patrimonio = models.CharField(max_length=100, null=True, blank=True)
 	localizacao = models.ForeignKey(Localizacao, blank=True, null=True)
 	pavimento = models.ForeignKey(Pavimento,  blank=True, null=True)
+	setor_solicitante = models.ForeignKey(VSetor, to_field='set_id', db_constraint=False, null=True)
 
 	'''
 	def clean(self):

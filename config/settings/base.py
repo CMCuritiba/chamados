@@ -330,19 +330,21 @@ LOGGING = {
 # ------------------------------------------------------------------------------
 
 PIPELINE = {
-    'PIPELINE_ENABLED': True,
+    'PIPELINE_ENABLED': False,
     'JS_COMPRESSOR': False,
     'CSS_COMPRESSOR': False,
     'STYLESHEETS': {
         'master': {
             'source_filenames': (
-              'bootstrap/dist/css/bootstrap.css',
+              'bootstrap-css/css/bootstrap.css',
               'jasny-bootstrap/dist/css/jasny-bootstrap.css',
+              'bootstrap-datepicker/dist/css/bootstrap-datepicker3.css',
               'datatables/media/css/jquery.dataTables.css',
               'datatables/media/css/dataTables.bootstrap.css',
-              'login.css',
               'font-awesome/css/font-awesome.css',
               'bootstrap-select/dist/css/bootstrap-select.css',
+              'login.css',
+              
             ),
             'output_filename': 'css/master.css',
         },
@@ -351,16 +353,14 @@ PIPELINE = {
         'master': {
             'source_filenames': (
               'jquery/dist/jquery.js',
-              'bootstrap/dist/js/bootstrap.js',
+              'bootstrap-css/js/bootstrap.js',
               'jasny-bootstrap/dist/js/jasny-bootstrap.js',
               'underscore/underscore.js',
               'datatables/media/js/jquery.dataTables.js',
               'datatables/media/js/dataTables.bootstrap.js',
-              #'vue/dist/vue.common.js',
-              'vue/dist/vue.js',
               'bootstrap-select/dist/js/bootstrap-select.js',
-              #'vue-strap/dist/vue-strap.js',
-              #'vue-strap/dist/vue-strap-lang.js',
+              'bootstrap-datepicker/dist/js/bootstrap-datepicker.js',
+              'bootstrap-datepicker/dist/locales/bootstrap-datepicker.pt-BR.min.js',
               'blueimp-file-upload/js/vendor/jquery.ui.widget.js',
               'blueimp-file-upload/js/jquery.iframe-transport.js',
               'blueimp-file-upload/js/jquery.fileupload.js',
@@ -379,15 +379,15 @@ BOWER_COMPONENTS_ROOT = str(ROOT_DIR.path('components'))
 BOWER_INSTALLED_APPS = (
     'jquery',
     'underscore',
-    'bootstrap',
+    'bootstrap-css',
     'jasny-bootstrap',
     'datatables',
     'datatables-bootstrap3',
-    'vue',
-    'vue-strap',
     'fontawesome',
     'bootstrap-select',
     'jquery-file-upload',
+    'bootstrap-3-datepicker',
+    'bootstrap-datepicker',
 )
 
 # ALTERAÇÕES NO USER PARA GUARDAR INFO DO LDAP

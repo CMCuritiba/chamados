@@ -13,7 +13,7 @@ from crispy_forms.bootstrap import StrictButton
 from django.conf import settings
 from decimal import Decimal
 
-from .models import Chamado, ChamadoResposta, Localizacao, Pavimento, Servico, GrupoServico, SetorChamado
+from .models import Chamado, ChamadoResposta, Localizacao, Pavimento, Servico, GrupoServico, SetorChamado, VSetor
 
 
 class ChamadoForm(forms.ModelForm):
@@ -171,3 +171,34 @@ class GrupoServicoForm(forms.ModelForm):
                 css_class='col-md-12 row',
             ),
         )                
+
+
+class RelatorioSetorForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        super(RelatorioSetorForm, self).__init__(*args, **kwargs)
+
+        self.fields['data_inicio'] = forms.DateField(label="Data Início")
+        self.fields['data_fim'] = forms.DateField(label="Data Fim", required=False)
+        self.fields['grupo_servico'] = forms.ChoiceField(label="Grupo de Serviço", required=False, widget=forms.Select(attrs={'data-live-search': 'true'}))
+        self.fields['setor'] = forms.ModelChoiceField(label='Setor', queryset=VSetor.objects.filter(set_ativo=True).order_by('set_nome'), required=False, empty_label='TODOS OS SETORES')
+
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+
+        self.helper.layout = Layout(
+
+            Div(
+                Div(AppendedText('data_inicio', '<span class="glyphicon glyphicon-calendar"></span>'), css_class='col-md-6',),
+                Div(AppendedText('data_fim', '<span class="glyphicon glyphicon-calendar"></span>'), css_class='col-md-6',),
+                css_class='col-md-12 row',
+            ),
+            Div(
+                Div('grupo_servico', css_class='col-md-12',),
+                css_class='col-md-12 row',
+            ),
+            Div(
+                Div('setor', css_class='col-md-12',),
+                css_class='col-md-12 row',
+            ),
+        )        

@@ -5,7 +5,7 @@ from unittest.mock import patch, MagicMock, Mock
 from django.db import IntegrityError, DataError
 from django.contrib.auth import get_user_model
 
-from ..forms import ChamadoForm, FilaChamadosForm
+from ..forms import ChamadoForm, FilaChamadosForm, RelatorioSetorForm
 from autentica.models import User
 from ..models import SetorChamado, GrupoServico, Servico
 
@@ -60,3 +60,23 @@ class ChamadoFormTest(TestCase):
         form = ChamadoForm(data=form_data)
         self.assertFalse(form.is_valid())
         self.assertEqual(form.cleaned_data['grupo_servico'], grupo)
+
+class ChamadoRelatorioFormTest(TestCase):
+    fixtures = ['user.json', 'setor_chamado.json', 'grupo_servico.json', 'servico.json']        
+
+    def setUp(self):
+        user = get_user_model().objects.create_user('administrador')
+
+    def test_init(self):
+        form = RelatorioSetorForm()
+
+    def test_gera_ok(self):
+        form_data = {'setor': "", 'data_inicio': "19/03/2018", 'data_fim': "19/03/2018", 'grupo_servico': ""}
+        form = RelatorioSetorForm(data=form_data)
+        self.assertTrue(form.is_valid())
+
+    def test_gera_data_inicio_invalida(self):
+        form_data = {'setor': "", 'data_inicio': "", 'data_fim': "19/03/2018", 'grupo_servico': ""}
+        form = RelatorioSetorForm(data=form_data)
+        self.assertFalse(form.is_valid())
+

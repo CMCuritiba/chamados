@@ -12,20 +12,25 @@ from django.core import serializers
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib import messages
 from django.views.generic import TemplateView
-import datetime
+from datetime import datetime 
 from django.views.generic import DetailView
 from django.views.generic.edit import FormView, CreateView, UpdateView
 from django.http import JsonResponse
 from django.db import transaction
 from django import forms
 from django.forms.utils import ErrorList
+from django.db.models import Q
+from django.shortcuts import render
 
 from .forms import ChamadoForm
-from .models import GrupoServico, Servico, Chamado, FilaChamados, ChamadoResposta, HistoricoChamados, SetorChamado, Localizacao, Pavimento
+from .models import GrupoServico, Servico, Chamado, FilaChamados, ChamadoResposta, HistoricoChamados, SetorChamado, Localizacao, Pavimento, VSetor
 from autentica.util.mixin import CMCLoginRequired
-from .forms import ChamadoForm, ServicoSearchForm, ServicoForm, GrupoServicoForm
+from .forms import ChamadoForm, ServicoSearchForm, ServicoForm, GrupoServicoForm, RelatorioSetorForm
 
 from ..lib.fila import FilaManager
+
+from templated_docs import fill_template
+from templated_docs.http import FileResponse
 
 class ChamadoDetailView(DetailView):
     model = Chamado
@@ -46,7 +51,8 @@ class CadastroChamadosCreateView(CMCLoginRequired, SuccessMessageMixin, CreateVi
     def form_valid(self, form):
         obj = form.save(commit=False)
         obj.usuario = self.request.user
-        #obj.save()
+        setor = VSetor.objects.get(pk=self.request.session['setor_id'])
+        obj.setor_solicitante = setor
         obj.save()
         fila = FilaManager()
         fila.cria(self.request.user, obj)
@@ -566,3 +572,62 @@ def exclui_grupo_servico_json(request, pk):
     else:
         response = JsonResponse({'status':'false','message':'Não foi possível localizar o grupo serviço'}, status=401)
     return response                 
+
+def relatorio(request):
+    if request.method == 'POST':
+        form = RelatorioSetorForm(request.POST)
+
+        if form.is_valid():
+
+            chamados = Chamado.objects.filter(setor__setor__set_id=request.session['setor_id'])
+
+            if form['setor'].value() != '':
+                setor = VSetor.objects.get(pk=form['setor'].value())
+                setor_solicitante = setor.set_nome
+                chamados = chamados.filter(setor_solicitante=setor)
+            else:
+                setor_solicitante = 'TODOS OS SETORES'
+
+            data_inicio = datetime.strptime(form['data_inicio'].value(), '%d/%m/%Y')
+            chamados = chamados.filter(data_abertura__gte=data_inicio)
+
+            if form['data_fim'].value() != '':
+                data_fim = datetime.strptime(form['data_fim'].value(), '%d/%m/%Y')
+                chamados = chamados.filter(Q(data_fechamento=None) or Q(data_fechamento__lte=data_fim))
+
+            if form['grupo_servico'].value() != '':
+                chamados = chamados.filter(grupo_servico=form['grupo_servico'].value())            
+
+            chamados = chamados.order_by('data_abertura')
+            
+            context = {'chamados': chamados, 'inicio': form['data_inicio'].value(), 'fim': form['data_fim'].value(), 'setor': request.session['setor_nome'], 'setor_solicitante': setor_solicitante}
+            filename = fill_template('relatorio2.odt', context, output_format='pdf')
+            visible_filename = 'relatorio_chamados.pdf'
+            return FileResponse(filename, visible_filename)
+        else:
+            return render(request, 'core/relatorio/chamado/index.html', {'form': form})
+
+    else:
+        return render(request, 'core/relatorio/chamado/index.html', {'form': form})
+
+#--------------------------------------------------------------------------------------
+class RelatorioChamadoIndexView(CMCLoginRequired, SuccessMessageMixin, FormView):
+    template_name = 'core/relatorio/chamado/index.html'    
+    form_class = RelatorioSetorForm
+
+# --------------------------------------------------------------------------------------
+# Retorna JSON dos setores
+# --------------------------------------------------------------------------------------
+def setores_json(request):
+    resposta = []
+
+    setores = VSetor.objects.all().order_by("set_nome")
+
+    for s in setores:
+        setor_json = {}
+        setor_json['set_id'] = s.set_id
+        setor_json['set_nome'] = s.set_nome
+        setor_json['set_sigla'] = s.set_sigla
+        resposta.append(setor_json)
+
+    return JsonResponse(resposta, safe=False)
