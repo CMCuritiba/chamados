@@ -363,3 +363,5 @@ BOWER_INSTALLED_APPS = (
 # ------------------------------------------------------------------------------
 
 AUTH_USER_MODEL = 'autentica.User'
+
+MSCMC_SERVER = 'dummy'
