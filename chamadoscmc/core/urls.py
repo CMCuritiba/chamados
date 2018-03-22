@@ -16,9 +16,11 @@ urlpatterns = [
     url(r'^api/localizacao/$', views.localizacao_json, name='api-localizacao_json'),
     url(r'^api/pavimento/(?P<id_localizacao>[0-9]+)/$', views.pavimentos_json, name='api-pavimentos_json'),
     url(r'^api/localizacao_setor/(?P<id_setor>[0-9]+)/$', views.localizacao_setor_json, name='api-localizacao_setor_json'),
+    url(r'^api/setores/$', views.setores_json, name='api-setores_json'),
     #url(r'^(?P<id>[-\w]+)/$', views.ChamadoDetailView.as_view(template_name='core/chamado_detail.html'), name='detalhe-chamado'),
     url(r'^edita/(?P<pk>[0-9]+)/$', views.ConsolidadoChamadoDetailView.as_view(template_name='core/edit.html'), name='chamado-update'),
     url(r'^detalhe/(?P<pk>[0-9]+)/$', views.ConsolidadoChamadoDetailView.as_view(template_name='core/detail.html'), name='chamado-detalhe'),
     url(r'^cria/$', views.CadastroChamadosCreateView.as_view(), name='cria'),
+    url(r'^relatorio/$', views.relatorio, name='relatorio'),
 ]
 

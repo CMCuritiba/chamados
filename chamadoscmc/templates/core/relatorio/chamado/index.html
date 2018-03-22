@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+
+<div class="panel panel-primary">
+    <div class="panel-heading">Relatório de Chamados</div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-sm-12">
+                    <form name="formulario" id="formulario" method="post" action="/chamado/relatorio/">
+                        {% crispy form %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <div class="panel panel-primary">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-sm-12">
+                    <button type="button" class="btn btn-primary" onclick="javascript:relatorio();">Gerar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block extra_javascript %}
+
+<script>
+    $(document).ready(function () {
+        $('.dateinput').datepicker({
+            format: "dd/mm/yyyy",
+            language: "pt-BR",
+            todayHighlight: true,
+            clearBtn: true,
+            autoclose: true,
+            orientation: "bottom left",
+        });
+
+        montaComboGrupoServico();
+        //montaComboSetorSolicitante();
+        
+    });
+
+    function montaComboGrupoServico() {
+        var toAppend = '';
+
+        //var request_url = '/chamado/api/grupo_servico_relatorio/' + $('#id_setor').val() + '/';
+        var request_url = '/chamado/api/grupo_servico_todos/{{ request.session.setor_id }}/';
+
+        $.ajax({
+            url: request_url,
+            dataType: 'json',
+            success: function(result){
+                toAppend = '<option value="" selected>TODOS OS GRUPOS</option>';
+                $.each(result, function(index, element) {
+                    toAppend += '<option value="' + element.gs_id + '">' + element.gs_descricao + '</option>';
+                });
+                $('#id_grupo_servico').empty();
+                $('#id_grupo_servico').append(toAppend);
+                //$('#id_grupo_servico').selectpicker();
+            },
+            error: function(xhr, status, error) {
+                console.log('Erro ao carregar grupos de serviço');
+                console.log(xhr.readyState);
+                console.log(status);
+                console.log(error);
+            }
+        })
+
+    }
+
+    function montaComboSetorSolicitante() {
+        var toAppend = '';
+
+        //var request_url = '/chamado/api/grupo_servico_relatorio/' + $('#id_setor').val() + '/';
+        var request_url = '/chamado/api/setores/';
+
+        $.ajax({
+            url: request_url,
+            dataType: 'json',
+            success: function(result){
+                toAppend = '<option value="" selected>TODOS OS SETORES</option>';
+                $.each(result, function(index, element) {
+                    toAppend += '<option value="' + element.set_id + '">' + element.set_nome + '</option>';
+                });
+                $('#id_setor').empty();
+                $('#id_setor').append(toAppend);
+                //$('#id_grupo_servico').selectpicker();
+            },
+            error: function(xhr, status, error) {
+                console.log('Erro ao carregar setores');
+                console.log(xhr.readyState);
+                console.log(status);
+                console.log(error);
+            }
+        })
+
+    }
+
+    function relatorio() {
+        $('#formulario').submit();
+    }
+</script>
+
+{% endblock %}
