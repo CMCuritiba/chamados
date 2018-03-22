@@ -32,6 +32,8 @@ from ..lib.fila import FilaManager
 from templated_docs import fill_template
 from templated_docs.http import FileResponse
 
+from consumer.lib.helper import ServiceHelper
+
 class ChamadoDetailView(DetailView):
     model = Chamado
 
@@ -575,16 +577,17 @@ def exclui_grupo_servico_json(request, pk):
 
 def relatorio(request):
     if request.method == 'POST':
-        form = RelatorioSetorForm(request.POST)
+        form = RelatorioSetorForm(request, request.POST)
 
         if form.is_valid():
 
             chamados = Chamado.objects.filter(setor__setor__set_id=request.session['setor_id'])
 
             if form['setor'].value() != '':
-                setor = VSetor.objects.get(pk=form['setor'].value())
+                s_helper = ServiceHelper()
+                setor = s_helper.get_setor(form['setor'].value())
                 setor_solicitante = setor.set_nome
-                chamados = chamados.filter(setor_solicitante=setor)
+                chamados = chamados.filter(setor_solicitante=setor.set_id)
             else:
                 setor_solicitante = 'TODOS OS SETORES'
 
@@ -614,6 +617,12 @@ def relatorio(request):
 class RelatorioChamadoIndexView(CMCLoginRequired, SuccessMessageMixin, FormView):
     template_name = 'core/relatorio/chamado/index.html'    
     form_class = RelatorioSetorForm
+
+    def get_form_kwargs(self):
+        kwargs = super(RelatorioChamadoIndexView, self).get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+        
 
 # --------------------------------------------------------------------------------------
 # Retorna JSON dos setores

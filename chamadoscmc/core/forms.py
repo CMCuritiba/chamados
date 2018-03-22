@@ -13,6 +13,10 @@ from crispy_forms.bootstrap import StrictButton
 from django.conf import settings
 from decimal import Decimal
 
+from django.contrib.sessions.backends.db import SessionStore
+
+from consumer.lib.helper import ServiceHelper
+
 from .models import Chamado, ChamadoResposta, Localizacao, Pavimento, Servico, GrupoServico, SetorChamado, VSetor
 
 
@@ -175,13 +179,25 @@ class GrupoServicoForm(forms.ModelForm):
 
 class RelatorioSetorForm(forms.Form):
 
-    def __init__(self, *args, **kwargs):
+    def get_grupos(self, request):
+        return GrupoServico.objects.filter(setor__setor_id=request.session['setor_id']).order_by('descricao')
+
+
+    def __init__(self, request, *args, **kwargs):
         super(RelatorioSetorForm, self).__init__(*args, **kwargs)
 
         self.fields['data_inicio'] = forms.DateField(label="Data Início")
         self.fields['data_fim'] = forms.DateField(label="Data Fim", required=False)
         self.fields['grupo_servico'] = forms.ChoiceField(label="Grupo de Serviço", required=False, widget=forms.Select(attrs={'data-live-search': 'true'}))
-        self.fields['setor'] = forms.ModelChoiceField(label='Setor', queryset=VSetor.objects.filter(set_ativo=True).order_by('set_nome'), required=False, empty_label='TODOS OS SETORES')
+        self.fields['setor'] = forms.ChoiceField(label='Setor',  required=False)
+
+        self.service_helper = ServiceHelper()
+
+        ob_setores = self.service_helper.get_setores_combo('TODOS OS SETORES')
+        ob_grupos = self.get_grupos(request)
+
+        self.fields['setor'].choices = [(e.set_id, e.set_nome) for e in ob_setores]
+        self.fields['grupo_servico'].choices = [(e.id, e.descricao) for e in ob_grupos]
 
         self.helper = FormHelper()
         self.helper.form_tag = False

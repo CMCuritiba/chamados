@@ -4,6 +4,7 @@ from django.test import TestCase, RequestFactory
 from unittest.mock import patch, MagicMock, Mock
 from django.db import IntegrityError, DataError
 from django.contrib.auth import get_user_model
+from django.http.request import HttpRequest
 
 from ..forms import ChamadoForm, FilaChamadosForm, RelatorioSetorForm
 from autentica.models import User
@@ -66,17 +67,38 @@ class ChamadoRelatorioFormTest(TestCase):
 
     def setUp(self):
         user = get_user_model().objects.create_user('administrador')
+        self.factory = RequestFactory()
 
-    def test_init(self):
-        form = RelatorioSetorForm()
+    @patch('chamadoscmc.core.forms.RelatorioSetorForm.get_grupos')
+    @patch('consumer.lib.helper.ServiceHelper.get_setores_combo')
+    def test_init(self,get_grupos_mock, get_setores_combo_mock):
+        ret_grupos = []
+        ret_setores = []
+        get_grupos_mock.return_value = ret_grupos
+        get_setores_combo_mock.return_value = ret_setores
+        request = HttpRequest()
+        form = RelatorioSetorForm(request)
 
-    def test_gera_ok(self):
+    @patch('chamadoscmc.core.forms.RelatorioSetorForm.get_grupos')
+    @patch('consumer.lib.helper.ServiceHelper.get_setores_combo')
+    def test_gera_ok(self, get_grupos_mock, get_setores_combo_mock):
+        ret_grupos = []
+        ret_setores = []
+        get_grupos_mock.return_value = ret_grupos
+        get_setores_combo_mock.return_value = ret_setores
+        request = HttpRequest()
         form_data = {'setor': "", 'data_inicio': "19/03/2018", 'data_fim': "19/03/2018", 'grupo_servico': ""}
-        form = RelatorioSetorForm(data=form_data)
+        form = RelatorioSetorForm(request, data=form_data)
         self.assertTrue(form.is_valid())
 
-    def test_gera_data_inicio_invalida(self):
+    @patch('chamadoscmc.core.forms.RelatorioSetorForm.get_grupos')
+    @patch('consumer.lib.helper.ServiceHelper.get_setores_combo')
+    def test_gera_data_inicio_invalida(self, get_grupos_mock, get_setores_combo_mock):
+        ret_grupos = []
+        ret_setores = []
+        get_grupos_mock.return_value = ret_grupos
+        get_setores_combo_mock.return_value = ret_setores
+        request = HttpRequest()
         form_data = {'setor': "", 'data_inicio': "", 'data_fim': "19/03/2018", 'grupo_servico': ""}
-        form = RelatorioSetorForm(data=form_data)
+        form = RelatorioSetorForm(request, data=form_data)
         self.assertFalse(form.is_valid())
-

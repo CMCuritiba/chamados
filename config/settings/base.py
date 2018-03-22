@@ -60,6 +60,7 @@ THIRD_PARTY_APPS = [
      'autentica',
      'djcelery',
      'djcelery_email',
+     'consumer'
 ]
 
 # Apps specific for this project go here.

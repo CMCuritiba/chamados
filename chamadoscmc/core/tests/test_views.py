@@ -198,7 +198,13 @@ class RelatoriosViewTests(TestCase):
         request.session.save()
 
 
-    def test_index(self):
+    @patch('chamadoscmc.core.forms.RelatorioSetorForm.get_grupos')
+    @patch('consumer.lib.helper.ServiceHelper.get_setores_combo')
+    def test_index(self, get_grupos_mock, get_setores_combo_mock):
+        ret_grupos = []
+        ret_setores = []
+        get_grupos_mock.return_value = ret_grupos
+        get_setores_combo_mock.return_value = ret_setores
         request = self.factory.get('/relatorio/chamado/')
         request.user = self.user
         response = RelatorioChamadoIndexView.as_view()(request)
