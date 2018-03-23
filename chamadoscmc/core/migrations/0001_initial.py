@@ -9,6 +9,7 @@ class Migration(migrations.Migration):
 
     initial = True
 
+    '''
     operations = [
         migrations.RunSQL(
             """
@@ -28,3 +29,4 @@ class Migration(migrations.Migration):
         migrations.RunSQL("INSERT INTO v_setor(set_id, set_nome, set_sigla, set_id_superior, set_ativo, set_tipo) VALUES(171, 'Divisão de Desenvolvimento De Sistemas', 'DDS-1', 1, 't', 'N');"),
         migrations.RunSQL("INSERT INTO v_setor(set_id, set_nome, set_sigla, set_id_superior, set_ativo, set_tipo) VALUES(172, 'Divisão de Suporte em Informática', 'DSI-2', 1, 't', 'N');"),
     ]
+    '''

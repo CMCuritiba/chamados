@@ -4,7 +4,8 @@ from django.test import TestCase, RequestFactory
 from autentica.models import User
 from django.db import IntegrityError, DataError
 #from ..models import SetorChamado, GrupoServico, VSetor, Servico, Chamado, FilaChamados, ChamadoResposta, ChamadoAnexo
-from ..models import SetorChamado, GrupoServico, VSetor, Servico, Chamado, FilaChamados, ChamadoResposta
+from ..models import SetorChamado, GrupoServico, Servico, Chamado, FilaChamados, ChamadoResposta
+from .factories import SetorChamadoFactory
 
 
 class ChamadoTestCase(TestCase):
@@ -85,14 +86,23 @@ class ChamadoTestCase(TestCase):
 #		anexo = ChamadoAnexo.objects.create(chamado=chamado, arquivo="hadhsdhasdds.pdf")
 
 class SetorChamadoTestCase(TestCase):
-	fixtures = ['setor_chamado.json']
+	#fixtures = ['setor_chamado.json']
 
 	def setUp(self):
 		super(SetorChamadoTestCase, self).setUp()
 
+	def test_setor_chamado_ok(self):
+		setor = SetorChamadoFactory.create()
+		self.assertEqual(setor.setor_id, 171)
+
 	def test_setor_chamado_setor_nulo(self):
 		with self.assertRaises(IntegrityError):
-			setor_chamado = SetorChamado.objects.create(setor=None, recebe_chamados=True)
+			setor_chamado = SetorChamado.objects.create(setor_id=None, recebe_chamados=True)
+
+	def test_setor_chamado_duplicado(self):
+		SetorChamadoFactory.create()
+		with self.assertRaises(IntegrityError):
+			SetorChamadoFactory.create()
 
 class GrupoServicoTestCase(TestCase):
 	fixtures = ['setor_chamado.json', 'grupo_servico.json']

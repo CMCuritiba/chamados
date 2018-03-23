@@ -10,6 +10,7 @@ from django.core.exceptions import ValidationError
 from datetime import datetime
 
 from autentica.models import User as Usuario
+from consumer.lib.helper import ServiceHelper
 
 #---------------------------------------------------------------------------------------------
 # Model Localizacao
@@ -43,36 +44,6 @@ class Pavimento(models.Model):
 
 	def __str__(self):
 		return self.descricao				
-#---------------------------------------------------------------------------------------------
-# Model para a view V_SETOR
-#---------------------------------------------------------------------------------------------
-@python_2_unicode_compatible
-class AtivosVSetorManager(models.Manager):
-    def get_queryset(self):
-        return super(AtivosVSetorManager, self).get_queryset().filter(set_ativo = True)
-
-@python_2_unicode_compatible
-class VSetor(models.Model):
-	class Meta:
-		verbose_name_plural = 'Setores'
-		managed = False
-		db_table = "v_setor"
-		ordering = ('set_nome', )
-
-	set_id = models.IntegerField(primary_key=True)
-	set_nome = models.CharField(max_length=500)
-	set_sigla = models.CharField(max_length=100)
-	set_id_superior = models.IntegerField(blank=True, null=True)
-	set_ativo = models.BooleanField()
-	set_tipo = models.CharField(max_length=1)
-
-	objects = AtivosVSetorManager()
-
-	def __unicode__(self):
-		return self.set_nome
-
-	def __str__(self):
-		return self.set_nome
 
 #---------------------------------------------------------------------------------------------
 # Model SetorChamado
@@ -82,15 +53,33 @@ class SetorChamado(models.Model):
 	class Meta:
 		verbose_name_plural = 'Setores Chamados'
 
-	setor = models.OneToOneField(VSetor, to_field='set_id', db_constraint=False)
+	#setor = models.OneToOneField(VSetor, to_field='set_id', db_constraint=False)
+	setor_id = models.IntegerField(unique=True) # id da elotech
 	recebe_chamados = models.BooleanField(default=False)
 	localizacao = models.BooleanField(default=False)
 
+	'''
 	def __unicode__(self):
-		return self.setor.set_nome
+		service_helper = ServiceHelper()
+		setor = service_helper.get_setor(self.setor_id)
+		return setor.set_nome
 
 	def __str__(self):
-		return self.setor.set_sigla
+		service_helper = ServiceHelper()
+		setor = service_helper.get_setor(self.setor_id)
+		return setor.set_sigla
+	'''		
+
+	def get_sigla(self):
+		service_helper = ServiceHelper()
+		setor = service_helper.get_setor(self.setor_id)
+		return setor.set_sigla
+
+	def get_nome(self):
+		service_helper = ServiceHelper()
+		setor = service_helper.get_setor(self.setor_id)
+		return setor.set_nome
+
 
 #---------------------------------------------------------------------------------------------
 # Model GrupoServico
@@ -164,7 +153,7 @@ class Chamado(models.Model):
 	patrimonio = models.CharField(max_length=100, null=True, blank=True)
 	localizacao = models.ForeignKey(Localizacao, blank=True, null=True)
 	pavimento = models.ForeignKey(Pavimento,  blank=True, null=True)
-	setor_solicitante = models.ForeignKey(VSetor, to_field='set_id', db_constraint=False, null=True)
+	setor_solicitante = models.IntegerField(blank=True, null=True)
 
 	'''
 	def clean(self):

@@ -6,7 +6,7 @@ from django.db import IntegrityError, DataError
 from django.contrib.auth import get_user_model
 from django.http.request import HttpRequest
 
-from ..forms import ChamadoForm, FilaChamadosForm, RelatorioSetorForm
+from ..forms import ChamadoForm, FilaChamadosForm, RelatorioSetorForm, SetorChamadoForm
 from autentica.models import User
 from ..models import SetorChamado, GrupoServico, Servico
 
@@ -101,4 +101,27 @@ class ChamadoRelatorioFormTest(TestCase):
         request = HttpRequest()
         form_data = {'setor': "", 'data_inicio': "", 'data_fim': "19/03/2018", 'grupo_servico': ""}
         form = RelatorioSetorForm(request, data=form_data)
+        self.assertFalse(form.is_valid())
+
+class SetorChamadoFormTest(TestCase):
+
+    def setUp(self):
+        self.user = get_user_model().objects.create_user('zaquinha', password='zaca')
+        self.user.is_staff = True
+        self.user.lotado = 171
+        self.user.matricula = 2179
+        self.user.save()
+        self.factory = RequestFactory()
+
+    def test_init(self):
+        form = SetorChamadoForm()
+
+    def test_grava_ok(self):
+        form_data = {'setor_id': 171, 'recebe_chamados': True, 'localizacao': False}
+        form = SetorChamadoForm(data=form_data)
+        self.assertTrue(form.is_valid())
+
+    def test_grava_setor_nulo(self):
+        form_data = {'setor': None, 'recebe_chamados': True, 'localizacao': False}
+        form = SetorChamadoForm(data=form_data)
         self.assertFalse(form.is_valid())

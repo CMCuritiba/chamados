@@ -23,9 +23,9 @@ from django.db.models import Q
 from django.shortcuts import render
 
 from .forms import ChamadoForm
-from .models import GrupoServico, Servico, Chamado, FilaChamados, ChamadoResposta, HistoricoChamados, SetorChamado, Localizacao, Pavimento, VSetor
+from .models import GrupoServico, Servico, Chamado, FilaChamados, ChamadoResposta, HistoricoChamados, SetorChamado, Localizacao, Pavimento
 from autentica.util.mixin import CMCLoginRequired
-from .forms import ChamadoForm, ServicoSearchForm, ServicoForm, GrupoServicoForm, RelatorioSetorForm
+from .forms import ChamadoForm, ServicoSearchForm, ServicoForm, GrupoServicoForm, RelatorioSetorForm, SetorChamadoForm
 
 from ..lib.fila import FilaManager
 
@@ -98,11 +98,13 @@ def chamados_abertos_json(request, setor_id):
     if setor_id == None or setor_id == '' or setor_id == '0':
         chamados = None
     else:
-        chamados = Chamado.objects.filter(setor__setor__set_id=setor_id)
+        chamados = Chamado.objects.filter(setor__setor_id=setor_id)
         #chamados = Chamado.objects.filter(setor__setor_id=27)
+    '''        
     if len(chamados) == 0:
-        chamados = Chamado.objects.filter(setor__setor__set_id_superior=setor_id)
+        chamados = Chamado.objects.filter(setor_setor_id_superior=setor_id)
         #chamados = Chamado.objects.filter(setor__setor__set_id_superior=27)
+    '''        
 
     for c in chamados:
         chamado_json = {}
@@ -413,10 +415,13 @@ class MyIndexView(SuccessMessageMixin, TemplateView):
     def dispatch(self, request, *args, **kwargs):
         if request.user .is_anonymous or not request.user.is_authenticated or 'setor_id' not in request.session:
             return HttpResponseRedirect('/autentica/loga/?next=/')
-        setor_chamado = SetorChamado.objects.get(setor_id=request.session['setor_id'])
-        if (setor_chamado.recebe_chamados):
-            return HttpResponseRedirect('/fila/')
-        else:
+        try:
+            setor_chamado = SetorChamado.objects.get(setor_id=request.session['setor_id'])
+            if (setor_chamado.recebe_chamados):
+                return HttpResponseRedirect('/fila/')
+            else:
+                return HttpResponseRedirect('/chamado/')
+        except:
             return HttpResponseRedirect('/chamado/')
 
 #--------------------------------------------------------------------------------------
@@ -630,13 +635,31 @@ class RelatorioChamadoIndexView(CMCLoginRequired, SuccessMessageMixin, FormView)
 def setores_json(request):
     resposta = []
 
-    setores = VSetor.objects.all().order_by("set_nome")
+    setores = SetorChamado.objects.all()
 
     for s in setores:
         setor_json = {}
-        setor_json['set_id'] = s.set_id
-        setor_json['set_nome'] = s.set_nome
-        setor_json['set_sigla'] = s.set_sigla
+        setor_json['id'] = s.id
+        setor_json['setor_id'] = s.setor_id
+        setor_json['set_nome'] = s.get_nome()
+        setor_json['set_sigla'] = s.get_sigla()
+        setor_json['recebe_chamados'] = s.recebe_chamados
         resposta.append(setor_json)
 
     return JsonResponse(resposta, safe=False)
+
+# --------------------------------------------------------------------------------------
+# Index para cadastro de setores
+# --------------------------------------------------------------------------------------
+class SetorChamadoIndexView(CMCLoginRequired, SuccessMessageMixin, TemplateView):
+    template_name = 'core/cadastro/setor/index.html'    
+
+#--------------------------------------------------------------------------------------
+# Create para cadastro de setores
+# --------------------------------------------------------------------------------------
+class SetorChamadoCreateView(CMCLoginRequired, SuccessMessageMixin, CreateView):
+    template_name = "core/cadastro/setor/new.html"
+    form_class = SetorChamadoForm
+    model = SetorChamado
+    success_url = '/cadastro/setor/'
+    success_message = "Setor criado com sucesso"
