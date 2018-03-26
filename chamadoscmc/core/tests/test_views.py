@@ -268,7 +268,10 @@ class SetorChamadoCreateViewTests(TestCase):
 
         request.session.save()
 
-    def test_get(self):
+    @patch('consumer.lib.helper.ServiceHelper.get_setores')        
+    def test_get(self, get_setores_mock):
+        ret_setores = []
+        get_setores_mock.return_value = ret_setores
         request = self.factory.get('/cadastro/setor/new')
         request.user = self.user
         response = SetorChamadoCreateView.as_view()(request)
@@ -300,7 +303,10 @@ class SetorChamadoUpdateViewTests(TestCase):
 
         request.session.save()
 
-    def test_get(self):
+    @patch('consumer.lib.helper.ServiceHelper.get_setores')        
+    def test_get(self, get_setores_mock):
+        ret_setores = []
+        get_setores_mock.return_value = ret_setores
         request = self.factory.get('/cadastro/setor/edit')
         self.setup_request(request)
         request.user = self.user

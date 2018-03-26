@@ -9,6 +9,7 @@ from django.http.request import HttpRequest
 from ..forms import ChamadoForm, FilaChamadosForm, RelatorioSetorForm, SetorChamadoForm
 from autentica.models import User
 from ..models import SetorChamado, GrupoServico, Servico
+from consumer.lib.msconsumer import Setor
 
 import os
 
@@ -113,15 +114,24 @@ class SetorChamadoFormTest(TestCase):
         self.user.save()
         self.factory = RequestFactory()
 
-    def test_init(self):
+    @patch('consumer.lib.helper.ServiceHelper.get_setores')
+    def test_init(self, get_setores_mock):
+        ret_setores = []
+        get_setores_mock.return_value = ret_setores
         form = SetorChamadoForm()
 
-    def test_grava_ok(self):
+    @patch('consumer.lib.helper.ServiceHelper.get_setores')
+    def test_grava_ok(self, get_setores_mock):
+        ret_setores = [Setor(171, 'Pinéu', 'PI', None, True, None)]
+        get_setores_mock.return_value = ret_setores
         form_data = {'setor_id': 171, 'recebe_chamados': True, 'localizacao': False}
         form = SetorChamadoForm(data=form_data)
         self.assertTrue(form.is_valid())
 
-    def test_grava_setor_nulo(self):
+    @patch('consumer.lib.helper.ServiceHelper.get_setores')        
+    def test_grava_setor_nulo(self, get_setores_mock):
+        ret_setores = []
+        get_setores_mock.return_value = ret_setores
         form_data = {'setor': None, 'recebe_chamados': True, 'localizacao': False}
         form = SetorChamadoForm(data=form_data)
         self.assertFalse(form.is_valid())
