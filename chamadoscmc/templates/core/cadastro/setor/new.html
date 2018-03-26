@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+	<div class="panel panel-primary">
+		<div class="panel-heading">Cadastro de Setores</div>
+		<div class="panel-body">
+			<form name="formulario" id="formulario" method="post" action="">
+				{% crispy form %}
+			</form>
+		</div>
+	</div>
+	<div class="panel panel-primary">
+		<div class="panel-body">
+	    	<div class="col-md-12 row">
+				<button type="button" class="btn btn-primary" onclick="javascript:salvar();">Salvar</button>
+	    	</div>
+	    </div>
+	</div>
+    
+{% endblock %}
+
+{% block extra_javascript %}
+
+	<script>
+
+		$(document).ready(function () {
+			$('#id_setor_id').selectpicker();
+		});
+		function salvar() {
+            $('#formulario').submit();
+        }
+	</script>
+
+{% endblock %}        

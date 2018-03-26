@@ -3,7 +3,7 @@
         "pk": 1, 
         "model": "core.setorchamado", 
         "fields": {
-            "setor": 171,
+            "setor_id": 171,
             "recebe_chamados": 1
         }
     },
@@ -11,7 +11,7 @@
         "pk": 2, 
         "model": "core.setorchamado", 
         "fields": {
-            "setor": 172,
+            "setor_id": 172,
             "recebe_chamados": 1
         }
     }

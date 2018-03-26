@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">Setores</div>
+        <div class="panel-body">
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <table id="tsetores" class="table table-striped table-hover table-bordered fonteTable" width="100%" cellspacing="0"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-primary">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-sm-12">
+                    <button type="button" class="btn btn-primary" onclick="javascript:criaSetor();">Novo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="confirmaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="exampleModalLabel">Confirma exclusão ?</h4>
+          </div>
+          <div class="modal-body">
+            <h4>Setor: <span id="set_nome" name="set_nome"/></h4>
+            <form class="exclui" method="POST" action="/cadastro/setor/delete/">{% csrf_token %}
+              <div class="form-group">
+                <input type="hidden" name="pk" id="pk" />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary" id="submit">Confirmar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock %}
+
+
+{% block extra_javascript %}
+
+    <script>
+
+        var tableSetores;
+
+        $(document).ready(function() {
+
+
+            $("button#submit").click(function() {
+                exclui();
+                $("#confirmaModal").modal('hide');
+            })
+
+            tableSetores = $('#tsetores').DataTable({
+                responsive: true,
+                "order": [[ 1, "asc" ]],
+                "columns": [
+                    { 
+                        title: "ID" ,
+                        data: 'id'
+                    },
+                    { 
+                        title: "ID" ,
+                        data: 'setor_id'
+                    },
+                    { 
+                        title: "Setor",
+                        data: 'set_nome',
+                        render: function(data, type, full, meta) {
+                            return '<a href="/cadastro/setor/edit/' + full.id + '">' + data + '</a>';
+                        }
+                    },
+                    { 
+                        title: "Recebe Chamados",
+                        render: function(data, type, full, meta) {
+                            if (full.recebe_chamados == true)
+                                return '<i class="fa fa-thumbs-o-up" aria-hidden="true" style="color:green;"></i>';
+                            else
+                                return '<i class="fa fa-thumbs-o-down" aria-hidden="true" style="color:red;"></i>';
+                        }
+                    }
+                    
+                ],
+                "columnDefs": [
+                    {
+                        "targets": [0],
+                        "visible": false,
+                        "searchable": false
+                    },
+                    {
+                        "targets": [1],
+                        "visible": false,
+                        "searchable": false
+                    },
+                    {
+                        "targets": [2],
+                        "visible": true,
+                        "searchable": false,
+                    },
+                    {
+                        "targets": [3],
+                        "visible": true,
+                        "searchable": false
+                    },
+                    {
+                        "targets": [4],
+                        "visible": true,
+                        "searchable": false,
+                        "className": "dt-center",
+                        "data": null,
+                        render: function(data, type, full, meta) {
+                            return '<a href="" data-toggle="modal" data-target="#confirmaModal" data-setor_id="' + full.id + '" data-set_nome="' + full.set_nome + '"><i class="fa fa-trash" aria-hidden="true" style="color:red;"></i></a>';
+                        }
+                }
+
+                ],
+                "language": {
+                    "info": "Páginas _PAGE_ de _PAGES_",
+                    "emptyTable": "Sem dados para mostrar",
+                    "decimal": ",",
+                    "thousands": ".",
+                    "oPaginate": {
+                        "sFirst": '<span class="glyphicon glyphicon-fast-backward"></span>',
+                        "sLast": '<span class="glyphicon glyphicon-fast-forward"></span>',
+                        "sNext": '<span class="glyphicon glyphicon-forward"></span>',
+                        "sPrevious": '<span class="glyphicon glyphicon-backward"></span>'
+                    }
+                },
+                "bPaginate" : true,
+                "bLengthChange": false,
+                "bFilter": true,
+                "bInfo": false,
+                "ajax": {
+                    "url": "/chamado/api/setores/",
+                    "dataSrc": "",
+                },
+                "sDom": '<"top"i>rt<"bottom"lp><"clear">',
+            });
+
+        });
+
+        $('#confirmaModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var pk = button.data('setor_id');
+            var recipient = button.data('set_nome');
+            var modal = $(this);
+            modal.find('#pk').val(pk);
+            modal.find('#set_nome').html(recipient);
+        });
+
+
+        function criaSetor() {
+            location.href = '/cadastro/setor/new/';
+        }
+
+        function exclui() {
+            request_url = '/cadastro/api/setor/delete/' + $('#pk').val() + '/';
+
+            $.ajax({
+                url: request_url,
+                type: 'POST',
+                accepts: 'application/json',
+                dataType: 'json',
+                data: $('form.exclui').serialize(),
+                success: function(result){
+                    console.log($('form.exclui').serialize());
+                    tableSetores.ajax.reload(null, false);
+                },
+                error: function(xhr, status, error) {
+                    console.log(status);
+                    console.log(error);
+                    console.log(xhr);
+                }
+            })
+        }
+
+    </script>
+
+{% endblock %}

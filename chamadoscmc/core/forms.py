@@ -17,7 +17,7 @@ from django.contrib.sessions.backends.db import SessionStore
 
 from consumer.lib.helper import ServiceHelper
 
-from .models import Chamado, ChamadoResposta, Localizacao, Pavimento, Servico, GrupoServico, SetorChamado, VSetor
+from .models import Chamado, ChamadoResposta, Localizacao, Pavimento, Servico, GrupoServico, SetorChamado
 
 
 class ChamadoForm(forms.ModelForm):
@@ -218,3 +218,45 @@ class RelatorioSetorForm(forms.Form):
                 css_class='col-md-12 row',
             ),
         )        
+
+class SetorChamadoForm(forms.ModelForm):
+
+    class Meta:
+        model = SetorChamado
+        fields = ['setor_id', 'recebe_chamados', 'localizacao']
+
+    def get_setores(self):
+        return self.service_helper.get_setores()
+
+
+    def __init__(self, *args, **kwargs):
+        super(SetorChamadoForm, self).__init__(*args, **kwargs)
+
+        self.fields['setor_id'] = forms.ChoiceField(label='Setor',  required=True, widget=forms.Select(attrs={'data-live-search': 'true'}))
+        self.fields['recebe_chamados'] = forms.BooleanField(label='Recebe Chamados',  required=False)
+        self.fields['localizacao'] = forms.BooleanField(label='Informa Localização',  required=False)
+
+        self.service_helper = ServiceHelper()
+
+        ob_setores = self.get_setores()
+
+        self.fields['setor_id'].choices = [(e.set_id, e.set_nome) for e in ob_setores]
+
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+
+        self.helper.layout = Layout(
+
+            Div(
+                Div('setor_id', css_class='col-md-12',),
+                css_class='col-md-12 row',
+            ),
+            Div(
+                Div('recebe_chamados', css_class='col-md-12',),
+                css_class='col-md-12 row',
+            ),
+            Div(
+                Div('localizacao', css_class='col-md-12',),
+                css_class='col-md-12 row',
+            ),
+        )                

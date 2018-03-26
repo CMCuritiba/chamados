@@ -19,6 +19,7 @@ class PavimentoInline(admin.TabularInline):
 	extra = 2
 	verbose_name_plural = 'Pavimentos do Local'		
 
+'''
 class SetorChamadoAdmin(admin.ModelAdmin):
 	model = SetorChamado
 
@@ -27,6 +28,7 @@ class SetorChamadoAdmin(admin.ModelAdmin):
 	ordering = ('setor__set_nome', )
 	search_fields = ('setor__set_nome', )
 	inlines = [GrupoServicoInline]
+'''	
 
 class GrupoServicoAdmin(admin.ModelAdmin):
 	model = GrupoServico
@@ -43,5 +45,5 @@ class LocalizacaoAdmin(admin.ModelAdmin):
 	inlines = [PavimentoInline]	
 
 admin.site.register(GrupoServico, GrupoServicoAdmin)
-admin.site.register(SetorChamado, SetorChamadoAdmin)
+#admin.site.register(SetorChamado, SetorChamadoAdmin)
 admin.site.register(Localizacao, LocalizacaoAdmin)
