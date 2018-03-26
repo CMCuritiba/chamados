@@ -18,5 +18,7 @@ urlpatterns = [
 
     url(r'^setor/$', views.SetorChamadoIndexView.as_view(), name='cadastro-setor'),
     url(r'^setor/new/$', views.SetorChamadoCreateView.as_view(), name='cadastro-setor-new'),
+    url(r'^setor/edit/(?P<pk>[0-9]+)/$', views.SetorChamadoUpdateView.as_view(), name='cadastro-setor-chamado-update'),
+    url(r'^api/setor/delete/(?P<pk>[0-9]+)/$', views.exclui_setor_json, name='api-exclui-setor-json'),
 ]
 

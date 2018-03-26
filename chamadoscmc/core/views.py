@@ -663,3 +663,32 @@ class SetorChamadoCreateView(CMCLoginRequired, SuccessMessageMixin, CreateView):
     model = SetorChamado
     success_url = '/cadastro/setor/'
     success_message = "Setor criado com sucesso"
+
+#--------------------------------------------------------------------------------------
+# Update para cadastro de setores
+# --------------------------------------------------------------------------------------
+class SetorChamadoUpdateView(CMCLoginRequired, SuccessMessageMixin, UpdateView):
+    model = SetorChamado
+    form_class = SetorChamadoForm
+    success_url = '/cadastro/setor/'
+    success_message = "Setor alterado com sucesso"
+    template_name = 'core/cadastro/setor/update.html'    
+
+#--------------------------------------------------------------------------------------
+# Delete para cadastro de setores
+# --------------------------------------------------------------------------------------
+def exclui_setor_json(request, pk):
+
+    if request.method == 'POST' and request.is_ajax():
+        if pk != None and pk != '':
+            setor = SetorChamado.objects.get(pk=pk)
+            try:
+                setor.delete()
+            except:
+                response = JsonResponse({'status':'false','message':'Não foi possível excluir o setor'}, status=401)    
+            response = JsonResponse({'status':'true','message':'Setor excluído com sucesso'}, status=200)
+        else:
+            response = JsonResponse({'status':'false','message':'Erro ao excluir setor'}, status=401)
+    else:
+        response = JsonResponse({'status':'false','message':'Não foi possível localizar o setor'}, status=401)
+    return response                 

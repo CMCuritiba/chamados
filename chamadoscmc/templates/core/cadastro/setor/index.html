@@ -35,7 +35,7 @@
             <h4 class="modal-title" id="exampleModalLabel">Confirma exclusão ?</h4>
           </div>
           <div class="modal-body">
-            <h4>Setor: <span id="setor_descricao" name="setor_descricao"/></h4>
+            <h4>Setor: <span id="set_nome" name="set_nome"/></h4>
             <form class="exclui" method="POST" action="/cadastro/setor/delete/">{% csrf_token %}
               <div class="form-group">
                 <input type="hidden" name="pk" id="pk" />
@@ -88,9 +88,11 @@
                     },
                     { 
                         title: "Recebe Chamados",
-                        data: 'recebe_chamados',
                         render: function(data, type, full, meta) {
-                            return '<a href="/cadastro/setor/edit/' + full.id + '">' + data + '</a>';
+                            if (full.recebe_chamados == true)
+                                return '<i class="fa fa-thumbs-o-up" aria-hidden="true" style="color:green;"></i>';
+                            else
+                                return '<i class="fa fa-thumbs-o-down" aria-hidden="true" style="color:red;"></i>';
                         }
                     }
                     
@@ -109,7 +111,7 @@
                     {
                         "targets": [2],
                         "visible": true,
-                        "searchable": true
+                        "searchable": false,
                     },
                     {
                         "targets": [3],
@@ -123,7 +125,7 @@
                         "className": "dt-center",
                         "data": null,
                         render: function(data, type, full, meta) {
-                            return '<a href="" data-toggle="modal" data-target="#confirmaModal" data-setor_id="' + full.id + '" data-setor_descricao="' + full.setor_descricao + '"><i class="fa fa-trash" aria-hidden="true" style="color:red;"></i></a>';
+                            return '<a href="" data-toggle="modal" data-target="#confirmaModal" data-setor_id="' + full.id + '" data-set_nome="' + full.set_nome + '"><i class="fa fa-trash" aria-hidden="true" style="color:red;"></i></a>';
                         }
                 }
 
@@ -155,11 +157,11 @@
 
         $('#confirmaModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
-            var pk = button.data('id');
-            var recipient = button.data('setor_descricao');
+            var pk = button.data('setor_id');
+            var recipient = button.data('set_nome');
             var modal = $(this);
             modal.find('#pk').val(pk);
-            modal.find('#setor_descricao').html(recipient);
+            modal.find('#set_nome').html(recipient);
         });
 
 
@@ -178,7 +180,7 @@
                 data: $('form.exclui').serialize(),
                 success: function(result){
                     console.log($('form.exclui').serialize());
-                    tableServicos.ajax.reload(null, false);
+                    tableSetores.ajax.reload(null, false);
                 },
                 error: function(xhr, status, error) {
                     console.log(status);
