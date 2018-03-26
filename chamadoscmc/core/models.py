@@ -58,7 +58,6 @@ class SetorChamado(models.Model):
 	recebe_chamados = models.BooleanField(default=False)
 	localizacao = models.BooleanField(default=False)
 
-	'''
 	def __unicode__(self):
 		service_helper = ServiceHelper()
 		setor = service_helper.get_setor(self.setor_id)
@@ -68,7 +67,6 @@ class SetorChamado(models.Model):
 		service_helper = ServiceHelper()
 		setor = service_helper.get_setor(self.setor_id)
 		return setor.set_sigla
-	'''		
 
 	def get_sigla(self):
 		service_helper = ServiceHelper()

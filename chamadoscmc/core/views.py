@@ -53,8 +53,7 @@ class CadastroChamadosCreateView(CMCLoginRequired, SuccessMessageMixin, CreateVi
     def form_valid(self, form):
         obj = form.save(commit=False)
         obj.usuario = self.request.user
-        setor = VSetor.objects.get(pk=self.request.session['setor_id'])
-        obj.setor_solicitante = setor
+        obj.setor_solicitante = self.request.session['setor_id']
         obj.save()
         fila = FilaManager()
         fila.cria(self.request.user, obj)
@@ -250,7 +249,7 @@ def chamados_usuario_json(request, usuario_id):
         chamado_json['chamado_id'] = c.id
         chamado_json['data_abertura'] = c.data_abertura.strftime("%d/%m/%Y")
         chamado_json['grupo_servico'] = c.grupo_servico.descricao
-        chamado_json['setor'] = c.setor.setor.set_nome
+        chamado_json['setor'] = c.setor.get_nome()
         chamado_json['servico'] = c.servico.descricao
         chamado_json['assunto'] = c.assunto
         chamado_json['status'] = c.status
@@ -556,7 +555,7 @@ class GrupoServicoCreateView(CMCLoginRequired, SuccessMessageMixin, CreateView):
 
     def form_valid(self, form):
         obj = form.save(commit=False)
-        obj.setor = SetorChamado.objects.get(setor=self.request.session['setor_id'])
+        obj.setor = SetorChamado.objects.get(setor_id=self.request.session['setor_id'])
         obj.save()
         return HttpResponseRedirect(self.success_url)
 
@@ -586,7 +585,7 @@ def relatorio(request):
 
         if form.is_valid():
 
-            chamados = Chamado.objects.filter(setor__setor__set_id=request.session['setor_id'])
+            chamados = Chamado.objects.filter(setor__setor_id=request.session['setor_id'])
 
             if form['setor'].value() != '':
                 s_helper = ServiceHelper()
