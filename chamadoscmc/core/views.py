@@ -21,6 +21,7 @@ from django import forms
 from django.forms.utils import ErrorList
 from django.db.models import Q
 from django.shortcuts import render
+from django.conf import settings
 
 from .forms import ChamadoForm
 from .models import GrupoServico, Servico, Chamado, FilaChamados, ChamadoResposta, HistoricoChamados, SetorChamado, Localizacao, Pavimento, ChamadoAnexo
@@ -60,9 +61,7 @@ class CadastroChamadosCreateView(CMCLoginRequired, SuccessMessageMixin, CreateVi
         if self.request.FILES:
             for f in self.request.FILES.getlist('foto'):
                 foto = ChamadoAnexo.objects.create(chamado=obj, arquivo=f)
-        else:
-            print('*** SEM FOTOS ***')
-        #return super(CadastroChamadosCreateView, self).form_valid(form)
+
         return HttpResponseRedirect(self.success_url)
 
 #--------------------------------------------------------------------------------------

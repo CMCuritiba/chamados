@@ -13,6 +13,9 @@
         <li>
             <a href="#2" data-toggle="tab">Respostas</a>
         </li>
+        <li>
+            <a href="#3" data-toggle="tab">Imagens anexadas</a>
+        </li>
     </ul>
     <br/>
     <div class="tab-content">
@@ -97,6 +100,30 @@
                 </div>
             </div>
         </div>
+
+        <div class="tab-pane" id="3">
+            <div class="panel panel-primary">
+                <div class="panel-heading"><h4>Imagens anexadas do chamado : {{ object.id }}</h4></div>
+                <div class="panel-body">
+                    <input id="arquivos" name="arquivos" type="file">
+                </div>
+            </div>
+
+            <div class="panel panel-primary">
+                <div class="panel-body">
+                    <div class="row"> 
+                        <div class="form-group"> 
+                            <div class="col-sm-12">
+                                <input type="button" onclick="javascript:volta_fila();" value="Voltar à fila" class="btn btn-default"/> 
+                                <input type="button" onclick="javascript:fecha_chamado();" value="Fechar chamado" class="btn btn-primary"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
     </div>
 </div>
 
@@ -221,6 +248,29 @@
             responde();
             $("#respostaModal").modal('hide');
         })
+
+
+        $("#arquivos").fileinput({
+            language: "pt-BR",
+            showUpload: false, 
+            showRemove: false,
+            showBrowse: false,
+            showPreview: true,
+            showCaption: false,
+            allowedFileExtensions: ["jpg", "png", "gif", "jpeg"],
+            maxFileSize: 5000,
+            maxFilesNum: 3,
+            overwriteInitial: false,
+            initialPreviewAsData: true,
+            initialPreviewShowDelete: false,
+            initialPreview: [
+                {% for imagem in imagens %}
+                    "/media/{{ imagem.arquivo }}",
+                {% endfor %}
+            ]
+
+        });
+
     });
 
     function desabilita() {
