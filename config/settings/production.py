@@ -62,6 +62,8 @@ INSTALLED_APPS += ['gunicorn', ]
 
 STATIC_ROOT = '/var/www/html/chamados/static'
 
+MEDIA_ROOT = '/var/www/html/chamados/media'
+
 
 # STORAGE CONFIGURATION
 # ------------------------------------------------------------------------------
