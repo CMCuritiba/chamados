@@ -32,8 +32,6 @@
 
 	$(document).ready(function () {
 
-
-
 		atualizaGrupoServico();
 		atualizaServico();
 		atualizaLocalizacao();
@@ -52,8 +50,12 @@
     	$("#id_foto").fileinput({
             language: "pt-BR",
             showUpload: false, 
-            showPreview: false,
-            allowedFileExtensions: ["jpg", "png", "gif"]
+            showPreview: true,
+            allowedFileExtensions: ["jpg", "png", "gif", "jpeg"],
+            maxFileSize: 5000,
+            maxFileCount: 3,
+            initialPreviewAsData: true,
+            overwriteInitial: false,
         });
 	});
 

@@ -432,3 +432,9 @@ CELERY_ENABLE_UTC = True
 CELERY_DISABLE_RATE_LIMITS = True
 
 ########## END CELERY
+
+# ------------------------------------------------------------------------------
+# CONFIGURAÇÃO PARA UPLOAD DE IMAGENS
+# ------------------------------------------------------------------------------
+IMG_MAX_NUM = env('IMG_MAX_NUM', default=3)
+IMG_MAX_SIZE = env('IMG_MAX_SIZE', default=5000)
