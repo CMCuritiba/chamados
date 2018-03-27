@@ -7,7 +7,7 @@
 	<div class="panel panel-primary">
 		<div class="panel-heading">Criar novo chamado</div>
 		<div class="panel-body">
-			<form name="formulario" id="formulario" method="post" action="">
+			<form name="formulario" id="formulario" method="post" action="" enctype="multipart/form-data">
 				{% crispy form %}
 				<input type="hidden" name="usuario_id" id="usuario_id" value="{{user.id}}"/>
 			</form>
@@ -31,6 +31,9 @@
 	var valor_servico;
 
 	$(document).ready(function () {
+
+
+
 		atualizaGrupoServico();
 		atualizaServico();
 		atualizaLocalizacao();
@@ -45,6 +48,13 @@
     	$('#id_localizacao').on('change', function() {
     		atualizaLocalizacao();
     	});
+
+    	$("#id_foto").fileinput({
+            language: "pt-BR",
+            showUpload: false, 
+            showPreview: false,
+            allowedFileExtensions: ["jpg", "png", "gif"]
+        });
 	});
 
 	function atualizaGrupoServico() {

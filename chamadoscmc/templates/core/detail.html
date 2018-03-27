@@ -13,6 +13,9 @@
         <li>
             <a href="#2" data-toggle="tab">Respostas</a>
         </li>
+        <li>
+            <a href="#3" data-toggle="tab">Imagens anexadas</a>
+        </li>
     </ul>
     <br/>
     <div class="tab-content">
@@ -20,41 +23,41 @@
             <div class="panel panel-primary">
             <div class="panel-heading"><h4>Informações do chamado : {{ object.id }}</h4></div>
                 <div class="panel-body">
-                <ul class="list-group">
-                    <li class="list-group-item">
-                        <b>Data de abertura: </b>{{ object.data_abertura|date:"d/m/Y"  }}
-                    </li>
-                    <li class="list-group-item">
-                        <b>Solicitante: </b>{{ object.usuario }}
-                    </li>
-                    <li class="list-group-item">
-                        <b>Atendente: </b>{{ atendente }}
-                    </li>
-                    <li class="list-group-item">
-                        <b>Ramal: </b>{{ object.ramal }}
-                    </li>
-                    <li class="list-group-item">
-                        <b>Setor</b>: {{ object.setor }}
-                    </li>
-                    <li class="list-group-item">
-                        <b>Grupo de serviço: </b>{{ object.grupo_servico }}
-                    </li>
-                    <li class="list-group-item">
-                        <b>Serviço: </b>{{ object.servico }}
-                    </li>
-                    <li class="list-group-item">
-                        <b>Assunto: </b>{{ object.assunto }}
-                    </li>
-                    <li class="list-group-item">
-                        <b>Descrição: </b>{{ object.descricao }}
-                    </li>
-                    <li class="list-group-item">
-                        <b>Prioridade: </b>{{ object.prioridade }}
-                    </li>
-                    <li class="list-group-item">
-                        <b>Status: </b>{{ object.status }}
-                    </li>
-                </ul>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <b>Data de abertura: </b>{{ object.data_abertura|date:"d/m/Y"  }}
+                        </li>
+                        <li class="list-group-item">
+                            <b>Solicitante: </b>{{ object.usuario }}
+                        </li>
+                        <li class="list-group-item">
+                            <b>Atendente: </b>{{ atendente }}
+                        </li>
+                        <li class="list-group-item">
+                            <b>Ramal: </b>{{ object.ramal }}
+                        </li>
+                        <li class="list-group-item">
+                            <b>Setor</b>: {{ object.setor }}
+                        </li>
+                        <li class="list-group-item">
+                            <b>Grupo de serviço: </b>{{ object.grupo_servico }}
+                        </li>
+                        <li class="list-group-item">
+                            <b>Serviço: </b>{{ object.servico }}
+                        </li>
+                        <li class="list-group-item">
+                            <b>Assunto: </b>{{ object.assunto }}
+                        </li>
+                        <li class="list-group-item">
+                            <b>Descrição: </b>{{ object.descricao }}
+                        </li>
+                        <li class="list-group-item">
+                            <b>Prioridade: </b>{{ object.prioridade }}
+                        </li>
+                        <li class="list-group-item">
+                            <b>Status: </b>{{ object.status }}
+                        </li>
+                    </ul>
                 </div>
             </div>
 
@@ -95,8 +98,32 @@
                 </div>
             </div>
         </div>
+
+
+        <div class="tab-pane" id="3">
+            <div class="panel panel-primary">
+                <div class="panel-heading"><h4>Imagens anexadas do chamado : {{ object.id }}</h4></div>
+                <div class="panel-body">
+                    <input id="arquivos" name="arquivos" type="file">
+                </div>
+            </div>
+
+            <div class="panel panel-primary">
+                <div class="panel-body">
+                    <div class="row"> 
+                        <div class="form-group"> 
+                            <div class="col-sm-12">
+                                <input type="button" onclick="javascript:volta_fila();" value="Voltar à fila" class="btn btn-default"/> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
 </div>
+
 
 <!-- Modal -->
 <div class="modal fade" id="respostaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
@@ -126,6 +153,7 @@
 {% block extra_javascript %}
 
 <script type="text/javascript">
+
     var tableRespostas;
     $(document).ready(function() {
         desabilita();
@@ -207,6 +235,25 @@
             },
         });
 
+        $("#arquivos").fileinput({
+            language: "pt-BR",
+            showUpload: false, 
+            showRemove: false,
+            showBrowse: false,
+            showPreview: true,
+            showCaption: false,
+            allowedFileExtensions: ["jpg", "png", "gif"],
+            overwriteInitial: false,
+            initialPreviewAsData: true,
+            initialPreviewShowDelete: false,
+            initialPreview: [
+                {% for imagem in imagens %}
+                    "/media/{{ imagem.arquivo }}",
+                {% endfor %}
+            ]
+
+        });
+
     });
 
     function desabilita() {
@@ -233,7 +280,6 @@
         modal.find('.modal-title').text('Resposta para o chamado:  ' + recipient)
         modal.find('.modal-body textarea').val(recipient2)
     });
-
 
 
 </script>

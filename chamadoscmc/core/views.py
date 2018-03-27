@@ -23,7 +23,7 @@ from django.db.models import Q
 from django.shortcuts import render
 
 from .forms import ChamadoForm
-from .models import GrupoServico, Servico, Chamado, FilaChamados, ChamadoResposta, HistoricoChamados, SetorChamado, Localizacao, Pavimento
+from .models import GrupoServico, Servico, Chamado, FilaChamados, ChamadoResposta, HistoricoChamados, SetorChamado, Localizacao, Pavimento, ChamadoAnexo
 from autentica.util.mixin import CMCLoginRequired
 from .forms import ChamadoForm, ServicoSearchForm, ServicoForm, GrupoServicoForm, RelatorioSetorForm, SetorChamadoForm
 
@@ -53,11 +53,15 @@ class CadastroChamadosCreateView(CMCLoginRequired, SuccessMessageMixin, CreateVi
     def form_valid(self, form):
         obj = form.save(commit=False)
         obj.usuario = self.request.user
-        setor = VSetor.objects.get(pk=self.request.session['setor_id'])
-        obj.setor_solicitante = setor
+        obj.setor_solicitante = self.request.session['setor_id']
         obj.save()
         fila = FilaManager()
         fila.cria(self.request.user, obj)
+        if self.request.FILES:
+            for f in self.request.FILES.getlist('foto'):
+                foto = ChamadoAnexo.objects.create(chamado=obj, arquivo=f)
+        else:
+            print('*** SEM FOTOS ***')
         #return super(CadastroChamadosCreateView, self).form_valid(form)
         return HttpResponseRedirect(self.success_url)
 
@@ -250,7 +254,7 @@ def chamados_usuario_json(request, usuario_id):
         chamado_json['chamado_id'] = c.id
         chamado_json['data_abertura'] = c.data_abertura.strftime("%d/%m/%Y")
         chamado_json['grupo_servico'] = c.grupo_servico.descricao
-        chamado_json['setor'] = c.setor.setor.set_nome
+        chamado_json['setor'] = c.setor.get_nome()
         chamado_json['servico'] = c.servico.descricao
         chamado_json['assunto'] = c.assunto
         chamado_json['status'] = c.status
@@ -331,7 +335,9 @@ class ConsolidadoChamadoDetailView(CMCLoginRequired, SuccessMessageMixin, Detail
             chamado.save()
         fila = FilaChamados.objects.filter(chamado=chamado).first()
         respostas = ChamadoResposta.objects.filter(chamado=self.get_object().id)
+        imagens = ChamadoAnexo.objects.filter(chamado=self.get_object().id)
         context['respostas'] = respostas
+        context['imagens'] = imagens
         if fila != None:
             context['atendente'] = fila.usuario
         return context
@@ -556,7 +562,7 @@ class GrupoServicoCreateView(CMCLoginRequired, SuccessMessageMixin, CreateView):
 
     def form_valid(self, form):
         obj = form.save(commit=False)
-        obj.setor = SetorChamado.objects.get(setor=self.request.session['setor_id'])
+        obj.setor = SetorChamado.objects.get(setor_id=self.request.session['setor_id'])
         obj.save()
         return HttpResponseRedirect(self.success_url)
 
@@ -586,7 +592,7 @@ def relatorio(request):
 
         if form.is_valid():
 
-            chamados = Chamado.objects.filter(setor__setor__set_id=request.session['setor_id'])
+            chamados = Chamado.objects.filter(setor__setor_id=request.session['setor_id'])
 
             if form['setor'].value() != '':
                 s_helper = ServiceHelper()

@@ -2,6 +2,7 @@ from django.template import Context
 from django.core import mail
 from django.core.mail import EmailMessage
 from django.template.loader import get_template
+from consumer.lib.helper import ServiceHelper
 
 
 class Mailer:
@@ -27,7 +28,8 @@ class Mailer:
 
         assunto = 'CMC - Controle de Chamados'
         para = [chamado.usuario.email]
-        de = 'chamados@cmc.pr.gov.br'
+        #de = 'chamados@cmc.pr.gov.br'
+        de = 'Sistema de Chamados <no-reply@cmc.pr.gov.br>'
 
         try:
             ultima_resposta = chamado.chamadoresposta_set.latest('id')
@@ -39,7 +41,7 @@ class Mailer:
             'chamado_id': chamado.id,
             'usuario': chamado.usuario.username,
             'data_abertura': chamado.data_abertura,
-            'setor': chamado.setor.setor,
+            'setor': chamado.setor.get_nome(),
             'grupo_servico': chamado.grupo_servico,
             'servico': chamado.servico,
             'assunto': chamado.assunto,
