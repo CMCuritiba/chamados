@@ -59,7 +59,7 @@ node_modules/
 .env
 
 # User-uploaded media
-chamados/media/
+chamadoscmc/media/
 
 
 
@@ -68,4 +68,3 @@ components/
 *migrations
 !migrations/0001_initial.py
 *.db
-media/
