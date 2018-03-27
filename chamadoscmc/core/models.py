@@ -66,7 +66,7 @@ class SetorChamado(models.Model):
 	def __str__(self):
 		service_helper = ServiceHelper()
 		setor = service_helper.get_setor(self.setor_id)
-		return setor.set_sigla
+		return setor.set_nome
 
 	def get_sigla(self):
 		service_helper = ServiceHelper()
