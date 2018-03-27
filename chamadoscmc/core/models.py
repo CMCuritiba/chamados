@@ -230,6 +230,8 @@ class ChamadoResposta(models.Model):
 #---------------------------------------------------------------------------------------------
 # Model ChamadoAnexo
 #---------------------------------------------------------------------------------------------		
-#class ChamadoAnexo(models.Model):
-#	chamado = models.ForeignKey(Chamado, related_name='anexos')
-#	arquivo = models.FileField()
+class ChamadoAnexo(models.Model):
+	chamado = models.ForeignKey(Chamado, related_name='anexos')
+	arquivo = models.ImageField(upload_to="imagens")
+	uploaded_at = models.DateTimeField(auto_now_add=True)
+	descricao = models.CharField(max_length=255, blank=True)

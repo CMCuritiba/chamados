@@ -25,7 +25,7 @@ class ChamadoForm(forms.ModelForm):
     class Meta:
         model = Chamado
         #fields = ['setor', 'grupo_servico', 'servico', 'ramal', 'assunto', 'descricao', 'patrimonio', 'localizacao', 'pavimento', 'anexo']
-        fields = ['setor', 'grupo_servico', 'servico', 'ramal', 'assunto', 'descricao', 'patrimonio', 'localizacao', 'pavimento']
+        fields = ['setor', 'grupo_servico', 'servico', 'ramal', 'assunto', 'descricao', 'patrimonio', 'localizacao', 'pavimento'] 
         exclude = ('user',)
 
     def __init__(self, *args, **kwargs):
@@ -33,6 +33,7 @@ class ChamadoForm(forms.ModelForm):
         self.fields['setor'] = forms.ModelChoiceField(queryset=SetorChamado.objects.filter(recebe_chamados=True))
         self.fields['localizacao'].empty_label = "Selecione..."
         self.fields['pavimento'].empty_label = "Selecione..."
+        self.fields['foto'] = forms.ImageField(required=False, label='Foto(s)', widget=forms.FileInput(attrs={'multiple': 'true'}))
 
         self.helper = FormHelper()
         self.helper.form_tag = False
@@ -65,10 +66,10 @@ class ChamadoForm(forms.ModelForm):
                 Div('pavimento', css_class='col-md-6',),
                 css_class='col-md-12 row',
             ),
-            #Div(
-            #    Div('anexo', css_class='col-md-12',),
-            #    css_class='col-md-12 row',
-            #),
+            Div(
+                Div('foto', css_class='col-md-12',),
+                css_class='col-md-12 row',
+            ),
         )
 
     def clean(self):

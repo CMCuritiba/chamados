@@ -344,7 +344,9 @@ PIPELINE = {
               'datatables/media/css/dataTables.bootstrap.css',
               'font-awesome/css/font-awesome.css',
               'bootstrap-select/dist/css/bootstrap-select.css',
+              'bootstrap-fileinput/css/fileinput.css',
               'login.css',
+              #'blueimp-file-upload/css/jquery.fileupload-ui.css',
               
             ),
             'output_filename': 'css/master.css',
@@ -354,6 +356,7 @@ PIPELINE = {
         'master': {
             'source_filenames': (
               'jquery/dist/jquery.js',
+              #'jquery-ui/jquery-ui.js',
               'bootstrap-css/js/bootstrap.js',
               'jasny-bootstrap/dist/js/jasny-bootstrap.js',
               'underscore/underscore.js',
@@ -362,9 +365,17 @@ PIPELINE = {
               'bootstrap-select/dist/js/bootstrap-select.js',
               'bootstrap-datepicker/dist/js/bootstrap-datepicker.js',
               'bootstrap-datepicker/dist/locales/bootstrap-datepicker.pt-BR.min.js',
-              'blueimp-file-upload/js/vendor/jquery.ui.widget.js',
-              'blueimp-file-upload/js/jquery.iframe-transport.js',
-              'blueimp-file-upload/js/jquery.fileupload.js',
+              'bootstrap-fileinput/js/fileinput.js',
+              'bootstrap-fileinput/js/locales/pt-BR.js',
+              #'blueimp-load-image/js/load-image.js',
+              #'blueimp-canvas-to-blob/js/canvas-to-blob.js',
+              #'blueimp-file-upload/js/vendor/jquery.ui.widget.js',
+              #'blueimp-file-upload/js/jquery.iframe-transport.js',
+              #'blueimp-file-upload/js/jquery.fileupload.js',
+              #'blueimp-file-upload/js/jquery.fileupload-process.js',
+              #'blueimp-file-upload/js/jquery.fileupload-image.js',
+              #'blueimp-file-upload/js/jquery.fileupload-validate.js',
+              #'jquery.cookie/jquery.cookie.js',
             ),
             'output_filename': 'js/master.js',
         }
@@ -389,6 +400,10 @@ BOWER_INSTALLED_APPS = (
     'jquery-file-upload',
     'bootstrap-3-datepicker',
     'bootstrap-datepicker',
+    'bootstrap-fileinput',
+    #'jquery-file-upload',
+    #'jquery-cookie',
+    #'jquery-ui',
 )
 
 # ALTERAÇÕES NO USER PARA GUARDAR INFO DO LDAP

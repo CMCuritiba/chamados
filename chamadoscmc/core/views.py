@@ -23,7 +23,7 @@ from django.db.models import Q
 from django.shortcuts import render
 
 from .forms import ChamadoForm
-from .models import GrupoServico, Servico, Chamado, FilaChamados, ChamadoResposta, HistoricoChamados, SetorChamado, Localizacao, Pavimento
+from .models import GrupoServico, Servico, Chamado, FilaChamados, ChamadoResposta, HistoricoChamados, SetorChamado, Localizacao, Pavimento, ChamadoAnexo
 from autentica.util.mixin import CMCLoginRequired
 from .forms import ChamadoForm, ServicoSearchForm, ServicoForm, GrupoServicoForm, RelatorioSetorForm, SetorChamadoForm
 
@@ -57,6 +57,11 @@ class CadastroChamadosCreateView(CMCLoginRequired, SuccessMessageMixin, CreateVi
         obj.save()
         fila = FilaManager()
         fila.cria(self.request.user, obj)
+        if self.request.FILES:
+            for f in self.request.FILES.getlist('foto'):
+                foto = ChamadoAnexo.objects.create(chamado=obj, arquivo=f)
+        else:
+            print('*** SEM FOTOS ***')
         #return super(CadastroChamadosCreateView, self).form_valid(form)
         return HttpResponseRedirect(self.success_url)
 
@@ -330,7 +335,9 @@ class ConsolidadoChamadoDetailView(CMCLoginRequired, SuccessMessageMixin, Detail
             chamado.save()
         fila = FilaChamados.objects.filter(chamado=chamado).first()
         respostas = ChamadoResposta.objects.filter(chamado=self.get_object().id)
+        imagens = ChamadoAnexo.objects.filter(chamado=self.get_object().id)
         context['respostas'] = respostas
+        context['imagens'] = imagens
         if fila != None:
             context['atendente'] = fila.usuario
         return context
