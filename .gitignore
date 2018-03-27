@@ -68,3 +68,4 @@ components/
 *migrations
 !migrations/0001_initial.py
 *.db
+db.sqlite
