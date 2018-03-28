@@ -12,7 +12,7 @@ from datetime import datetime
 from autentica.models import User as Usuario
 from chamadoscmc.core.models import GrupoServico, Servico, Chamado, FilaChamados, ChamadoResposta, HistoricoChamados, SetorChamado
 from chamadoscmc.lib.mail import Mailer
-from chamadoscmc.lib.exceptions import BusinessLogicException
+from autentica.lib.exceptions import BusinessLogicException
 
 
 def enviaEmail(function):
