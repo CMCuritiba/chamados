@@ -309,6 +309,11 @@
                 devolve(data.chamado_id);
             });
 
+            $('#tchamados tbody').on('click', '#devolve', function () {
+                var data = tableChamados.row( $(this).parents('tr') ).data();
+                devolve(data.chamado_id);
+            });
+
             $('#tchamados tbody').on('click', '#reabre', function () {
                 var data = tableChamados.row( $(this).parents('tr') ).data();
                 reabre(data.chamado_id);
