@@ -3,6 +3,7 @@
         "pk": 1,
         "model": "autentica.User",
         "fields": {
+            "username": "rodrigo.ferraro",
             "first_name" : "Rodrigo",
             "last_name" : "Ferraro",
             "lotado" : "Divisão Desenv Sistemas",

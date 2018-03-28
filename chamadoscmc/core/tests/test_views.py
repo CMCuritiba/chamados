@@ -144,6 +144,7 @@ class GrupoServicoViewTests(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user(self.nome_usuario, password=self.senha)
         self.user.is_staff = True
+        self.user.is_superuser = True
         self.user.save()
         self.factory = RequestFactory()
 
@@ -165,7 +166,7 @@ class GrupoServicoViewTests(TestCase):
 
     def test_index(self):
         request = self.factory.get('/cadastro/grupo_servico/')
-        request.user = self.user
+        self.setup_request(request)
         response = GrupoServicoIndexView.as_view()(request)
         response.render()
         self.assertEqual(response.status_code, 200)
@@ -221,6 +222,7 @@ class SetorChamadoIndexViewTests(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user(self.nome_usuario, password=self.senha)
         self.user.is_staff = True
+        self.user.is_superuser = True
         self.user.save()
         self.factory = RequestFactory()
 
@@ -252,6 +254,7 @@ class SetorChamadoCreateViewTests(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user(self.nome_usuario, password=self.senha)
         self.user.is_staff = True
+        self.user.is_superuser = True
         self.user.save()
         self.factory = RequestFactory()
 
@@ -286,6 +289,7 @@ class SetorChamadoUpdateViewTests(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user(self.nome_usuario, password=self.senha)
         self.user.is_staff = True
+        self.user.is_superuser = True
         self.user.save()
         self.factory = RequestFactory()
         setor = SetorChamadoFactory.create()
