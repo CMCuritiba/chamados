@@ -118,7 +118,7 @@
                         "className": "dt-center",
                         "data": null,
                         render: function(data, type, full, meta) {
-                            return '<a href="" data-toggle="modal" data-target="#confirmaModal" data-servico_id="' + full.servico_id + '" data-servico_descricao="' + full.servico_descricao + '"><i class="fa fa-trash" aria-hidden="true" style="color:red;"></i></a>';
+                            return '<a href="" data-toggle="modal" data-target="#confirmaModal" data-servico_id="' + full.servico_id + '" data-servico_descricao="' + full.servico_descricao + '"><i class="far fa-trash-alt" aria-hidden="true" style="color:Tomato;" title="Exclui Serviço"></i></a>';
                         }
                 }
 
@@ -135,6 +135,7 @@
                         "sPrevious": '<span class="glyphicon glyphicon-backward"></span>'
                     }
                 },
+                "deferRender": true,
                 "bPaginate" : true,
                 "bLengthChange": false,
                 "bFilter": true,

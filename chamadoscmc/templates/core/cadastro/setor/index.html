@@ -90,9 +90,9 @@
                         title: "Recebe Chamados",
                         render: function(data, type, full, meta) {
                             if (full.recebe_chamados == true)
-                                return '<i class="fa fa-thumbs-o-up" aria-hidden="true" style="color:green;"></i>';
+                                return '<i class="far fa-check-circle" aria-hidden="true" style="color:green;" title="Recebe chamados"></i>';
                             else
-                                return '<i class="fa fa-thumbs-o-down" aria-hidden="true" style="color:red;"></i>';
+                                return '<i class="far fa-times-circle" aria-hidden="true" style="color:Tomato;" title="Não recebe chamados"></i>';
                         }
                     }
                     
@@ -125,7 +125,7 @@
                         "className": "dt-center",
                         "data": null,
                         render: function(data, type, full, meta) {
-                            return '<a href="" data-toggle="modal" data-target="#confirmaModal" data-setor_id="' + full.id + '" data-set_nome="' + full.set_nome + '"><i class="fa fa-trash" aria-hidden="true" style="color:red;"></i></a>';
+                            return '<a href="" data-toggle="modal" data-target="#confirmaModal" data-setor_id="' + full.id + '" data-set_nome="' + full.set_nome + '"><i class="far fa-trash-alt" aria-hidden="true" style="color:Tomato;" title="Exclui Setor"></i></a>';
                         }
                 }
 
@@ -142,6 +142,7 @@
                         "sPrevious": '<span class="glyphicon glyphicon-backward"></span>'
                     }
                 },
+                "deferRender": true,
                 "bPaginate" : true,
                 "bLengthChange": false,
                 "bFilter": true,

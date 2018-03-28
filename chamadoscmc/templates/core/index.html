@@ -110,7 +110,7 @@
                     "data": null,
                     render: function(data, type, full, meta) {
                         if (full.novidade)
-                            return '<i class="fa fa-envelope" aria-hidden="true" style="color:red;"></i>';
+                            return '<i class="far fa-bell fa-lg" aria-hidden="true" style="color:Tomato;" title="Este chamado tem novidade"></i>';
                         else
                             return '';
                     }
@@ -140,6 +140,7 @@
                     "sPrevious": '<span class="glyphicon glyphicon-backward"></span>'
                 }
             },
+            "deferRender": true,
             "bPaginate" : true,
             "bLengthChange": false,
             "bFilter": true,

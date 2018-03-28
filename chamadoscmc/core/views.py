@@ -25,7 +25,7 @@ from django.conf import settings
 
 from .forms import ChamadoForm
 from .models import GrupoServico, Servico, Chamado, FilaChamados, ChamadoResposta, HistoricoChamados, SetorChamado, Localizacao, Pavimento, ChamadoAnexo
-from autentica.util.mixin import CMCLoginRequired
+from autentica.util.mixin import CMCLoginRequired, CMCAdminLoginRequired
 from .forms import ChamadoForm, ServicoSearchForm, ServicoForm, GrupoServicoForm, RelatorioSetorForm, SetorChamadoForm
 
 from ..lib.fila import FilaManager
@@ -35,14 +35,21 @@ from templated_docs.http import FileResponse
 
 from consumer.lib.helper import ServiceHelper
 
+#--------------------------------------------------------------------------------------
+#
+#--------------------------------------------------------------------------------------
 class ChamadoDetailView(DetailView):
     model = Chamado
 
-
+#--------------------------------------------------------------------------------------
+#
+#--------------------------------------------------------------------------------------
 class CadastroChamadosIndexView(CMCLoginRequired, SuccessMessageMixin, FormView):
     template_name = 'core/index.html'
     form_class = ChamadoForm
 
+#--------------------------------------------------------------------------------------
+#
 #--------------------------------------------------------------------------------------
 class CadastroChamadosCreateView(CMCLoginRequired, SuccessMessageMixin, CreateView):
     template_name = "core/new.html"
@@ -152,10 +159,11 @@ def chamados_estatistica_json(request):
 
     return JsonResponse(resposta, safe=False)
 
-# --------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+#
+#--------------------------------------------------------------------------------------
 class FilaChamadosIndexView(CMCLoginRequired, SuccessMessageMixin, TemplateView):
     template_name = 'fila/index.html'
-
 
 # --------------------------------------------------------------------------------------
 # Retorna JSON dos grupos de serviços para setor especificado
@@ -318,7 +326,8 @@ def devolve_json(request, id_chamado):
     else:
         response = JsonResponse({'status':'false','message':'Nenhum chamado selecionado'}, status=401)
     return response
-
+#--------------------------------------------------------------------------------------
+#
 #--------------------------------------------------------------------------------------
 class ConsolidadoChamadoDetailView(CMCLoginRequired, SuccessMessageMixin, DetailView):
     template_name = "core/edit.html"
@@ -516,25 +525,34 @@ def localizacao_setor_json(request, id_setor):
     return JsonResponse(resposta, safe=False)        
 
 #--------------------------------------------------------------------------------------
-class ServicoIndexView(CMCLoginRequired, SuccessMessageMixin, FormView):
+#
+#--------------------------------------------------------------------------------------
+class ServicoIndexView(CMCAdminLoginRequired, SuccessMessageMixin, FormView):
     template_name = 'core/cadastro/servico/index.html'
     form_class = ServicoSearchForm
 
-
-class ServicoCreateView(CMCLoginRequired, SuccessMessageMixin, CreateView):
+#--------------------------------------------------------------------------------------
+#
+#--------------------------------------------------------------------------------------
+class ServicoCreateView(CMCAdminLoginRequired, SuccessMessageMixin, CreateView):
     model = Servico
     form_class = ServicoForm
     success_url = '/cadastro/servico/'
     success_message = "Serviço criado com sucesso"
     template_name = 'core/cadastro/servico/create.html'   
-
-class ServicoUpdateView(CMCLoginRequired, SuccessMessageMixin, UpdateView):
+#--------------------------------------------------------------------------------------
+#
+#--------------------------------------------------------------------------------------
+class ServicoUpdateView(CMCAdminLoginRequired, SuccessMessageMixin, UpdateView):
     model = Servico
     form_class = ServicoForm
     success_url = '/cadastro/servico/'
     success_message = "Serviço alterado com sucesso"
     template_name = 'core/cadastro/servico/update.html'
 
+#--------------------------------------------------------------------------------------
+#
+#--------------------------------------------------------------------------------------
 def exclui_servico_json(request, pk):
 
     if request.method == 'POST' and request.is_ajax():
@@ -549,10 +567,15 @@ def exclui_servico_json(request, pk):
     return response             
 
 #--------------------------------------------------------------------------------------
-class GrupoServicoIndexView(CMCLoginRequired, SuccessMessageMixin, TemplateView):
+#
+#--------------------------------------------------------------------------------------
+class GrupoServicoIndexView(CMCAdminLoginRequired, SuccessMessageMixin, TemplateView):
     template_name = 'core/cadastro/grupo_servico/index.html'
 
-class GrupoServicoCreateView(CMCLoginRequired, SuccessMessageMixin, CreateView):
+#--------------------------------------------------------------------------------------
+#
+#--------------------------------------------------------------------------------------
+class GrupoServicoCreateView(CMCAdminLoginRequired, SuccessMessageMixin, CreateView):
     model = GrupoServico
     form_class = GrupoServicoForm
     success_url = '/cadastro/grupo_servico/'
@@ -565,13 +588,19 @@ class GrupoServicoCreateView(CMCLoginRequired, SuccessMessageMixin, CreateView):
         obj.save()
         return HttpResponseRedirect(self.success_url)
 
-class GrupoServicoUpdateView(CMCLoginRequired, SuccessMessageMixin, UpdateView):
+#--------------------------------------------------------------------------------------
+#
+#--------------------------------------------------------------------------------------
+class GrupoServicoUpdateView(CMCAdminLoginRequired, SuccessMessageMixin, UpdateView):
     model = GrupoServico
     form_class = GrupoServicoForm
     success_url = '/cadastro/grupo_servico/'
     success_message = "Grupo Serviço alterado com sucesso"
     template_name = 'core/cadastro/grupo_servico/update.html'
 
+#--------------------------------------------------------------------------------------
+#
+#--------------------------------------------------------------------------------------
 def exclui_grupo_servico_json(request, pk):
 
     if request.method == 'POST' and request.is_ajax():
@@ -585,6 +614,9 @@ def exclui_grupo_servico_json(request, pk):
         response = JsonResponse({'status':'false','message':'Não foi possível localizar o grupo serviço'}, status=401)
     return response                 
 
+#--------------------------------------------------------------------------------------
+#
+#--------------------------------------------------------------------------------------
 def relatorio(request):
     if request.method == 'POST':
         form = RelatorioSetorForm(request, request.POST)
@@ -624,6 +656,8 @@ def relatorio(request):
         return render(request, 'core/relatorio/chamado/index.html', {'form': form})
 
 #--------------------------------------------------------------------------------------
+#
+#--------------------------------------------------------------------------------------
 class RelatorioChamadoIndexView(CMCLoginRequired, SuccessMessageMixin, FormView):
     template_name = 'core/relatorio/chamado/index.html'    
     form_class = RelatorioSetorForm
@@ -656,13 +690,13 @@ def setores_json(request):
 # --------------------------------------------------------------------------------------
 # Index para cadastro de setores
 # --------------------------------------------------------------------------------------
-class SetorChamadoIndexView(CMCLoginRequired, SuccessMessageMixin, TemplateView):
+class SetorChamadoIndexView(CMCAdminLoginRequired, SuccessMessageMixin, TemplateView):
     template_name = 'core/cadastro/setor/index.html'    
 
 #--------------------------------------------------------------------------------------
 # Create para cadastro de setores
 # --------------------------------------------------------------------------------------
-class SetorChamadoCreateView(CMCLoginRequired, SuccessMessageMixin, CreateView):
+class SetorChamadoCreateView(CMCAdminLoginRequired, SuccessMessageMixin, CreateView):
     template_name = "core/cadastro/setor/new.html"
     form_class = SetorChamadoForm
     model = SetorChamado
@@ -672,7 +706,7 @@ class SetorChamadoCreateView(CMCLoginRequired, SuccessMessageMixin, CreateView):
 #--------------------------------------------------------------------------------------
 # Update para cadastro de setores
 # --------------------------------------------------------------------------------------
-class SetorChamadoUpdateView(CMCLoginRequired, SuccessMessageMixin, UpdateView):
+class SetorChamadoUpdateView(CMCAdminLoginRequired, SuccessMessageMixin, UpdateView):
     model = SetorChamado
     form_class = SetorChamadoForm
     success_url = '/cadastro/setor/'
