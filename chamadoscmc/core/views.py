@@ -174,7 +174,7 @@ def grupo_servico_json(request, id_setor):
     if id_setor == None or id_setor == '' or id_setor == '0':
         grupos_servicos = None
     else:
-        grupos_servicos = GrupoServico.objects.filter(setor=id_setor)
+        grupos_servicos = GrupoServico.objects.filter(setor=id_setor).order_by("descricao")
 
     for gs in grupos_servicos:
         grupo_servico_json = {}
@@ -194,7 +194,7 @@ def servico_json(request, id_gs):
     if id_gs == None or id_gs == '' or id_gs == '0':
         servicos = None
     else:
-        servicos = Servico.objects.filter(grupo_servico=id_gs)
+        servicos = Servico.objects.filter(grupo_servico=id_gs).order_by("descricao")
 
     for s in servicos:
         servico_json = {}
