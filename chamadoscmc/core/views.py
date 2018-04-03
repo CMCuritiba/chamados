@@ -29,6 +29,7 @@ from autentica.util.mixin import CMCLoginRequired, CMCAdminLoginRequired
 from .forms import ChamadoForm, ServicoSearchForm, ServicoForm, GrupoServicoForm, RelatorioSetorForm, SetorChamadoForm
 
 from ..lib.fila import FilaManager
+from ..lib.mixin import ChamadosAdminRequired
 
 from templated_docs import fill_template
 from templated_docs.http import FileResponse
@@ -527,14 +528,14 @@ def localizacao_setor_json(request, id_setor):
 #--------------------------------------------------------------------------------------
 #
 #--------------------------------------------------------------------------------------
-class ServicoIndexView(CMCAdminLoginRequired, SuccessMessageMixin, FormView):
+class ServicoIndexView(ChamadosAdminRequired, SuccessMessageMixin, FormView):
     template_name = 'core/cadastro/servico/index.html'
     form_class = ServicoSearchForm
 
 #--------------------------------------------------------------------------------------
 #
 #--------------------------------------------------------------------------------------
-class ServicoCreateView(CMCAdminLoginRequired, SuccessMessageMixin, CreateView):
+class ServicoCreateView(ChamadosAdminRequired, SuccessMessageMixin, CreateView):
     model = Servico
     form_class = ServicoForm
     success_url = '/cadastro/servico/'
@@ -543,7 +544,7 @@ class ServicoCreateView(CMCAdminLoginRequired, SuccessMessageMixin, CreateView):
 #--------------------------------------------------------------------------------------
 #
 #--------------------------------------------------------------------------------------
-class ServicoUpdateView(CMCAdminLoginRequired, SuccessMessageMixin, UpdateView):
+class ServicoUpdateView(ChamadosAdminRequired, SuccessMessageMixin, UpdateView):
     model = Servico
     form_class = ServicoForm
     success_url = '/cadastro/servico/'
@@ -569,13 +570,13 @@ def exclui_servico_json(request, pk):
 #--------------------------------------------------------------------------------------
 #
 #--------------------------------------------------------------------------------------
-class GrupoServicoIndexView(CMCAdminLoginRequired, SuccessMessageMixin, TemplateView):
+class GrupoServicoIndexView(ChamadosAdminRequired, SuccessMessageMixin, TemplateView):
     template_name = 'core/cadastro/grupo_servico/index.html'
 
 #--------------------------------------------------------------------------------------
 #
 #--------------------------------------------------------------------------------------
-class GrupoServicoCreateView(CMCAdminLoginRequired, SuccessMessageMixin, CreateView):
+class GrupoServicoCreateView(ChamadosAdminRequired, SuccessMessageMixin, CreateView):
     model = GrupoServico
     form_class = GrupoServicoForm
     success_url = '/cadastro/grupo_servico/'
@@ -591,7 +592,7 @@ class GrupoServicoCreateView(CMCAdminLoginRequired, SuccessMessageMixin, CreateV
 #--------------------------------------------------------------------------------------
 #
 #--------------------------------------------------------------------------------------
-class GrupoServicoUpdateView(CMCAdminLoginRequired, SuccessMessageMixin, UpdateView):
+class GrupoServicoUpdateView(ChamadosAdminRequired, SuccessMessageMixin, UpdateView):
     model = GrupoServico
     form_class = GrupoServicoForm
     success_url = '/cadastro/grupo_servico/'
@@ -690,13 +691,13 @@ def setores_json(request):
 # --------------------------------------------------------------------------------------
 # Index para cadastro de setores
 # --------------------------------------------------------------------------------------
-class SetorChamadoIndexView(CMCAdminLoginRequired, SuccessMessageMixin, TemplateView):
+class SetorChamadoIndexView(ChamadosAdminRequired, SuccessMessageMixin, TemplateView):
     template_name = 'core/cadastro/setor/index.html'    
 
 #--------------------------------------------------------------------------------------
 # Create para cadastro de setores
 # --------------------------------------------------------------------------------------
-class SetorChamadoCreateView(CMCAdminLoginRequired, SuccessMessageMixin, CreateView):
+class SetorChamadoCreateView(ChamadosAdminRequired, SuccessMessageMixin, CreateView):
     template_name = "core/cadastro/setor/new.html"
     form_class = SetorChamadoForm
     model = SetorChamado
@@ -706,7 +707,7 @@ class SetorChamadoCreateView(CMCAdminLoginRequired, SuccessMessageMixin, CreateV
 #--------------------------------------------------------------------------------------
 # Update para cadastro de setores
 # --------------------------------------------------------------------------------------
-class SetorChamadoUpdateView(CMCAdminLoginRequired, SuccessMessageMixin, UpdateView):
+class SetorChamadoUpdateView(ChamadosAdminRequired, SuccessMessageMixin, UpdateView):
     model = SetorChamado
     form_class = SetorChamadoForm
     success_url = '/cadastro/setor/'
@@ -731,3 +732,9 @@ def exclui_setor_json(request, pk):
     else:
         response = JsonResponse({'status':'false','message':'Não foi possível localizar o setor'}, status=401)
     return response                 
+
+# --------------------------------------------------------------------------------------
+# Index para mensagem de acesso restrito admin
+# --------------------------------------------------------------------------------------
+class AcessoAdmin(TemplateView):
+    template_name = 'pages/admin_restricted.html'        
