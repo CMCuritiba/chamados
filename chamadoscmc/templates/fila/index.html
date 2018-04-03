@@ -65,6 +65,9 @@
 		$(document).ready(function() {
 
 			tableChamados = $('#tchamados').DataTable({
+                rowReorder: {
+                    selector: 'td:nth-child(2)'
+                },
 				responsive: true,
 				"columns": [
 					{ 
@@ -197,6 +200,9 @@
             });
 
 			tableFila = $('#tfila').DataTable({
+                rowReorder: {
+                    selector: 'td:nth-child(2)'
+                },
 				responsive: true,
 				"columns": [
 					{ 
