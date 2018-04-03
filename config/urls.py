@@ -11,6 +11,7 @@ from django.views.generic import TemplateView
 from django.contrib.messages.views import SuccessMessageMixin
 from autentica.util.mixin import CMCLoginRequired
 from chamadoscmc.core.views import MyIndexView
+from chamadoscmc.core.views import AcessoAdmin
 
 
 urlpatterns = [
@@ -21,6 +22,7 @@ urlpatterns = [
     url(r'^chamado/', include('chamadoscmc.core.urls', namespace='chamado')),
     url(r'^cadastro/', include('chamadoscmc.core.cadastro_urls', namespace='cadastro')),
     url(r'^relatorio/', include('chamadoscmc.core.relatorio_urls', namespace='relatorio')),
+    url(r'^acesso/admin/$', AcessoAdmin.as_view(), name='acesso-admin'),
 
     # Django Admin, use {% url 'admin:index' %}
     url(settings.ADMIN_URL, admin.site.urls),
