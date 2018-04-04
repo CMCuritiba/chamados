@@ -21,16 +21,21 @@ from .models import Chamado, ChamadoResposta, Localizacao, Pavimento, Servico, G
 
 
 class ChamadoForm(forms.ModelForm):
-    #anexo = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
+    
     class Meta:
         model = Chamado
         #fields = ['setor', 'grupo_servico', 'servico', 'ramal', 'assunto', 'descricao', 'patrimonio', 'localizacao', 'pavimento', 'anexo']
         fields = ['setor', 'grupo_servico', 'servico', 'ramal', 'assunto', 'descricao', 'patrimonio', 'localizacao', 'pavimento'] 
         exclude = ('user',)
 
+    def ret_setores(self):
+        ob_setores = SetorChamado.objects.filter(recebe_chamados=True)
+        ob_setores = sorted(ob_setores, key=lambda a: a.get_nome())
+        return [(e.id, e.get_nome()) for e in ob_setores]
+
     def __init__(self, *args, **kwargs):
         super(ChamadoForm, self).__init__(*args, **kwargs)
-        self.fields['setor'] = forms.ChoiceField(label='Setor',  required=True, widget=forms.Select(attrs={'data-live-search': 'true'}))
+        #self.fields['setor'] = forms.ChoiceField(label='Setor',  required=True, widget=forms.Select(attrs={'data-live-search': 'true'}))
         self.fields['localizacao'].empty_label = "Selecione..."
         self.fields['pavimento'].empty_label = "Selecione..."
         self.fields['foto'] = forms.ImageField(required=False, label='Foto(s)', widget=forms.FileInput(attrs={'multiple': 'true'}))
@@ -38,9 +43,7 @@ class ChamadoForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.form_tag = False
 
-        ob_setores = SetorChamado.objects.filter(recebe_chamados=True)
-        ob_setores = sorted(ob_setores, key=lambda a: a.get_nome())
-        self.fields['setor'].choices = [(e.id, e.get_nome()) for e in ob_setores]
+        self.fields['setor'].choices = self.ret_setores()
         self.fields['setor'].choices.insert(0,( '', '-----------'))
 
 

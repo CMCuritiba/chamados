@@ -11,7 +11,18 @@ from autentica.models import User
 from ..models import SetorChamado, GrupoServico, Servico
 from consumer.lib.msconsumer import Setor
 
+from .factories import SetorChamadoFactory, ServicoFactory, GrupoServicoFactory
+
 import os
+
+class ComboSetorChamado(object):
+    def __init__(self, id, get_nome):  
+        self.id = id
+        self.get_nome = get_nome
+
+    def get_nome(self):
+        return self.get_nome
+
 
 class FilaChamadosFormTest(TestCase):
     fixtures = ['user.json', 'setor_chamado.json', 'grupo_servico.json', 'servico.json', 'chamado.json']
@@ -29,39 +40,56 @@ class FilaChamadosFormTest(TestCase):
 
 
 class ChamadoFormTest(TestCase):
-    fixtures = ['user.json', 'setor_chamado.json', 'grupo_servico.json', 'servico.json']
+    #fixtures = ['user.json', 'setor_chamado.json', 'grupo_servico.json', 'servico.json']
 
-    def setUp(self):
-        user = get_user_model().objects.create_user('administrador')
+    @patch('chamadoscmc.core.models.SetorChamado.__str__')
+    def setUp(self, __str__mock):
+        __str__mock.return_value = "PINEU"
+        self.user = get_user_model().objects.create_user('administrador')
+        self.setor = SetorChamadoFactory()
+        self.grupo_servico = GrupoServicoFactory(setor=self.setor, descricao='Grupo de serviço')
+        self.servico = ServicoFactory(grupo_servico=self.grupo_servico, descricao='Servico')
 
-
-    def test_init(self):
+    @patch('chamadoscmc.core.forms.ChamadoForm.ret_setores')
+    @patch('chamadoscmc.core.models.SetorChamado.__str__')        
+    def test_init(self, ret_setores_mock, __str__mock):
+        ret_setores = [('1', 'Divisão de Desenvolvimento de Sistemas')]
+        ret_setores_mock.return_value = ret_setores
+        __str__mock.return_value = "PINEU"
         form = ChamadoForm()
 
-
-    def test_inclui_ok(self):
-        form_data = {'usuario':"1", 'setor':"1", 'grupo_servico':"1", 'servico':"1", 'ramal':"4813",
+    @patch('chamadoscmc.core.forms.ChamadoForm.ret_setores')
+    @patch('chamadoscmc.core.models.SetorChamado.__str__')
+    def test_inclui_ok(self, ret_setores_mock, __str__mock):
+        ret_setores = [('1', 'Divisão de Desenvolvimento de Sistemas')]
+        ret_setores_mock.return_value = ret_setores
+        __str__mock.return_value = "PINEU"
+        form_data = {'usuario':"1", 'setor':self.setor.id, 'grupo_servico':self.grupo_servico.id, 'servico':self.servico.id, 'ramal':"4813",
                      'assunto':"mouse não funciona", 'descricao':"já tentei de tudo mas não vai"}
         form = ChamadoForm(data=form_data)
+        #print(form)
         self.assertTrue(form.is_valid())
 
-    def test_inclui_setor_vazio(self):
-        usuario = User.objects.get(pk=1)
+    @patch('chamadoscmc.core.forms.ChamadoForm.ret_setores')
+    def test_inclui_setor_vazio(self, ret_setores_mock):
+        ret_setores = [('1', 'Divisão de Desenvolvimento de Sistemas')]
+        ret_setores_mock.return_value = ret_setores
 
-        form_data = {'usuario':"1", 'grupo_servico':"1", 'servico':"1", 'ramal':"4813",
+        form_data = {'usuario':"1", 'grupo_servico':self.grupo_servico.id, 'servico':self.servico.id, 'ramal':"4813",
                      'assunto':"mouse não funciona", 'descricao':"já tentei de tudo mas não vai"}
         form = ChamadoForm(data=form_data)
         self.assertFalse(form.is_valid())
         #self.assertEqual(form.cleaned_data['usuario'], usuario)
 
-    def test_inclui_servico_vazio(self):
-        grupo = GrupoServico.objects.get(pk=1)
+    @patch('chamadoscmc.core.forms.ChamadoForm.ret_setores')
+    def test_inclui_servico_vazio(self, ret_setores_mock):
+        ret_setores = [('1', 'Divisão de Desenvolvimento de Sistemas')]
+        ret_setores_mock.return_value = ret_setores
 
-        form_data = {'usuario':"1", 'setor':"1", 'grupo_servico':"1", 'ramal':"4813",
+        form_data = {'usuario':"1", 'setor':self.setor.id, 'grupo_servico':self.grupo_servico.id, 'ramal':"4813",
                      'assunto':"mouse não funciona", 'descricao':"já tentei de tudo mas não vai"}
         form = ChamadoForm(data=form_data)
         self.assertFalse(form.is_valid())
-        self.assertEqual(form.cleaned_data['grupo_servico'], grupo)
 
 class ChamadoRelatorioFormTest(TestCase):
     fixtures = ['user.json', 'setor_chamado.json', 'grupo_servico.json', 'servico.json']        
