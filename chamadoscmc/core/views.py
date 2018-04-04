@@ -29,7 +29,7 @@ from autentica.util.mixin import CMCLoginRequired, CMCAdminLoginRequired
 from .forms import ChamadoForm, ServicoSearchForm, ServicoForm, GrupoServicoForm, RelatorioSetorForm, SetorChamadoForm
 
 from ..lib.fila import FilaManager
-from ..lib.mixin import ChamadosAdminRequired
+from ..lib.mixin import ChamadosAdminRequired, ChamadosAtendenteRequired
 
 from templated_docs import fill_template
 from templated_docs.http import FileResponse
@@ -163,7 +163,7 @@ def chamados_estatistica_json(request):
 #--------------------------------------------------------------------------------------
 #
 #--------------------------------------------------------------------------------------
-class FilaChamadosIndexView(CMCLoginRequired, SuccessMessageMixin, TemplateView):
+class FilaChamadosIndexView(ChamadosAtendenteRequired, SuccessMessageMixin, TemplateView):
     template_name = 'fila/index.html'
 
 # --------------------------------------------------------------------------------------
@@ -738,3 +738,9 @@ def exclui_setor_json(request, pk):
 # --------------------------------------------------------------------------------------
 class AcessoAdmin(TemplateView):
     template_name = 'pages/admin_restricted.html'        
+
+# --------------------------------------------------------------------------------------
+# Index para mensagem de acesso restrito atendimento
+# --------------------------------------------------------------------------------------
+class AcessoAtendente(TemplateView):
+    template_name = 'pages/atende_restricted.html'            
