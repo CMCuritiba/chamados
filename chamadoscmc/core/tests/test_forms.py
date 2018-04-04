@@ -42,7 +42,9 @@ class FilaChamadosFormTest(TestCase):
 class ChamadoFormTest(TestCase):
     #fixtures = ['user.json', 'setor_chamado.json', 'grupo_servico.json', 'servico.json']
 
-    def setUp(self):
+    @patch('chamadoscmc.core.models.SetorChamado.__str__')
+    def setUp(self, __str__mock):
+        __str__mock.return_value = "PINEU"
         self.user = get_user_model().objects.create_user('administrador')
         self.setor = SetorChamadoFactory()
         self.grupo_servico = GrupoServicoFactory(setor=self.setor, descricao='Grupo de serviço')
@@ -52,12 +54,15 @@ class ChamadoFormTest(TestCase):
         form = ChamadoForm()
 
     @patch('chamadoscmc.core.forms.ChamadoForm.ret_setores')
-    def test_inclui_ok(self, ret_setores_mock):
+    @patch('chamadoscmc.core.models.SetorChamado.__str__')
+    def test_inclui_ok(self, ret_setores_mock, __str__mock):
         ret_setores = [('1', 'Divisão de Desenvolvimento de Sistemas')]
         ret_setores_mock.return_value = ret_setores
+        __str__mock.return_value = "PINEU"
         form_data = {'usuario':"1", 'setor':self.setor.id, 'grupo_servico':self.grupo_servico.id, 'servico':self.servico.id, 'ramal':"4813",
                      'assunto':"mouse não funciona", 'descricao':"já tentei de tudo mas não vai"}
         form = ChamadoForm(data=form_data)
+        #print(form)
         self.assertTrue(form.is_valid())
 
     @patch('chamadoscmc.core.forms.ChamadoForm.ret_setores')
