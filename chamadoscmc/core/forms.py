@@ -30,13 +30,19 @@ class ChamadoForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ChamadoForm, self).__init__(*args, **kwargs)
-        self.fields['setor'] = forms.ModelChoiceField(queryset=SetorChamado.objects.filter(recebe_chamados=True))
+        self.fields['setor'] = forms.ChoiceField(label='Setor',  required=True, widget=forms.Select(attrs={'data-live-search': 'true'}))
         self.fields['localizacao'].empty_label = "Selecione..."
         self.fields['pavimento'].empty_label = "Selecione..."
         self.fields['foto'] = forms.ImageField(required=False, label='Foto(s)', widget=forms.FileInput(attrs={'multiple': 'true'}))
 
         self.helper = FormHelper()
         self.helper.form_tag = False
+
+        ob_setores = SetorChamado.objects.filter(recebe_chamados=True)
+        ob_setores = sorted(ob_setores, key=lambda a: a.get_nome())
+        self.fields['setor'].choices = [(e.id, e.get_nome()) for e in ob_setores]
+        self.fields['setor'].choices.insert(0,( '', '-----------'))
+
 
         self.helper.layout = Layout(
             Div(
