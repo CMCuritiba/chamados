@@ -50,7 +50,12 @@ class ChamadoFormTest(TestCase):
         self.grupo_servico = GrupoServicoFactory(setor=self.setor, descricao='Grupo de serviço')
         self.servico = ServicoFactory(grupo_servico=self.grupo_servico, descricao='Servico')
 
-    def test_init(self):
+    @patch('chamadoscmc.core.forms.ChamadoForm.ret_setores')
+    @patch('chamadoscmc.core.models.SetorChamado.__str__')        
+    def test_init(self, ret_setores_mock, __str__mock):
+        ret_setores = [('1', 'Divisão de Desenvolvimento de Sistemas')]
+        ret_setores_mock.return_value = ret_setores
+        __str__mock.return_value = "PINEU"
         form = ChamadoForm()
 
     @patch('chamadoscmc.core.forms.ChamadoForm.ret_setores')

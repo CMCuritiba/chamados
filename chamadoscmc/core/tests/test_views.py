@@ -29,6 +29,7 @@ class ChamadoViewTests(TestCase):
         self.factory = RequestFactory()
 
 
+
     def setup_request(self, request):
         request.user = self.user
 
@@ -43,8 +44,12 @@ class ChamadoViewTests(TestCase):
         request.session['some'] = 'some'
         request.session.save()
 
-
-    def test_index_table_sem_chamados(self):
+    @patch('chamadoscmc.core.forms.ChamadoForm.ret_setores')
+    @patch('chamadoscmc.core.models.SetorChamado.__str__')        
+    def test_index_table_sem_chamados(self, ret_setores_mock, __str__mock):
+        ret_setores = [('1', 'Divisão de Desenvolvimento de Sistemas')]
+        ret_setores_mock.return_value = ret_setores
+        __str__mock.return_value = "PINEU"
         request = self.factory.get('/chamado/')
         request.user = self.user
         response = CadastroChamadosIndexView.as_view()(request)
@@ -53,8 +58,12 @@ class ChamadoViewTests(TestCase):
         self.assertContains(response, 'Chamados')
         self.assertContains(response, 'Você nunca abriu algum chamado')
 
-
-    def test_index_table_com_chamados(self):
+    @patch('chamadoscmc.core.forms.ChamadoForm.ret_setores')
+    @patch('chamadoscmc.core.models.SetorChamado.__str__')                
+    def test_index_table_com_chamados(self, ret_setores_mock, __str__mock):
+        ret_setores = [('1', 'Divisão de Desenvolvimento de Sistemas')]
+        ret_setores_mock.return_value = ret_setores
+        __str__mock.return_value = "PINEU"
         request = self.factory.get('/chamado/')
         request.user = self.user
         response = CadastroChamadosIndexView.as_view()(request)
