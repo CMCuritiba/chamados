@@ -347,6 +347,7 @@ class ConsolidadoChamadoDetailView(CMCLoginRequired, SuccessMessageMixin, Detail
         imagens = ChamadoAnexo.objects.filter(chamado=self.get_object().id)
         context['respostas'] = respostas
         context['imagens'] = imagens
+        context['num_respostas'] = respostas.count()
         if fila != None:
             context['atendente'] = fila.usuario
         return context
