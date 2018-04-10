@@ -61,6 +61,12 @@
                     <li class="list-group-item">
                         <b>Status: </b>{{ object.status }}
                     </li>
+                    <li class="list-group-item">
+                        <b>Respostas: </b><br/>
+                        {% for resposta in respostas %}
+                            <i class="fas fa-comment"></i> {{ resposta.data|date:"d/m/Y H:i" }} - {{ resposta }}<br/>
+                        {% endfor %}
+                    </li>
                 </ul>
                 </div>
             </div>

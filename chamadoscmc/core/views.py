@@ -343,7 +343,7 @@ class ConsolidadoChamadoDetailView(CMCLoginRequired, SuccessMessageMixin, Detail
             chamado.novidade = False
             chamado.save()
         fila = FilaChamados.objects.filter(chamado=chamado).first()
-        respostas = ChamadoResposta.objects.filter(chamado=self.get_object().id)
+        respostas = ChamadoResposta.objects.filter(chamado=self.get_object().id).order_by("data")
         imagens = ChamadoAnexo.objects.filter(chamado=self.get_object().id)
         context['respostas'] = respostas
         context['imagens'] = imagens
