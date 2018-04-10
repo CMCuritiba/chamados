@@ -345,9 +345,11 @@ PIPELINE = {
               #'font-awesome/css/font-awesome.css',
               'bootstrap-select/dist/css/bootstrap-select.css',
               'bootstrap-fileinput/css/fileinput.css',
+              'datatables.net-responsive-bs/css/responsive.bootstrap.min.css',
+              #'datatables-responsive/css/responsive.bootstrap.css',
+              #'datatables-rowreorder/css/rowReorder.dataTables.scss',
               'login.css',
-              'datatables-responsive/css/responsive.dataTables.scss',
-              'datatables-rowreorder/css/rowReorder.dataTables.scss',
+              'callout.css',
               #'blueimp-file-upload/css/jquery.fileupload-ui.css',
               
             ),
@@ -370,8 +372,10 @@ PIPELINE = {
               'bootstrap-fileinput/js/fileinput.js',
               'bootstrap-fileinput/js/locales/pt-BR.js',
               'fontawesome/svg-with-js/js/fontawesome-all.min.js',
-              'datatables-responsive/js/dataTables.responsive.js',
-              'datatables-rowreorder/js/dataTables.rowReorder.js',
+              #'datatables-responsive/js/dataTables.responsive.js',
+              'datatables.net-responsive/js/dataTables.responsive.min.js',
+              'datatables.net-responsive-bs/js/responsive.bootstrap.min.js',
+              #'datatables-rowreorder/js/dataTables.rowReorder.js',
               #'blueimp-load-image/js/load-image.js',
               #'blueimp-canvas-to-blob/js/canvas-to-blob.js',
               #'blueimp-file-upload/js/vendor/jquery.ui.widget.js',
@@ -387,7 +391,7 @@ PIPELINE = {
     }
 }
 
-STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
+STATICFILES_STORAGE = 'pipeline.storage.PipelineStorage'
 
 # BOWER
 # ------------------------------------------------------------------------------
@@ -406,8 +410,8 @@ BOWER_INSTALLED_APPS = (
     'bootstrap-3-datepicker',
     'bootstrap-datepicker',
     'bootstrap-fileinput',
-    'datatables-rowreorder',
-    'datatables-responsive',
+    #'datatables-rowreorder',
+    'datatables.net-responsive-bs',
     #'jquery-file-upload',
     #'jquery-cookie',
     #'jquery-ui',
