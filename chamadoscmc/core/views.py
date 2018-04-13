@@ -12,7 +12,8 @@ from django.core import serializers
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib import messages
 from django.views.generic import TemplateView
-from datetime import datetime 
+from django.utils.timezone import datetime
+from datetime import timedelta
 from django.views.generic import DetailView
 from django.views.generic.edit import FormView, CreateView, UpdateView
 from django.http import JsonResponse
@@ -640,6 +641,7 @@ def relatorio(request):
 
             if form['data_fim'].value() != '':
                 data_fim = datetime.strptime(form['data_fim'].value(), '%d/%m/%Y')
+                data_fim = data_fim + timedelta(days=1)
                 #chamados = chamados.filter(Q(data_fechamento=None) or Q(data_fechamento__lte=data_fim))
                 #chamados = chamados.filter(Q(data_fechamento__isnull=True) or Q(data_fechamento__lte=data_fim))
                 chamados = chamados.exclude(data_fechamento__gt=data_fim)
