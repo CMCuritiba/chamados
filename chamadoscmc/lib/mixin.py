@@ -5,7 +5,7 @@ from braces import views
 from django.http import HttpResponseRedirect, HttpResponse
 
 from autentica.util.mixin import CMCLoginRequired, CMCAdminLoginRequired
-from ..core.models import SetorChamado
+from ..core.models import SetorChamado, Chamado
 
 #----------------------------------------------------------------------------------------------
 #
@@ -31,5 +31,11 @@ class ChamadosAtendenteRequired(CMCLoginRequired):
 		setor_chamado = SetorChamado.objects.get(setor_id=request.session['setor_id'])
 		if not setor_chamado.recebe_chamados:
 			return HttpResponseRedirect(self.message_url)
+
+		chave = kwargs.get('pk', None)
+		if chave is not None:
+			chamado = Chamado.objects.get(pk=chave)
+			if chamado.setor != setor_chamado:
+				return HttpResponseRedirect(self.message_url)
 
 		return super(CMCLoginRequired, self).dispatch(request, *args, **kwargs)

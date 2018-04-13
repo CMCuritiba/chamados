@@ -331,7 +331,7 @@ def devolve_json(request, id_chamado):
 #--------------------------------------------------------------------------------------
 #
 #--------------------------------------------------------------------------------------
-class ConsolidadoChamadoDetailView(CMCLoginRequired, SuccessMessageMixin, DetailView):
+class ConsolidadoChamadoDetailView(ChamadosAtendenteRequired, SuccessMessageMixin, DetailView):
     template_name = "core/edit.html"
     model = Chamado
     success_url = '/fila/'
