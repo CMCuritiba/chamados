@@ -9,7 +9,7 @@ Status : {{ status }}
 
 --------------------------------------------------------------------
 
-Link : {{ link }}
+Link : {{ link }}chamado/detalhe/{{ chamado_id }}/
 Número do chamado : {{ chamado_id }}
 Data de abertura : {{ data_abertura }}
 Solicitado ao setor : {{ setor }}
