@@ -34,6 +34,7 @@ class Command(BaseCommand):
 		GrupoServicoFactory.create(id=67, descricao='Outros', patrimonio_obrigatorio=False, setor_id=1)
 
 	def popula_servico(self):
+		self.stdout.write('...populando Servico')				
 		ServicoFactory.create(id=1, descricao='Troca de tonner', grupo_servico_id=1)
 		ServicoFactory.create(id=301, descricao='Não liga', grupo_servico_id=58)
 		ServicoFactory.create(id=302, descricao='Usuário não loga', grupo_servico_id=58)
@@ -72,8 +73,6 @@ class Command(BaseCommand):
 		ServicoFactory.create(id=337, descricao='Novo ponto de rede', grupo_servico_id=66)
 		ServicoFactory.create(id=338, descricao='Manutenção em ponto de rede', grupo_servico_id=66)
 		ServicoFactory.create(id=344, descricao='Travamento', grupo_servico_id=61)
-
-		self.stdout.write('...populando Servico')				
 
 	def popula_localizacao(self):
 		self.stdout.write('...populando Localizacao')				

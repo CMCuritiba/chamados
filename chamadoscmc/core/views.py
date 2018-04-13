@@ -640,7 +640,9 @@ def relatorio(request):
 
             if form['data_fim'].value() != '':
                 data_fim = datetime.strptime(form['data_fim'].value(), '%d/%m/%Y')
-                chamados = chamados.filter(Q(data_fechamento=None) or Q(data_fechamento__lte=data_fim))
+                #chamados = chamados.filter(Q(data_fechamento=None) or Q(data_fechamento__lte=data_fim))
+                #chamados = chamados.filter(Q(data_fechamento__isnull=True) or Q(data_fechamento__lte=data_fim))
+                chamados = chamados.exclude(data_fechamento__gt=data_fim)
 
             if form['grupo_servico'].value() != '':
                 chamados = chamados.filter(grupo_servico=form['grupo_servico'].value())            
