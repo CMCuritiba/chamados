@@ -3,7 +3,7 @@ from django.core import mail
 from django.core.mail import EmailMessage
 from django.template.loader import get_template
 from consumer.lib.helper import ServiceHelper
-
+from django.conf import settings
 
 class Mailer:
     """
@@ -31,6 +31,8 @@ class Mailer:
         #de = 'chamados@cmc.pr.gov.br'
         de = 'Sistema de Chamados <no-reply@cmc.pr.gov.br>'
 
+        link = getattr(settings, 'SERVER_NAME', 'https://chamados.staging.cmc.pr.gov.br/')
+
         try:
             ultima_resposta = chamado.chamadoresposta_set.latest('id')
         except:
@@ -47,6 +49,7 @@ class Mailer:
             'assunto': chamado.assunto,
             'status': chamado.status,
             'resposta': ultima_resposta,
+            'link': link,
         }
         mensagem_template = get_template('fila/email.txt').render(Context(ctx))
         message = EmailMessage(assunto, mensagem_template, to=para, from_email=de)

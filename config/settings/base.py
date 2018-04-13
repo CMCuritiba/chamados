@@ -449,3 +449,8 @@ CELERY_DISABLE_RATE_LIMITS = True
 # ------------------------------------------------------------------------------
 IMG_MAX_NUM = env('IMG_MAX_NUM', default=3)
 IMG_MAX_SIZE = env('IMG_MAX_SIZE', default=5000)
+
+# ------------------------------------------------------------------------------
+# CONFIGURAÇÃO DO SERVIDOR QUE A APLICAÇÃO ESTÁ RODANDO
+# ------------------------------------------------------------------------------
+SERVER_NAME = env('SERVER_NAME', default='https://chamados.staging.cmc.pr.gov.br')
