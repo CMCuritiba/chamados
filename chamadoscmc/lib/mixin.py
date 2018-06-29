@@ -28,6 +28,11 @@ class ChamadosAtendenteRequired(CMCLoginRequired):
 
 	def dispatch(self, request, *args, **kwargs):
 
+		retorno = super(CMCLoginRequired, self).dispatch(request, *args, **kwargs)
+		print(retorno)
+		if retorno.status_code == 302:
+			return HttpResponseRedirect(retorno.url)
+
 		setor_chamado = SetorChamado.objects.get(setor_id=request.session['setor_id'])
 		if not setor_chamado.recebe_chamados:
 			return HttpResponseRedirect(self.message_url)
@@ -38,4 +43,4 @@ class ChamadosAtendenteRequired(CMCLoginRequired):
 			if chamado.setor != setor_chamado:
 				return HttpResponseRedirect(self.message_url)
 
-		return super(CMCLoginRequired, self).dispatch(request, *args, **kwargs)
+		return retorno
