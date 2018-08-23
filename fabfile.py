@@ -204,7 +204,7 @@ def manage_collectstatic():
 	with cd(PROJECT_ROOT):
 		with source_virtualenv():
 			# Gera todos os arquivos css/js
-			sudo('./manage.py collectstatic --noinput --settings=config.settings.production', user=USERAPP)
+			sudo('./manage.py collectstatic --noinput --clear --settings=config.settings.production', user=USERAPP)
 
 @task
 def git_update():
@@ -226,7 +226,6 @@ def cria_links():
 	if env.environment == 'staging' or env.environment == 'production':
 		sudo('ln -sf {}/deploy/{}/supervisor.conf /etc/supervisor/conf.d/chamados_cmc.conf'.format(PROJECT_ROOT,env.environment))
 		sudo('ln -sf {}/deploy/{}/nginx.conf /etc/nginx/sites-enabled/chamados_cmc'.format(PROJECT_ROOT,env.environment))
-		sudo('chmod a+x {}/deploy/{}/bootstrap.sh'.format(PROJECT_ROOT,env.environment))
 		sudo('chmod a+x {}/deploy/{}/run.sh'.format(PROJECT_ROOT,env.environment))
 	else:
 		print('Nenhum ambiente selecionado. Defina staging ou production.')
