@@ -259,7 +259,10 @@ def manage_migrate():
 	chown()		
 
 @task
-def temp():
+def carga_inicial_bd():
 	des_chown()
-	#sudo('pip install https://github.com/CMCuritiba/django-cmcldapauth/raw/master/dist/django-cmcldapauth-0.1.tar.gz --upgrade')
-	#chown()
+	with cd(PROJECT_ROOT):
+		with source_virtualenv():
+			# Gera todos os arquivos css/js
+			sudo('./manage.py carga_inicial --palavra_magica=ZACA --settings=config.settings.production', user=USERAPP)
+	chown()		
