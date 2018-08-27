@@ -264,5 +264,6 @@ def carga_inicial_bd():
 	with cd(PROJECT_ROOT):
 		with source_virtualenv():
 			# Gera todos os arquivos css/js
+			sudo('./manage.py flush --settings=config.settings.production', user=USERAPP)
 			sudo('./manage.py carga_inicial --palavra_magica=ZACA --settings=config.settings.production', user=USERAPP)
 	chown()		

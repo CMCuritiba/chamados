@@ -17,7 +17,9 @@ class Command(BaseCommand):
 	def popula_setor_chamado(self):
 		self.stdout.write('...populando SetorChamado')
 		SetorChamadoFactory.create(id=1, setor_id=172, recebe_chamados=True, localizacao=False)
-		#SetorChamadoFactory.create(id=2, setor_id=171, recebe_chamados=False, localizacao=False)
+		SetorChamadoFactory.create(id=2, setor_id=171, recebe_chamados=False, localizacao=False)
+		SetorChamadoFactory.create(id=3, setor_id=36, recebe_chamados=True, localizacao=True)
+		SetorChamadoFactory.create(id=4, setor_id=38, recebe_chamados=True, localizacao=False)
 
 	def popula_grupo_servico(self):
 		self.stdout.write('...populando GrupoServico')		
