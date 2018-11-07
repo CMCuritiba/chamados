@@ -589,8 +589,8 @@ class GrupoServicoCreateView(ChamadosAdminRequired, SuccessMessageMixin, CreateV
         obj = form.save(commit=False)
         obj.setor = SetorChamado.objects.get(setor_id=self.request.session['setor_id'])
         obj.save()
-        messages.success(self.success_message)
-        return super(form_valid, self).form_valid(form)
+        #messages.success(self.success_message)
+        return super().form_valid(form)
 
 #--------------------------------------------------------------------------------------
 #

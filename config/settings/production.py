@@ -190,6 +190,9 @@ LOGGING = {
             'format': '%(levelname)s %(asctime)s %(module)s '
                       '%(process)d %(thread)d %(message)s'
         },
+        "file" : {
+            "format": "%(asctime)s %(name)-12s %(levelname)-8s %(message)s",
+        },
     },
     'handlers': {
 #        'sentry': {
@@ -200,7 +203,13 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
             'formatter': 'verbose'
-        }
+        },
+        "file" : {
+            "level": "INFO",
+            "class": "logging.FileHandler",
+            "filename": "chamados.log",
+            "formatter": "file",
+        },
     },
     'loggers': {
         'django.db.backends': {
@@ -222,6 +231,16 @@ LOGGING = {
             'level': 'ERROR',
             'handlers': ['console', ],
             'propagate': False,
+        },
+         'django.request': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        "": {
+            "handlers": ["console", "file"],
+            "level": "INFO",  
+            "propagate": True,
         },
     },
 }

@@ -75,4 +75,4 @@ celery==3.1.25
 templated-docs
 
 # Consumer
-https://github.com/CMCuritiba/django-cmc-consumer/blob/master/dist/django-cmc-consumer-0.1.tar.gz?raw=true
+https://github.com/CMCuritiba/django-cmc-consumer/blob/master/dist/django-cmc-consumer-0.2.tar.gz?raw=true
