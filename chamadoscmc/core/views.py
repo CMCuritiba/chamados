@@ -54,6 +54,7 @@ class CadastroChamadosIndexView(CMCLoginRequired, SuccessMessageMixin, FormView)
 #
 #--------------------------------------------------------------------------------------
 class CadastroChamadosCreateView(CMCLoginRequired, SuccessMessageMixin, CreateView):
+
     template_name = "core/new.html"
     form_class = ChamadoForm
     model = Chamado
@@ -71,7 +72,7 @@ class CadastroChamadosCreateView(CMCLoginRequired, SuccessMessageMixin, CreateVi
             for f in self.request.FILES.getlist('foto'):
                 foto = ChamadoAnexo.objects.create(chamado=obj, arquivo=f)
 
-        return HttpResponseRedirect(self.success_url)
+        return super().form_valid(form)
 
 #--------------------------------------------------------------------------------------
 # Retorna JSON lista de chamados do usuario
