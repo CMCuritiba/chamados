@@ -11,7 +11,7 @@
   <div class="container">
       <div class="starter-template">
 
-            <nav class="navbar navbar-default">
+            <nav class="navbar navbar-default" id="menu">
                 <div class="container-fluid">
                     <div class="navbar-header">
                         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -75,13 +75,15 @@
             $('.dropdown-toggle').dropdown();
         });
 
-        $(".nav a").on("click", function(){
-            $(".nav").find(".active").removeClass("active");
-            $(this).parent().addClass("active");
+        $("#menu .nav a").on("click", function(e){
+            localStorage.setItem('activeTab',$(e.target).attr('href'));
         });
 
-        $('li.active').removeClass('active');
-        $('a[href="' + location.pathname + '"]').closest('li').addClass('active'); 
+        var activeTab = localStorage.getItem('activeTab');
+
+        if(activeTab) {
+            $('a[href="' + activeTab + '"]').closest('li').addClass('active'); 
+        }
 
     </script>
 
