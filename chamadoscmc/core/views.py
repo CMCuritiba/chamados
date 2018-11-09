@@ -338,6 +338,8 @@ class ConsolidadoChamadoDetailView(ChamadosAtendenteRequired, SuccessMessageMixi
     success_message = "Chamado atualizadao com sucesso"
 
     def get_context_data(self, **kwargs):
+        s_helper = ServiceHelper()
+
         context = super(DetailView, self).get_context_data(**kwargs)
         chamado = Chamado.objects.filter(id=self.get_object().id).first()
         if self.template_name == "core/detail.html":
@@ -346,9 +348,16 @@ class ConsolidadoChamadoDetailView(ChamadosAtendenteRequired, SuccessMessageMixi
         fila = FilaChamados.objects.filter(chamado=chamado).first()
         respostas = ChamadoResposta.objects.filter(chamado=self.get_object().id).order_by("data")
         imagens = ChamadoAnexo.objects.filter(chamado=self.get_object().id)
+        if chamado.setor_solicitante is not None:
+            setor = s_helper.get_setor(chamado.setor_solicitante)
+            setor_solicitante = setor.set_nome
+        else:
+            setor_solicitante = ''
+
         context['respostas'] = respostas
         context['imagens'] = imagens
         context['num_respostas'] = respostas.count()
+        context['setor_solicitante'] = setor_solicitante
         if fila != None:
             context['atendente'] = fila.usuario
         return context
