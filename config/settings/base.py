@@ -364,6 +364,8 @@ PIPELINE = {
         'master': {
             'source_filenames': (
               'jquery/dist/jquery.js',
+              'moment/min/moment.min.js',
+              'moment/locale/pt-br.js',
               #'jquery-ui/jquery-ui.js',
               'bootstrap-css/js/bootstrap.js',
               'jasny-bootstrap/dist/js/jasny-bootstrap.js',
@@ -379,6 +381,7 @@ PIPELINE = {
               #'datatables-responsive/js/dataTables.responsive.js',
               'datatables.net-responsive/js/dataTables.responsive.min.js',
               'datatables.net-responsive-bs/js/responsive.bootstrap.min.js',
+              'datatables-datetime-moment/dist/js/datetime-moment.js',
               #'datatables-rowreorder/js/dataTables.rowReorder.js',
               #'blueimp-load-image/js/load-image.js',
               #'blueimp-canvas-to-blob/js/canvas-to-blob.js',
@@ -416,6 +419,8 @@ BOWER_INSTALLED_APPS = (
     'bootstrap-fileinput',
     #'datatables-rowreorder',
     'datatables.net-responsive-bs',
+    'datatables-datetime-moment',
+    'moment',
     #'jquery-file-upload',
     #'jquery-cookie',
     #'jquery-ui',

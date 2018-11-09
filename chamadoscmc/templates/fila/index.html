@@ -64,6 +64,8 @@
         
 		$(document).ready(function() {
 
+            $.fn.dataTable.moment('DD/MM/YYYY HH:mm');
+
 			tableChamados = $('#tchamados').DataTable({
                 rowReorder: {
                     selector: 'td:nth-child(2)'
@@ -78,7 +80,7 @@
         				title: "Aberto",
         				data: 'chamado_data_abertura',
                         render: function(data, type, full, meta) {
-                            return '<a href="/chamado/detalhe/' + full.chamado_id + '/">'+ data + '</a>';
+                            return '<a href="/chamado/detalhe/' + full.chamado_id + '/">'+ moment(data).format('DD/MM/YYYY HH:mm') + '</a>';
                         }
         			},
         			{ 

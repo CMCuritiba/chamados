@@ -121,7 +121,7 @@ def chamados_abertos_json(request, setor_id):
     for c in chamados:
         chamado_json = {}
         chamado_json['chamado_id'] = c.id
-        chamado_json['chamado_data_abertura'] = c.data_abertura.strftime("%d/%m/%Y")
+        chamado_json['chamado_data_abertura'] = c.data_abertura
         chamado_json['chamado_grupo_servico'] = c.grupo_servico.descricao
         chamado_json['chamado_servico'] = c.servico.descricao
         chamado_json['chamado_assunto'] = c.assunto
@@ -261,7 +261,7 @@ def chamados_usuario_json(request, usuario_id):
     for c in chamados:
         chamado_json = {}
         chamado_json['chamado_id'] = c.id
-        chamado_json['data_abertura'] = c.data_abertura.strftime("%d/%m/%Y")
+        chamado_json['data_abertura'] = c.data_abertura
         chamado_json['grupo_servico'] = c.grupo_servico.descricao
         chamado_json['setor'] = c.setor.get_nome()
         chamado_json['servico'] = c.servico.descricao

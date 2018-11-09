@@ -32,6 +32,8 @@
 	
     $(document).ready(function() {
 
+        $.fn.dataTable.moment('DD/MM/YYYY HH:mm');
+
         tableChamados = $('#tchamados').DataTable({
             responsive: true,
             "columns": [
@@ -43,7 +45,8 @@
                     title: "Aberto",
                     data: 'data_abertura', 
                     render: function(data, type, full, meta) {
-                        return '<a href="/chamado/detalhe/' + full.chamado_id + '/">'+ data + '</a>';
+                        return '<a href="/chamado/detalhe/' + full.chamado_id + '/">'+ moment(data).format('DD/MM/YYYY HH:mm') + '</a>';
+
                     }
                     
                 },
