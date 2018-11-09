@@ -12,6 +12,10 @@ from __future__ import absolute_import, unicode_literals
 
 import environ, os
 
+import urllib3
+
+urllib3.disable_warnings()
+
 ROOT_DIR = environ.Path(__file__) - 3  # (chamados-cmc/config/settings/base.py - 3 = chamados-cmc/)
 APPS_DIR = ROOT_DIR.path('chamadoscmc')
 
@@ -193,7 +197,7 @@ TEMPLATES = [
 ]
 
 # See: http://django-crispy-forms.readthedocs.io/en/latest/install.html#template-packs
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 # STATIC FILE CONFIGURATION
 # ------------------------------------------------------------------------------

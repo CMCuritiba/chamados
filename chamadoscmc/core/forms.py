@@ -40,6 +40,12 @@ class ChamadoForm(forms.ModelForm):
         self.fields['pavimento'].empty_label = "Selecione..."
         self.fields['foto'] = forms.ImageField(required=False, label='Foto(s)', widget=forms.FileInput(attrs={'multiple': 'true'}))
 
+        self.fields['grupo_servico'].label = 'Grupo de Serviço'
+        self.fields['servico'].label = 'Serviço'
+        self.fields['patrimonio'].label = 'Patrimônio'
+        self.fields['descricao'].label = 'Descrição'
+        self.fields['localizacao'].label = 'Localização'
+
         self.helper = FormHelper()
         self.helper.form_tag = False
 
@@ -127,7 +133,8 @@ class ServicoSearchForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(ServicoSearchForm, self).__init__(*args, **kwargs)
 
-        self.fields['grupo_servico'] = forms.ChoiceField(label="Grupo Serviço", widget=forms.Select(attrs={'data-live-search': 'true'}))
+        self.fields['grupo_servico'] = forms.ChoiceField(label="Grupo de Serviço", widget=forms.Select(attrs={'data-live-search': 'true'}))
+
 
         self.helper = FormHelper()
         self.helper.form_tag = False
@@ -147,6 +154,9 @@ class ServicoForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ServicoForm, self).__init__(*args, **kwargs)
+
+        self.fields['grupo_servico'].label = 'Grupo de Serviço'
+        self.fields['descricao'].label = 'Descrição'
 
         self.helper = FormHelper()
         self.helper.form_tag = False
@@ -171,6 +181,9 @@ class GrupoServicoForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(GrupoServicoForm, self).__init__(*args, **kwargs)
+
+        self.fields['descricao'].label = 'Descrição'
+        self.fields['patrimonio_obrigatorio'].label = 'Patrimônio Obrigatório'
 
         self.helper = FormHelper()
         self.helper.form_tag = False
