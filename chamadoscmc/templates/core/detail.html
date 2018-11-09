@@ -6,9 +6,10 @@
 {% block content %}
 
 <div id="chamadoTab" class="container">
+    
     <ul class="nav nav-tabs">
         <li class="active">
-            <a href="#1" data-toggle="tab">Dados do chamado</a>
+            <a href="#1" data-toggle="tab">Dados do Chamado</a>
         </li>
         <li>
             {% if num_respostas > 0 %}
@@ -29,7 +30,7 @@
                 <div class="panel-body">
                     <ul class="list-group">
                         <li class="list-group-item">
-                            <b>Data de abertura: </b>{{ object.data_abertura|date:"d/m/Y"  }}
+                            <b>Data de abertura: </b>{{ object.data_abertura|date:"d/m/Y H:i"  }}
                         </li>
                         <li class="list-group-item">
                             <b>Solicitante: </b>{{ object.usuario }}
@@ -85,7 +86,7 @@
 
         </div>
 
-        <div class="tab-pane" id="2">
+        <div class="tab-content" id="2">
             <div class="panel panel-primary">
             <div class="panel-heading"><h4>Respostas do chamado : {{ object.id }}</h4></div>
                 <div class="panel-body">
@@ -110,7 +111,7 @@
         </div>
 
 
-        <div class="tab-pane" id="3">
+        <div class="tab-content" id="3">
             <div class="panel panel-primary">
                 <div class="panel-heading"><h4>Imagens anexadas do chamado : {{ object.id }}</h4></div>
                 <div class="panel-body">
