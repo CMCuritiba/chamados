@@ -24,7 +24,7 @@
                     </div>
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="/">Home</a></li>
+                        <li><a href="/">Home</a></li>
                         <li><a href="/fila/">Atendimento</a></li>
                         <li><a href="/chamado/">Meus chamados</a></li>
                         <li class="dropdown">
@@ -70,9 +70,19 @@
     {% javascript 'master' %}
 
     <script>
+
         $(document).ready( function() {
             $('.dropdown-toggle').dropdown();
         });
+
+        $(".nav a").on("click", function(){
+            $(".nav").find(".active").removeClass("active");
+            $(this).parent().addClass("active");
+        });
+
+        $('li.active').removeClass('active');
+        $('a[href="' + location.pathname + '"]').closest('li').addClass('active'); 
+
     </script>
 
     {% block extra_javascript %}

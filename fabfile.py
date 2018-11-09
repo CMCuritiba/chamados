@@ -267,3 +267,52 @@ def carga_inicial_bd():
 			#sudo('./manage.py flush --settings=config.settings.production', user=USERAPP)
 			sudo('./manage.py carga_inicial --palavra_magica=ZACA --settings=config.settings.production', user=USERAPP)
 	chown()		
+
+@task
+def update_autenticacao():
+	des_chown()
+	with cd(PROJECT_ROOT):
+		with source_virtualenv():
+			# Roda o bower install
+			sudo('pip install https://github.com/CMCuritiba/django-cmcldapauth/raw/master/dist/django-cmcldapauth-0.3.tar.gz --upgrade --no-cache-dir')
+			#run('python manage.py makemigrations votacao --settings=config.settings.production')
+			#run('./manage.py makemigrations autentica --settings=config.settings.production')
+			#run('./manage.py makemigrations cadastro --settings=config.settings.production')
+	chown()			
+
+@task
+def update_consumer():
+	des_chown()
+	with cd(PROJECT_ROOT):
+		with source_virtualenv():
+			# Roda o bower install
+			sudo('pip install https://github.com/CMCuritiba/django-cmc-consumer/blob/master/dist/django-cmc-consumer-0.2.tar.gz?raw=true --upgrade --no-cache-dir')
+			#run('python manage.py makemigrations votacao --settings=config.settings.production')
+			#run('./manage.py makemigrations autentica --settings=config.settings.production')
+			#run('./manage.py makemigrations cadastro --settings=config.settings.production')
+	chown()	
+
+@task
+def pip_templated():
+	sudo('apt-get install libreoffice-core')
+	sudo('apt-get install libreoffice-writer')
+	des_chown()
+	with cd(PROJECT_ROOT):
+		with source_virtualenv():
+			# Roda o bower install
+			sudo('pip install templated-docs')
+			#run('python manage.py makemigrations votacao --settings=config.settings.production')
+			#run('./manage.py makemigrations autentica --settings=config.settings.production')
+			#run('./manage.py makemigrations cadastro --settings=config.settings.production')
+	chown()				
+
+@task
+def manage_sequence():
+	des_chown()
+	with cd(PROJECT_ROOT):
+		with source_virtualenv():
+			# Roda o bower install
+			run('./manage.py sqlsequencereset core --settings=config.settings.production')
+			#run('./manage.py makemigrations autentica --settings=config.settings.production')
+			#run('./manage.py makemigrations cadastro --settings=config.settings.production')
+	chown()		
