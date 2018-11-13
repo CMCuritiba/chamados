@@ -341,7 +341,6 @@
             }, 5000);
 
             $('span.filtro select').change(function() {
-                console.log(this.value);
                 if (this.value == 'TODOS')
                     tableChamados.search('').draw();
                 else    
@@ -414,7 +413,7 @@
         }
 
         function montaComboFiltro() {
-            var filtro = "Filtrar chamados : <select name='filtro' id='filtro'><option value='TODOS' selected>TODOS</option><option value='ABERTO'>ABERTO</option><option value='ATENDIMENTO'>ATENDIMENTO</option><option value='FECHADO'>FECHADO</option></select>";
+            var filtro = "Filtrar chamados : <select name='filtro' id='filtro'><option value='TODOS'>TODOS</option><option value='ABERTO' selected>ABERTO</option><option value='ATENDIMENTO'>ATENDIMENTO</option><option value='FECHADO'>FECHADO</option></select>";
             $('span.filtro').empty();
             $('span.filtro').append(filtro);
         }
@@ -446,6 +445,7 @@
 
         $(document).ready(function () {
             $('#id_filtro').selectpicker();
+            tableChamados.search('ABERTO').draw();
         });
         
 	</script>
