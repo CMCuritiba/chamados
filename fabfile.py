@@ -316,3 +316,7 @@ def manage_sequence():
 			#run('./manage.py makemigrations autentica --settings=config.settings.production')
 			#run('./manage.py makemigrations cadastro --settings=config.settings.production')
 	chown()		
+
+@task
+def teste():	
+	print('RODOU')
