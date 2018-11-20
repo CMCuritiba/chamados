@@ -91,7 +91,7 @@ def chamados_atendente_json(request,usuario_id, status):
         chamado_json = {}
         chamado_json['fila_id'] = c.id
         chamado_json['chamado_id'] = c.chamado.id
-        chamado_json['chamado_data_abertura'] = c.chamado.data_abertura.strftime("%d/%m/%Y")
+        chamado_json['chamado_data_abertura'] = c.chamado.data_abertura
         chamado_json['chamado_grupo_servico'] = c.chamado.grupo_servico.descricao
         chamado_json['chamado_servico'] = c.chamado.servico.descricao
         chamado_json['chamado_assunto'] = c.chamado.assunto
