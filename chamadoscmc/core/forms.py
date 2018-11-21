@@ -212,7 +212,7 @@ class RelatorioSetorForm(forms.Form):
         self.fields['data_inicio'] = forms.DateField(label="Data Início")
         self.fields['data_fim'] = forms.DateField(label="Data Fim", required=False)
         self.fields['grupo_servico'] = forms.ChoiceField(label="Grupo de Serviço", required=False, widget=forms.Select(attrs={'data-live-search': 'true'}))
-        self.fields['setor'] = forms.ChoiceField(label='Setor',  required=False)
+        self.fields['setor'] = forms.ChoiceField(label='Setor Solicitante',  required=False)
 
         self.service_helper = ServiceHelper()
 
