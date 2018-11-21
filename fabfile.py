@@ -1,4 +1,3 @@
- __future__ import with_statement
 from fabric.api import abort, local, task, run, local, env, cd, sudo, prefix
 from fabric.colors import red, green
 from contextlib import contextmanager
