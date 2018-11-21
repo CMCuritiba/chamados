@@ -81,6 +81,18 @@
                     }
                     
                 },
+                { 
+                    title: "Reaberto" ,
+                    data: 'reaberto',
+                    render: function(data, type, full, meta) {
+                        if (full.reaberto == true)
+                            return "<span class='badge progress-bar-warning'>Sim</span>"
+                        else
+                            return "<span class='badge progress-bar-default'>Não</span>"
+
+                    },
+                    "className": "dt-center"
+                },
             ],
             "columnDefs": [
                 {
@@ -113,6 +125,10 @@
                 {
                     "targets": [6],
                     "visible": true,
+                },
+                {
+                    "targets": [7],
+                    "visible": true,
                     "className": "dt-center",
                     "data": null,
                     render: function(data, type, full, meta) {
@@ -123,7 +139,7 @@
                     }
                 },
                 {
-                    "targets": [7],
+                    "targets": [8],
                     "visible": true,
                     "className": "dt-center",
                     "data": null,

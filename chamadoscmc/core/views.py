@@ -96,6 +96,7 @@ def chamados_atendente_json(request,usuario_id, status):
         chamado_json['chamado_servico'] = c.chamado.servico.descricao
         chamado_json['chamado_assunto'] = c.chamado.assunto
         chamado_json['chamado_usuario'] = c.chamado.usuario.username
+        chamado_json['chamado_reaberto'] = c.chamado.reaberto
 
         resposta.append(chamado_json)
 
@@ -128,6 +129,7 @@ def chamados_abertos_json(request, setor_id):
         chamado_json['chamado_assunto'] = c.assunto
         chamado_json['chamado_usuario'] = c.usuario.username
         chamado_json['status'] = c.status
+        chamado_json['reaberto'] = c.reaberto
         fila = FilaChamados.objects.filter(chamado=c.id).first()
         if fila == None or fila.usuario == None:
             chamado_json['fila_usuario'] = ''
@@ -269,6 +271,7 @@ def chamados_usuario_json(request, usuario_id):
         chamado_json['assunto'] = c.assunto
         chamado_json['status'] = c.status
         chamado_json['novidade'] = c.novidade
+        chamado_json['reaberto'] = c.reaberto
 
         resposta.append(chamado_json)
 

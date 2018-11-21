@@ -99,6 +99,7 @@ class FilaManager(object):
 		fila.save()
 		chamado.status = 'ABERTO'
 		chamado.data_fechamento = None
+		chamado.reaberto = True
 		chamado.save()
 		historico = HistoricoChamados.objects.create(chamado=chamado, status='ABERTO')
 		return fila

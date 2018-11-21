@@ -152,6 +152,7 @@ class Chamado(models.Model):
 	localizacao = models.ForeignKey(Localizacao, blank=True, null=True)
 	pavimento = models.ForeignKey(Pavimento,  blank=True, null=True)
 	setor_solicitante = models.IntegerField(blank=True, null=True)
+	reaberto = models.BooleanField(default=False)
 
 	'''
 	def clean(self):

@@ -112,9 +112,21 @@
                         }
         			},
                     { 
-                        title: "status" ,
+                        title: "Status" ,
                         data: 'status'
-                    }
+                    },
+                    { 
+                        title: "Reaberto" ,
+                        data: 'reaberto',
+                        render: function(data, type, full, meta) {
+                            if (full.reaberto == true)
+                                return "<span class='badge progress-bar-warning'>Sim</span>"
+                            else
+                                return "<span class='badge progress-bar-default'>Não</span>"
+
+                        },
+                        "className": "dt-center"
+                    },
         		],
         		"columnDefs": [
         			{
@@ -147,6 +159,10 @@
                     },
                     {
                         "targets": [7],
+                        "visible": true,
+                    },
+                    {
+                        "targets": [8],
                         "data": null,
                         "render" : function(data, type, full, meta) {
                             if (full.status == 'FECHADO' || full.status == 'ATENDIMENTO')
@@ -160,7 +176,7 @@
                         "className": "dt-center"
                     },
                     {
-                        "targets": [8],
+                        "targets": [9],
                         "data": null,
                         "render" : function(data, type, full, meta) {
                             if (full.status == 'FECHADO' && full.fila_usuario == full.chamado_usuario)
@@ -249,7 +265,20 @@
                         render: function(data, type, full, meta) {
                             return '<a href="/chamado/edita/' + full.chamado_id + '/">'+ data + '</a>';
                         }
-        			}
+        			},
+                    { 
+                        title: "Reaberto" ,
+                        data: 'chamado_reaberto',
+                        render: function(data, type, full, meta) {
+                            if (full.chamado_reaberto == true)
+                                return "<span class='badge progress-bar-warning'>Sim</span>"
+                            else
+                                return "<span class='badge progress-bar-default'>Não</span>"
+
+                        },
+                        "className": "dt-center"
+                    },
+
         		],
         		"columnDefs": [
         			{
@@ -282,6 +311,10 @@
         			},
                     {
                         "targets": [7],
+                        "visible": true,
+                    },
+                    {
+                        "targets": [8],
                         "data": null,
                         "defaultContent": "<a href='#'><span id='devolve' class='badge progress-bar-danger'>Devolver</span></a>",
                         "className": "dt-center"
