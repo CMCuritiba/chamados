@@ -154,6 +154,14 @@ class Chamado(models.Model):
 	setor_solicitante = models.IntegerField(blank=True, null=True)
 	reaberto = models.BooleanField(default=False)
 
+	def get_sigla(self):
+		try:
+			service_helper = ServiceHelper()
+			setor = service_helper.get_setor(self.setor_solicitante)
+			return setor.set_sigla
+		except:
+			return ''
+
 	'''
 	def clean(self):
 		data = self.cleaned_data

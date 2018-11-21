@@ -1,0 +1,162 @@
+{% extends "easy_pdf/base.html" %}
+{% load reporttags %}
+
+{% block layout_style %}
+    <style type="text/css">
+        @page {
+            size: {{ pagesize|default:"A4" }};
+            margin-left: 0.5cm;
+            margin-right: 0.5cm;
+            margin-top: 3.65cm;
+            margin-bottom: 1cm;
+            @frame header {
+                -pdf-frame-content: page-header;
+                margin-top: 0.5cm;
+                margin-right: 0.5cm;
+                margin-bottom: 0.5cm;
+                margin-left: 0.5cm;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block extra_style %}
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"> 
+    
+    <style type="text/css">
+        .header h1 {
+            padding-left: 60px;
+            padding-top:-55px;
+            font-size: 24px;
+            font-weight: normal;
+        }
+        .header h2 {
+            font-size: 18px;
+            font-weight: normal;
+            padding-top:-30px;
+            padding-left: 62px;
+        }
+
+        .header h4 {
+            font-size: 10px;
+            font-weight: normal;
+            padding-top:-30px;
+            padding-left: 62px;
+        }
+        table.bordered {
+            border-top: 0.1pt solid #999999;
+            border-bottom: 0.1pt solid #999999;
+        }
+
+        td {
+            font-size: 12px;
+            padding-top: 3px;
+            padding-bottom: 2px;
+            padding-left: 3px;
+        }
+
+        .logo { margin-bottom: 20px;}
+
+        table.table-header {
+            width: 100%;
+            background-color: #b3b3b3;
+        }
+
+        table.relatorio {
+            width: 100%;
+        }
+
+        td.numero {
+            width: 60px;
+        }
+
+        td.status {
+            width: 100px;
+        }
+
+        td.setor {
+            width: 100px;
+        }
+
+        td.grupo {
+            width: 170px;
+        }
+
+        td.servico {
+            width: 180px;
+        }
+
+        td.assunto {
+            width: 220px;
+        }
+
+        td.abertura {
+            width: 120px;
+        }
+
+        td.fechamento {
+            width: 120px;
+        }
+
+        .odd { 
+            background-color: #d3d3d3;
+        }
+
+        .even { 
+            background-color: #fff;
+        }
+
+        {% block my_style %}
+        {% endblock %} 
+
+    </style>
+{% endblock %} 
+
+{% block page_header %}
+    <div id="page-header">
+        <div class="header">
+            <img src="{{''|brasao}}" height="40" style="margin-top:5px;margin-right:130px;"></img>
+            <h1>Câmara Municipal de Curitiba</h1>
+            <h2>{% block report_title %}Relatório de Chamados - {{ setor_solicitante }}{% endblock %}</h2>
+            <h4>Relatório emitido em : {% now "d/m/Y H:i" %} - Período : {{ inicio }} - {{ fim }}</h4>
+        </div>
+        <table class="table-header">
+            <tr>
+                <td class="numero">Número</td>
+                <td class="status">Status</td>
+                <td class="setor">Solicitante</td>
+                <td class="grupo">Grupo</td>
+                <td class="servico">Serviço</td>
+                <td class="assunto">Assunto</td>
+                <td class="abertura">Abertura</td>
+                <td class="fechamento">Fechamento</td>
+            </tr>
+        </table>
+    </div>
+{% endblock %}
+
+{% block content %}
+{% if chamados %}
+    <table class="relatorio">
+        {% for chamado in chamados %}
+            <tr>
+                <td class="numero {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">{{ chamado.id }}</td>
+                <td class="status {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">{{ chamado.status }}</td>
+                <td class="setor {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">{{ chamado.get_sigla }}</td>
+                <td class="grupo {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">{{ chamado.grupo_servico }}</td>
+                <td class="servico {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">{{ chamado.servico }}</td>
+                <td class="assunto {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">{{ chamado.assunto }}</td>
+                <td class="abertura {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">{{ chamado.data_abertura | date:'d/m/Y H:i' }}</td>
+                <td class="fechamento {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">{{ chamado.data_fechamento | date:'d/m/Y H:i' }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <h2 align="center">Nenhum chamado para a pesquisa selecionada.</h2>
+{% endif %}
+<div id="content">
+    <table class="relatorio">
+    </table>
+</div>
+
+{% endblock content %}

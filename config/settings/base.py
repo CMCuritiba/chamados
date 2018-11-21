@@ -64,7 +64,9 @@ THIRD_PARTY_APPS = [
      'autentica',
      'djcelery',
      'djcelery_email',
-     'consumer'
+     'consumer',
+     'easy_pdf',
+     'cmcreport',
 ]
 
 # Apps specific for this project go here.

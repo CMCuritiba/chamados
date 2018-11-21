@@ -21,6 +21,7 @@ urlpatterns = [
     url(r'^edita/(?P<pk>[0-9]+)/$', views.ConsolidadoChamadoDetailView.as_view(template_name='core/edit.html'), name='chamado-update'),
     url(r'^detalhe/(?P<pk>[0-9]+)/$', views.ConsolidadoChamadoDetailView.as_view(template_name='core/detail.html'), name='chamado-detalhe'),
     url(r'^cria/$', views.CadastroChamadosCreateView.as_view(), name='cria'),
-    url(r'^relatorio/$', views.relatorio, name='relatorio'),
+    #url(r'^relatorio/$', views.relatorio, name='relatorio'),
+    url(r'^relatorio/$', views.RelatorioChamados.as_view(), name='relatorio'),
 ]
 

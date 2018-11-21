@@ -37,6 +37,8 @@ from templated_docs.http import FileResponse
 
 from consumer.lib.helper import ServiceHelper
 
+from cmcreport.lib.views import CMCReportView
+
 #--------------------------------------------------------------------------------------
 #
 #--------------------------------------------------------------------------------------
@@ -763,3 +765,58 @@ class AcessoAdmin(TemplateView):
 # --------------------------------------------------------------------------------------
 class AcessoAtendente(TemplateView):
     template_name = 'pages/atende_restricted.html'            
+
+#--------------------------------------------------------------------------------------
+# Relatorio Chamados
+#--------------------------------------------------------------------------------------        
+class RelatorioChamados(CMCReportView):
+    template_name = 'core/relatorio/chamado/chamados.html'
+    download_filename = 'relatorio_chamados.pdf'
+    pac_id = None
+    chamados = []
+
+    def get_context_data(self, **kwargs):
+        context = super(CMCReportView, self).get_context_data(**kwargs)
+        context['title'] = 'Relatório de Chamados'
+        context['pagesize'] = 'A4 landscape'
+        context['chamados'] = self.chamados
+        context['inicio'] = self.inicio
+        context['fim'] = self.fim
+        context['setor'] = self.setor
+        context['setor_solicitante'] = self.setor_solicitante
+        return context
+
+    def post(self, request, *args, **kwargs):
+        context = super(CMCReportView, self).get_context_data(**kwargs)
+        form = RelatorioSetorForm(request, request.POST)
+        if form.is_valid():
+
+            chamados = Chamado.objects.filter(setor__setor_id=request.session['setor_id'])
+
+            if form['setor'].value() != '':
+                s_helper = ServiceHelper()
+                setor = s_helper.get_setor(form['setor'].value())
+                setor_solicitante = setor.set_nome
+                chamados = chamados.filter(setor_solicitante=setor.set_id)
+            else:
+                setor_solicitante = 'TODOS OS SETORES'
+
+            data_inicio = datetime.strptime(form['data_inicio'].value(), '%d/%m/%Y')
+            chamados = chamados.filter(data_abertura__gte=data_inicio)
+
+            if form['data_fim'].value() != '':
+                data_fim = datetime.strptime(form['data_fim'].value(), '%d/%m/%Y')
+                data_fim = data_fim + timedelta(days=1)
+                chamados = chamados.exclude(data_fechamento__gt=data_fim)
+
+            if form['grupo_servico'].value() != '':
+                chamados = chamados.filter(grupo_servico=form['grupo_servico'].value())            
+
+            chamados = chamados.order_by('data_abertura')
+            self.chamados = chamados
+            self.inicio = form['data_inicio'].value()
+            self.fim = form['data_fim'].value()
+            self.setor = request.session['setor_nome']
+            self.setor_solicitante = setor_solicitante
+
+        return super(RelatorioChamados, self).get(request, *args, **kwargs)      

@@ -76,3 +76,7 @@ templated-docs
 
 # Consumer
 https://github.com/CMCuritiba/django-cmc-consumer/blob/master/dist/django-cmc-consumer-0.2.tar.gz?raw=true
+
+# Biblioteca relatorios
+django-easy-pdf
+https://github.com/CMCuritiba/django-cmc-report/blob/master/dist/django-cmc-report-0.1.tar.gz?raw=true
