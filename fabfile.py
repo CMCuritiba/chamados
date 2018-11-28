@@ -317,5 +317,10 @@ def manage_sequence():
 	chown()		
 
 @task
-def teste():	
-	print('RODOU')
+def instala_report():	
+	des_chown()
+	with cd(PROJECT_ROOT):
+		with source_virtualenv():
+			sudo('pip install django-easy-pdf')
+			sudo('pip install https://github.com/CMCuritiba/django-cmc-report/blob/master/dist/django-cmc-report-0.1.tar.gz?raw=true')
+	chown()				
