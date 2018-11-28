@@ -5,7 +5,7 @@ from braces import views
 from django.http import HttpResponseRedirect, HttpResponse
 
 from autentica.util.mixin import CMCLoginRequired, CMCAdminLoginRequired
-from ..core.models import SetorChamado, Chamado
+from ..core.models import SetorChamado, Chamado, FilaChamados
 
 #----------------------------------------------------------------------------------------------
 #
@@ -29,7 +29,7 @@ class ChamadosAtendenteRequired(CMCLoginRequired):
 	def dispatch(self, request, *args, **kwargs):
 
 		retorno = super(CMCLoginRequired, self).dispatch(request, *args, **kwargs)
-		print(retorno)
+
 		if retorno.status_code == 302:
 			return HttpResponseRedirect(retorno.url)
 
@@ -42,5 +42,11 @@ class ChamadosAtendenteRequired(CMCLoginRequired):
 			chamado = Chamado.objects.get(pk=chave)
 			if chamado.setor != setor_chamado:
 				return HttpResponseRedirect(self.message_url)
-
+			try:
+				fila = FilaChamados.objects.get(chamado_id=chave)
+				if fila.usuario != request.user:
+					return HttpResponseRedirect(self.message_url)
+			except:
+				return HttpResponseRedirect(self.message_url)
+				
 		return retorno
