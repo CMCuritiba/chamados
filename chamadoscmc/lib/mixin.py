@@ -64,14 +64,22 @@ class ChamadosVisualizaRequired(CMCLoginRequired):
 		if retorno.status_code == 302:
 			return HttpResponseRedirect(retorno.url)
 
-		setor_chamado = SetorChamado.objects.get(setor_id=request.session['setor_id'])
-		if not setor_chamado.recebe_chamados:
-			return HttpResponseRedirect(self.message_url)
-
 		chave = kwargs.get('pk', None)
 		if chave is not None:
-			chamado = Chamado.objects.get(pk=chave)
-			if chamado.setor != setor_chamado and chamado.usuario != request.user:
-				return HttpResponseRedirect(self.message_url)
-				
-		return retorno		
+			chamado = Chamado.objects.get(pk=chave)			
+
+			if chamado.setor_solicitante == request.session['setor_id'] and chamado.usuario == request.user:
+				return retorno
+			else:
+				try:
+					setor_chamado = SetorChamado.objects.get(setor_id=request.session['setor_id'])
+					if not setor_chamado.recebe_chamados:
+						return HttpResponseRedirect(self.message_url)
+					else:
+						if chamado.setor_solicitante == request.session['setor_id']:
+							return retorno
+						else:
+							return HttpResponseRedirect(self.message_url)	
+
+				except:
+					return HttpResponseRedirect(self.message_url)
