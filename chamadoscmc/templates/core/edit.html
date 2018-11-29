@@ -191,7 +191,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" id="submit">Salvar</button>
+        <button type="button" class="btn btn-primary" id="submit" onclick="javascript:submeteResposta();">Salvar</button>
       </div>
     </div>
   </div>
@@ -342,6 +342,11 @@
         });
 
     });
+
+    function submeteResposta() {
+        responde();
+        $("#respostaModal").modal('hide');
+    }
 
     function desabilita() {
         $("#id_setor").prop('disabled', true);

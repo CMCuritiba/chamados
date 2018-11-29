@@ -133,7 +133,7 @@ def chamados_abertos_json(request, setor_id):
         chamado_json['chamado_usuario'] = c.usuario.username
         chamado_json['status'] = c.status
         chamado_json['reaberto'] = c.reaberto
-        chamado_json['descricao'] = c.descricao
+        chamado_json['descricao'] = c.descricao.replace('/<\/?[^>]+>/gi', '')
         fila = FilaChamados.objects.filter(chamado=c.id).first()
         if fila == None or fila.usuario == None:
             chamado_json['fila_usuario'] = ''
