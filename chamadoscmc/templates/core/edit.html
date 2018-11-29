@@ -20,6 +20,9 @@
         <li>
             <a href="#3" data-toggle="tab">Imagens anexadas</a>
         </li>
+        <li>
+            <a href="#4" data-toggle="tab">Assinaturas</a>
+        </li>
     </ul>
     <br/>
     <div class="tab-content">
@@ -134,6 +137,32 @@
 
         </div>
 
+        <div class="tab-pane" id="4">
+            <div class="panel panel-primary">
+            <div class="panel-heading"><h4>Assinaturas do chamado : {{ object.id }}</h4></div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table id="tassinaturas" class="table table-striped table-hover table-bordered fonteTable" width="100%" cellspacing="0"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-primary">
+                <div class="panel-body">
+                    <div class="row"> 
+                        <div class="form-group"> 
+                            <div class="col-sm-12">
+                                <input type="button" onclick="javascript:volta_fila();" value="Voltar à fila" class="btn btn-default"/> 
+                                <input type="button" onclick="javascript:fecha_chamado();" value="Fechar chamado" class="btn btn-primary"/>
+                                <input type="button" data-toggle="modal" data-target="#assinaturaModal" data-chamado_id="{{ object.id }}" value="Nova assinatura" class="btn btn-default"/> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -153,6 +182,37 @@
             <input type="hidden" name="resposta_id" id="resposta_id" value="" />
             <label for="resposta" class="control-label">Resposta:</label>
             <textarea class="form-control" id="resposta" name="resposta"></textarea>
+          </div>
+        </form>
+        <form class="fecha" method="POST" action="/fila/fecha/">{% csrf_token %}
+            <input type="hidden" name="id_chamado" id="id_chamado" value="{{ object.id }}" />
+            <input type="hidden" name="id_usuario" id="id_usuario" value="{{ user.id }}" />
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="submit">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal assinatura -->
+<div class="modal fade" id="assinaturaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="exampleModalLabel">Nova assinatura</h4>
+      </div>
+      <div class="modal-body">
+        <form class="resposta">{% csrf_token %}
+          <div class="form-group">
+            <input type="hidden" name="id_chamado" id="id_chamado" value="{{ object.id }}" />
+            <input type="hidden" name="id_usuario" id="id_usuario" value="{{ user.id }}" />
+            <input type="hidden" name="resposta_id" id="resposta_id" value="" />
+            <label for="assinatura" class="control-label">Assinatura:</label>
+            <textarea class="form-control" id="assinatura" name="assinatura"></textarea>
           </div>
         </form>
         <form class="fecha" method="POST" action="/fila/fecha/">{% csrf_token %}
