@@ -30,7 +30,7 @@ from autentica.util.mixin import CMCLoginRequired, CMCAdminLoginRequired
 from .forms import ChamadoForm, ServicoSearchForm, ServicoForm, GrupoServicoForm, RelatorioSetorForm, SetorChamadoForm
 
 from ..lib.fila import FilaManager
-from ..lib.mixin import ChamadosAdminRequired, ChamadosAtendenteRequired
+from ..lib.mixin import ChamadosAdminRequired, ChamadosAtendenteRequired, ChamadosVisualizaRequired
 
 from templated_docs import fill_template
 from templated_docs.http import FileResponse
@@ -337,8 +337,8 @@ def devolve_json(request, id_chamado):
 #--------------------------------------------------------------------------------------
 #
 #--------------------------------------------------------------------------------------
-class ConsolidadoChamadoDetailView(ChamadosAtendenteRequired, SuccessMessageMixin, DetailView):
-    template_name = "core/edit.html"
+class ConsolidadoChamadoDetailView(ChamadosVisualizaRequired, SuccessMessageMixin, DetailView):
+    template_name = "core/detail.html"
     model = Chamado
     success_url = '/fila/'
     success_message = "Chamado atualizadao com sucesso"
@@ -348,7 +348,7 @@ class ConsolidadoChamadoDetailView(ChamadosAtendenteRequired, SuccessMessageMixi
 
         context = super(DetailView, self).get_context_data(**kwargs)
         chamado = Chamado.objects.filter(id=self.get_object().id).first()
-        if self.template_name == "core/detail.html":
+        if self.template_name == "core/detail.html" and chamado.usuario == self.request.user:
             chamado.novidade = False
             chamado.save()
         fila = FilaChamados.objects.filter(chamado=chamado).first()
@@ -820,3 +820,34 @@ class RelatorioChamados(CMCReportView):
             self.setor_solicitante = setor_solicitante
 
         return super(RelatorioChamados, self).get(request, *args, **kwargs)      
+
+#--------------------------------------------------------------------------------------
+#
+#--------------------------------------------------------------------------------------
+class ConsolidadoChamadoEditlView(ChamadosAtendenteRequired, SuccessMessageMixin, DetailView):
+    template_name = "core/edit.html"
+    model = Chamado
+    success_url = '/fila/'
+    success_message = "Chamado atualizadao com sucesso"
+
+    def get_context_data(self, **kwargs):
+        s_helper = ServiceHelper()
+
+        context = super(DetailView, self).get_context_data(**kwargs)
+        chamado = Chamado.objects.filter(id=self.get_object().id).first()
+        fila = FilaChamados.objects.filter(chamado=chamado).first()
+        respostas = ChamadoResposta.objects.filter(chamado=self.get_object().id).order_by("data")
+        imagens = ChamadoAnexo.objects.filter(chamado=self.get_object().id)
+        if chamado.setor_solicitante is not None:
+            setor = s_helper.get_setor(chamado.setor_solicitante)
+            setor_solicitante = setor.set_nome
+        else:
+            setor_solicitante = ''
+
+        context['respostas'] = respostas
+        context['imagens'] = imagens
+        context['num_respostas'] = respostas.count()
+        context['setor_solicitante'] = setor_solicitante
+        if fila != None:
+            context['atendente'] = fila.usuario
+        return context
