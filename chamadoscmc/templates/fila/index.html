@@ -80,35 +80,35 @@
         				title: "Aberto",
         				data: 'chamado_data_abertura',
                         render: function(data, type, full, meta) {
-                            return '<a href="/chamado/detalhe/' + full.chamado_id + '/">'+ moment(data).format('DD/MM/YYYY HH:mm') + '</a>';
+                            return '<a href="/chamado/detalhe/' + full.chamado_id + '/" title="' + full.descricao + '">'+ moment(data).format('DD/MM/YYYY HH:mm') + '</a>';
                         }
         			},
         			{ 
         				title: "Grupo",
         				data: 'chamado_grupo_servico',
                         render: function(data, type, full, meta) {
-                            return '<a href="/chamado/detalhe/' + full.chamado_id + '/">'+ data + '</a>';
+                            return '<a href="/chamado/detalhe/' + full.chamado_id + '/" title="' + full.descricao + '">'+ data + '</a>';
                         }
         			},
         			{ 
         				title: "Serviço",
         				data: 'chamado_servico',
                         render: function(data, type, full, meta) {
-                            return '<a href="/chamado/detalhe/' + full.chamado_id + '/">'+ data + '</a>';
+                            return '<a href="/chamado/detalhe/' + full.chamado_id +  '/" title="' + full.descricao + '">'+ data + '</a>';
                         }
         			},
         			{ 
         				title: "Assunto",
         				data: 'chamado_assunto',
                         render: function(data, type, full, meta) {
-                            return '<a href="/chamado/detalhe/' + full.chamado_id + '/">'+ data + '</a>';
+                            return '<a href="/chamado/detalhe/' + full.chamado_id + '/" title="' + full.descricao + '">'+ data + '</a>';
                         }
         			},
         			{ 
         				title: "Solicitante",
         				data: 'chamado_usuario',
                         render: function(data, type, full, meta) {
-                            return '<a href="/chamado/detalhe/' + full.chamado_id + '/">'+ data + '</a>';
+                            return '<a href="/chamado/detalhe/' + full.chamado_id +  '/" title="' + full.descricao + '">'+ data + '</a>';
                         }
         			},
                     { 
@@ -235,35 +235,35 @@
         				title: "Aberto",
         				data: "chamado_data_abertura",
                         render: function(data, type, full, meta) {
-                            return '<a href="/chamado/edita/' + full.chamado_id + '/">'+ moment(data).format('DD/MM/YYYY HH:mm') + '</a>';
+                            return '<a href="/chamado/edita/' + full.chamado_id + '/" title="' + full.chamado_descricao + '">'+ moment(data).format('DD/MM/YYYY HH:mm') + '</a>';
                         }
         			},
         			{ 
         				title: "Grupo",
         				data: 'chamado_grupo_servico',
                         render: function(data, type, full, meta) {
-                            return '<a href="/chamado/edita/' + full.chamado_id + '/">'+ data + '</a>';
+                            return '<a href="/chamado/edita/' + full.chamado_id + '/" title="' + full.chamado_descricao + '">'+ data + '</a>';
                         }
         			},
         			{ 
         				title: "Serviço",
         				data: 'chamado_servico',
                         render: function(data, type, full, meta) {
-                            return '<a href="/chamado/edita/' + full.chamado_id + '/">'+ data + '</a>';
+                            return '<a href="/chamado/edita/' + full.chamado_id + '/" title="' + full.chamado_descricao + '">'+ data + '</a>';
                         }
         			},
         			{ 
         				title: "Assunto",
         				data: 'chamado_assunto',
                         render: function(data, type, full, meta) {
-                            return '<a href="/chamado/edita/' + full.chamado_id + '/">'+ data + '</a>';
+                            return '<a href="/chamado/edita/' + full.chamado_id + '/" title="' + full.chamado_descricao + '">'+ data + '</a>';
                         }
         			},
         			{ 
         				title: "Solicitante",
         				data: 'chamado_usuario',
                         render: function(data, type, full, meta) {
-                            return '<a href="/chamado/edita/' + full.chamado_id + '/">'+ data + '</a>';
+                            return '<a href="/chamado/edita/' + full.chamado_id + '/" title="' + full.chamado_descricao + '">'+ data + '</a>';
                         }
         			},
                     { 
