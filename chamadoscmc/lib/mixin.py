@@ -50,3 +50,28 @@ class ChamadosAtendenteRequired(CMCLoginRequired):
 				return HttpResponseRedirect(self.message_url)
 				
 		return retorno
+
+#----------------------------------------------------------------------------------------------
+#
+#----------------------------------------------------------------------------------------------
+class ChamadosVisualizaRequired(CMCLoginRequired):
+	message_url = '/acesso/atendente'
+
+	def dispatch(self, request, *args, **kwargs):
+
+		retorno = super(CMCLoginRequired, self).dispatch(request, *args, **kwargs)
+
+		if retorno.status_code == 302:
+			return HttpResponseRedirect(retorno.url)
+
+		setor_chamado = SetorChamado.objects.get(setor_id=request.session['setor_id'])
+		if not setor_chamado.recebe_chamados:
+			return HttpResponseRedirect(self.message_url)
+
+		chave = kwargs.get('pk', None)
+		if chave is not None:
+			chamado = Chamado.objects.get(pk=chave)
+			if chamado.setor != setor_chamado and chamado.usuario != request.user:
+				return HttpResponseRedirect(self.message_url)
+				
+		return retorno		
