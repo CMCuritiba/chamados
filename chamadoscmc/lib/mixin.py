@@ -48,7 +48,6 @@ class ChamadosAtendenteRequired(CMCLoginRequired):
 					return HttpResponseRedirect(self.message_url)
 			except:
 				return HttpResponseRedirect(self.message_url)
-				
 		return retorno
 
 #----------------------------------------------------------------------------------------------
@@ -76,7 +75,7 @@ class ChamadosVisualizaRequired(CMCLoginRequired):
 					if not setor_chamado.recebe_chamados:
 						return HttpResponseRedirect(self.message_url)
 					else:
-						if chamado.setor_solicitante == request.session['setor_id']:
+						if setor_chamado.setor_id == request.session['setor_id']:
 							return retorno
 						else:
 							return HttpResponseRedirect(self.message_url)	
