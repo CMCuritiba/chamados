@@ -244,3 +244,10 @@ class ChamadoAnexo(models.Model):
 	arquivo = models.ImageField(upload_to="imagens")
 	uploaded_at = models.DateTimeField(auto_now_add=True)
 	descricao = models.CharField(max_length=255, blank=True)
+
+#---------------------------------------------------------------------------------------------
+# Model ChamadoAssinatura
+#---------------------------------------------------------------------------------------------		
+class ChamadoAssinatura(models.Model):
+	chamado = models.ForeignKey(Chamado, related_name='assinaturas')
+	email = models.CharField(max_length=300)
