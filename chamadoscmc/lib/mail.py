@@ -5,6 +5,8 @@ from django.template.loader import get_template
 from consumer.lib.helper import ServiceHelper
 from django.conf import settings
 
+from chamadoscmc.core.models import ChamadoAssinatura
+
 class Mailer:
     """
     Send email messages helper class
@@ -28,6 +30,11 @@ class Mailer:
 
         assunto = 'CMC - Controle de Chamados'
         para = [chamado.usuario.email]
+
+        assinaturas = ChamadoAssinatura.objects.filter(chamado=chamado)
+        for assinatura in assinaturas:
+            para.append(assinatura.email)
+            
         #de = 'chamados@cmc.pr.gov.br'
         de = 'Sistema de Chamados <no-reply@cmc.pr.gov.br>'
 

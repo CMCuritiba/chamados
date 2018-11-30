@@ -26,6 +26,7 @@ from django.conf import settings
 
 from .forms import ChamadoForm
 from .models import GrupoServico, Servico, Chamado, FilaChamados, ChamadoResposta, HistoricoChamados, SetorChamado, Localizacao, Pavimento, ChamadoAnexo
+from .models import ChamadoAssinatura
 from autentica.util.mixin import CMCLoginRequired, CMCAdminLoginRequired
 from .forms import ChamadoForm, ServicoSearchForm, ServicoForm, GrupoServicoForm, RelatorioSetorForm, SetorChamadoForm
 
@@ -36,6 +37,7 @@ from templated_docs import fill_template
 from templated_docs.http import FileResponse
 
 from consumer.lib.helper import ServiceHelper
+from consumer.lib.msconsumer import MSCMCConsumer
 
 from cmcreport.lib.views import CMCReportView
 
@@ -840,6 +842,7 @@ class ConsolidadoChamadoEditlView(ChamadosAtendenteRequired, SuccessMessageMixin
         fila = FilaChamados.objects.filter(chamado=chamado).first()
         respostas = ChamadoResposta.objects.filter(chamado=self.get_object().id).order_by("data")
         imagens = ChamadoAnexo.objects.filter(chamado=self.get_object().id)
+        assinaturas = ChamadoAssinatura.objects.filter(chamado=self.get_object().id).order_by("email")
         if chamado.setor_solicitante is not None:
             setor = s_helper.get_setor(chamado.setor_solicitante)
             setor_solicitante = setor.set_nome
@@ -848,8 +851,70 @@ class ConsolidadoChamadoEditlView(ChamadosAtendenteRequired, SuccessMessageMixin
 
         context['respostas'] = respostas
         context['imagens'] = imagens
+        context['assinaturas'] = assinaturas
         context['num_respostas'] = respostas.count()
         context['setor_solicitante'] = setor_solicitante
+        context['MSCMC_SERVER'] = settings.MSCMC_SERVER
         if fila != None:
             context['atendente'] = fila.usuario
         return context
+
+#--------------------------------------------------------------------------------------
+# Retorna JSON lista de assinaturas chamado
+#--------------------------------------------------------------------------------------
+def assinaturas_json(request, id_chamado):
+    assinatura = []
+
+    if id_chamado == None or id_chamado == '' or id_chamado == '0':
+        assinaturas = ChamadoAssinatura.objects.filter(chamado_id=None)
+    else:
+        assinaturas = ChamadoAssinatura.objects.filter(chamado_id=id_chamado)
+
+    for a in assinaturas:
+        assinatura_json = {}
+        assinatura_json['assinatura_id'] = a.id
+        assinatura_json['chamado_id'] = a.chamado.id
+        assinatura_json['email'] = a.email
+        
+        assinatura.append(assinatura_json)
+
+    return JsonResponse(assinatura, safe=False)        
+
+# -----------------------------------------------------------------------------------
+# chamada API para consumir usuarios LDAP
+# -----------------------------------------------------------------------------------
+def consome_usuarios_ldap(request):
+    consumer = MSCMCConsumer()
+    return consumer.consome_usuarios_ldap()
+
+#--------------------------------------------------------------------------------------
+# Salva uma assinatura
+#--------------------------------------------------------------------------------------
+def assina_json(request):
+
+    if request.method == 'POST' and request.is_ajax():
+        if request.POST.get('id_chamado') != None and request.POST.get('id_chamado') != '':
+            chamado = Chamado.objects.get(pk=request.POST.get('id_chamado'))
+            ChamadoAssinatura.objects.create(chamado=chamado, email=request.POST.get('selectassinatura'))
+            response = JsonResponse({'status':'true','message':'Assinatura criada com sucesso'}, status=200)
+        else:
+            response = JsonResponse({'status':'false','message':'Chamado inválido'}, status=401)
+    else:
+        response = JsonResponse({'status':'false','message':'Nenhum chamado selecionado'}, status=401)
+    return response        
+
+#--------------------------------------------------------------------------------------
+# Exclui uma assinatura
+#--------------------------------------------------------------------------------------
+def exclui_assina_json(request):
+
+    if request.method == 'POST' and request.is_ajax():
+        if request.POST.get('assinatura_id') != None and request.POST.get('assinatura_id') != '':
+            assinatura = ChamadoAssinatura.objects.get(pk=request.POST.get('assinatura_id'))
+            assinatura.delete()
+            response = JsonResponse({'status':'true','message':'Assinatura excluída com sucesso'}, status=200)
+        else:
+            response = JsonResponse({'status':'false','message':'Assinatura inválida'}, status=401)
+    else:
+        response = JsonResponse({'status':'false','message':'Nenhuma assinatura selecionada'}, status=401)
+    return response            
