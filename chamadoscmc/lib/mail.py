@@ -28,22 +28,28 @@ class Mailer:
 
     def __generate_messages(self, chamado):
 
+        s_helper = ServiceHelper()
+
         assunto = 'CMC - Controle de Chamados'
         para = [chamado.usuario.email]
 
-        assinaturas = ChamadoAssinatura.objects.filter(chamado=chamado)
-        for assinatura in assinaturas:
-            para.append(assinatura.email)
-            
         #de = 'chamados@cmc.pr.gov.br'
         de = 'Sistema de Chamados <no-reply@cmc.pr.gov.br>'
 
         link = getattr(settings, 'SERVER_NAME', 'https://chamados.staging.cmc.pr.gov.br/')
 
+        respostas = chamado.chamadoresposta_set.all().order_by('data')
+
         try:
             ultima_resposta = chamado.chamadoresposta_set.latest('id')
         except:
             ultima_resposta = ''
+
+        if chamado.setor_solicitante is not None:
+            setor = s_helper.get_setor(chamado.setor_solicitante)
+            setor_solicitante = setor.set_nome
+        else:
+            setor_solicitante = ''
 
         messages = []
         ctx = {
@@ -56,11 +62,23 @@ class Mailer:
             'assunto': chamado.assunto,
             'status': chamado.status,
             'resposta': ultima_resposta,
+            'respostas': respostas,
             'link': link,
+            'setor_solicitante': setor_solicitante
         }
         mensagem_template = get_template('fila/email.txt').render(Context(ctx))
         message = EmailMessage(assunto, mensagem_template, to=para, from_email=de)
         #message.content_subtype = 'text'
+        messages.append(message)
+
+        #cria emails para as assinaturas
+        assinaturas = ChamadoAssinatura.objects.filter(chamado=chamado)
+        para = []
+        mensagem_template = get_template('fila/email_assinado.txt').render(Context(ctx))
+        for assinatura in assinaturas:
+            para.append(assinatura.email)
+
+        message = EmailMessage(assunto, mensagem_template, to=para, from_email=de)
         messages.append(message)
 
         return messages
