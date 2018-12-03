@@ -1,22 +1,22 @@
 Este é um email automático enviado pelo Controle de Chamados da CMC.
 
-Seu chamado foi atualizado e agora encontra-se desta maneira : 
+Você foi assinalado no chamado {{ chamado_id }} para receber as atualizações do mesmo.
+O chamado foi atualizado e agora encontra-se desta maneira : 
 
 --------------------------------------------------------------------
-
 Status : {{ status }}
-Última resposta : {{ resposta }}
-
 --------------------------------------------------------------------
-
-Link : {{ link }}chamado/detalhe/{{ chamado_id }}/
 Número do chamado : {{ chamado_id }}
 Data de abertura : {{ data_abertura }}
 Solicitado ao setor : {{ setor }}
 Setor solicitante : {{ setor_solicitante }}
 Serviço : {{ grupo_servico }}/{{ servico }}
 Assunto : {{ assunto }}
-
+--------------------------------------------------------------------
+Respostas : 
+{% for r in respostas %}
+	{{ r.data|date:"d/m/Y H:i" }} - {{ r.resposta }}
+{% endfor %}	
 --------------------------------------------------------------------
 
 Este é um e-mail automático enviado pelo Controle de Chamados da CMC, por favor não responda.
