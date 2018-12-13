@@ -394,6 +394,7 @@ PIPELINE = {
               #'blueimp-file-upload/js/jquery.fileupload-image.js',
               #'blueimp-file-upload/js/jquery.fileupload-validate.js',
               #'jquery.cookie/jquery.cookie.js',
+              'js/build.js',
             ),
             'output_filename': 'js/master.js',
         }
@@ -443,7 +444,6 @@ CELERY_BROKER_URL = env('CELERY_BROKER_URL', default='django://')
 if CELERY_BROKER_URL == 'django://':
     CELERY_RESULT_BACKEND = 'redis://'
 else:
-    print('USANDO O BROKER DATABASE')
     CELERY_RESULT_BACKEND = CELERY_BROKER_URL
 CELERYD_CONCURRENCY=2
 CELERYD_NODES=1
