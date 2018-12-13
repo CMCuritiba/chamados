@@ -199,7 +199,7 @@
 
 <!-- Modal assinatura -->
 <div class="modal fade" id="assinaturaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog" role="document" id="componentes">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -207,12 +207,8 @@
       </div>
       <div class="modal-body">
         <form class="assinatura">{% csrf_token %}
-          <div class="form-group">
             <input type="hidden" name="id_chamado" id="id_chamado" value="{{ object.id }}" />
-            <label for="assinatura" class="control-label">Assinatura:</label>
-            <select name="selectassinatura" id="selectassinatura" >
-            </select>
-          </div>
+            <combo_search_outro name="selectassinatura" urljson="/fila/api/consome_usuarios_ldap/" valuelabel="cn" valuekey="mail"></combo_search_outro>
         </form>
         <form class="excluiAssinatura" method="POST">{% csrf_token %}
             <input type="hidden" name="assinatura_id" id="assinatura_id" value="11111"/>
@@ -449,7 +445,6 @@
         setTimeout(function (){
             $('#selectassinatura').focus();
         }, 500);
-        montaComboAssinatura();
     });
 
     function responde() {
@@ -477,33 +472,6 @@
         $("#assinaturaModal").modal('hide');
     }
 
-
-    function montaComboAssinatura() {
-        var request_url = '/fila/api/consome_usuarios_ldap/';
-
-        $.ajax({
-            url: request_url,
-            dataType: 'json',
-            success: function(result){
-                var toAppend = '';
-                $.each(result, function(index, element) {
-                    toAppend += '<option value="' + element.mail + '">' + element.cn + '</option>';
-                });
-                $('#selectassinatura').empty();
-                $('#selectassinatura').append(toAppend);
-                $('#selectassinatura').attr('data-live-search', 'true');
-                $('#selectassinatura').selectpicker();
-
-
-            },
-            error: function(xhr, status, error) {
-                console.log('Erro ao carregar dados LDAP');
-                console.log(xhr.readyState);
-                console.log(status);
-                console.log(error);
-            }
-        })
-    }
 
     function assina() {
         request_url = '/fila/api/assina/';
