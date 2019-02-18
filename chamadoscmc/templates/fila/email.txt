@@ -5,7 +5,7 @@ Seu chamado foi atualizado e agora encontra-se desta maneira :
 --------------------------------------------------------------------
 
 Status : {{ status }}
-Última resposta : {{ resposta }}
+Última resposta : {{ resposta|safe }}
 
 --------------------------------------------------------------------
 

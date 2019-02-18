@@ -15,7 +15,7 @@ Assunto : {{ assunto }}
 --------------------------------------------------------------------
 Respostas : 
 {% for r in respostas %}
-	{{ r.data|date:"d/m/Y H:i" }} - {{ r.resposta }}
+	{{ r.data|date:"d/m/Y H:i" }} - {{ r.resposta|safe }}
 {% endfor %}	
 --------------------------------------------------------------------
 
