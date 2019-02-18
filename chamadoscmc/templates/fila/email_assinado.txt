@@ -11,7 +11,7 @@ Data de abertura : {{ data_abertura }}
 Solicitado ao setor : {{ setor }}
 Setor solicitante : {{ setor_solicitante }}
 Serviço : {{ grupo_servico }}/{{ servico }}
-Assunto : {{ assunto }}
+Assunto : {{ assunto|safe }}
 --------------------------------------------------------------------
 Respostas : 
 {% for r in respostas %}

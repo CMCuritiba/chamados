@@ -6,6 +6,11 @@
 {% block content %}
 
 <div id="chamadoTab" class="container">
+
+    <div id="alerta_atende" class="alert alert-danger collapse alert-dismissible" role="alert">
+        <h4 class="alert-heading">Erro ao selecionar o chamado</h4>
+        <p>Ou algum atendente acabou de selecionar o chamado ou ocorreu um erro no servidor.</p>
+    </div>
     
     <ul class="nav nav-tabs">
         <li>
@@ -84,7 +89,12 @@
                         <div class="form-group"> 
                             <div class="col-sm-12">
                                 <input type="button" onclick="javascript:volta_fila();" value="Voltar à fila" class="btn btn-default"/> 
+                                {% if object.status == 'ABERTO' %}
+                                    &nbsp;
+                                    <input type="button" onclick="javascript:atende({{ object.id }});" value="Atender" class="btn btn-success"/> 
+                                {% endif %}
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -109,6 +119,10 @@
                         <div class="form-group"> 
                             <div class="col-sm-12">
                                 <input type="button" onclick="javascript:volta_fila();" value="Voltar à fila" class="btn btn-default"/> 
+                                {% if object.status == 'ABERTO' %}
+                                    &nbsp;
+                                    <input type="button" onclick="javascript:atende({{ object.id }});" value="Atender" class="btn btn-success"/> 
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -131,6 +145,10 @@
                         <div class="form-group"> 
                             <div class="col-sm-12">
                                 <input type="button" onclick="javascript:volta_fila();" value="Voltar à fila" class="btn btn-default"/> 
+                                {% if object.status == 'ABERTO' %}
+                                    &nbsp;
+                                    <input type="button" onclick="javascript:atende({{ object.id }});" value="Atender" class="btn btn-success"/> 
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -155,6 +173,10 @@
                         <div class="form-group"> 
                             <div class="col-sm-12">
                                 <input type="button" onclick="javascript:volta_fila();" value="Voltar à fila" class="btn btn-default"/> 
+                                {% if object.status == 'ABERTO' %}
+                                    &nbsp;
+                                    <input type="button" onclick="javascript:atende({{ object.id }});" value="Atender" class="btn btn-success"/> 
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -366,6 +388,30 @@
             $(location).attr('href', '/fila/');
         else
             $(location).attr('href', '/chamado/');
+    }
+
+    function atende(id_chamado) {
+        request_url = '/fila/api/atende/' + id_chamado + '/';
+
+
+        $.ajax({
+            url: request_url,
+            type: 'GET',
+            accepts: 'application/json',
+            dataType: 'json',
+            success: function(result){
+                //tableChamados.ajax.reload(null, false);
+                //tableFila.ajax.reload(null, false);
+                //atualiza_estatisticas();
+                volta_fila();
+            },
+            error: function(xhr, status, error) {
+                $('#alerta_atende').show();
+                console.log(status);
+                console.log(error);
+                console.log(xhr);
+            }
+        })
     }
 
     $('#respostaModal').on('show.bs.modal', function (event) {
