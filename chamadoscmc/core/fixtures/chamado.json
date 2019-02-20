@@ -40,5 +40,19 @@
             "descricao" : "Gostaria de mudar a cor do botão do slider de preto para azul caiçara.",
             "status": "ABERTO"
         }
+    },
+    {
+        "pk": 4,
+        "model": "core.chamado",
+        "fields": {
+            "usuario" : 1,
+            "setor" : 1,
+            "grupo_servico" : 4,
+            "servico" : 5,
+            "ramal" : "4813",
+            "assunto" : "mouse não funciona",
+            "descricao" : "meu mouse não está funcionando. Já verifiquei se o cabo estava bem encaixado, mas nem a luz do infravermelho está acendendo.",
+            "status": "FECHADO"
+        }
     }
  ]

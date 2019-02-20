@@ -11,6 +11,10 @@
         <h4 class="alert-heading">Erro ao selecionar o chamado</h4>
         <p>Ou algum atendente acabou de selecionar o chamado ou ocorreu um erro no servidor.</p>
     </div>
+
+    <div id="alerta_atendido" class="alert alert-success collapse alert-dismissible" role="alert">
+        <h4 class="alert-heading">Chamado atendido com sucesso</h4>
+    </div>
     
     <ul class="nav nav-tabs">
         <li>
@@ -384,10 +388,11 @@
     }
 
     function volta_fila() {
-        if ((document.referrer).indexOf("fila") >= 0)
-            $(location).attr('href', '/fila/');
-        else
-            $(location).attr('href', '/chamado/');
+        $(location).attr('href', '/fila/');
+    }
+
+    function volta_detalhes(id_chamado) {
+        $(location).attr('href', '/chamado/detalhe/' + id_chamado + '/');
     }
 
     function atende(id_chamado) {
@@ -400,10 +405,10 @@
             accepts: 'application/json',
             dataType: 'json',
             success: function(result){
-                //tableChamados.ajax.reload(null, false);
+                $('#alerta_atendido').show();
                 //tableFila.ajax.reload(null, false);
                 //atualiza_estatisticas();
-                volta_fila();
+                volta_detalhes(id_chamado);
             },
             error: function(xhr, status, error) {
                 $('#alerta_atende').show();
