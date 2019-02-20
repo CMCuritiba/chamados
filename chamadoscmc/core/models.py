@@ -251,3 +251,11 @@ class ChamadoAnexo(models.Model):
 class ChamadoAssinatura(models.Model):
 	chamado = models.ForeignKey(Chamado, related_name='assinaturas')
 	email = models.CharField(max_length=300)
+
+#---------------------------------------------------------------------------------------------
+# Model ChamadoReaberto
+#---------------------------------------------------------------------------------------------		
+class ChamadoReaberto(models.Model):
+	chamado = models.ForeignKey(Chamado, related_name='reaberturas')
+	reaberto = models.DateTimeField(auto_now_add=True)
+	motivo = models.TextField(null=False, blank=False)

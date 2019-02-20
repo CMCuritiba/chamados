@@ -4,7 +4,7 @@ from django.test import TestCase, RequestFactory
 from autentica.models import User
 from django.db import IntegrityError, DataError
 #from ..models import SetorChamado, GrupoServico, VSetor, Servico, Chamado, FilaChamados, ChamadoResposta, ChamadoAnexo
-from ..models import SetorChamado, GrupoServico, Servico, Chamado, FilaChamados, ChamadoResposta
+from ..models import SetorChamado, GrupoServico, Servico, Chamado, FilaChamados, ChamadoResposta, ChamadoReaberto
 from .factories import SetorChamadoFactory
 
 
@@ -222,3 +222,19 @@ class ChamadoRespostaTestCase(TestCase):
 		usuario = User.objects.get(pk=1)
 		with self.assertRaises(IntegrityError):
 			resposta = ChamadoResposta.objects.create(usuario=usuario, chamado=None, resposta='O cabo estava desconectado. Tudo OK.')
+
+class ChamadoReabertoTestCase(TestCase):
+	fixtures = ['user.json','chamado.json', 'setor_chamado.json', 'grupo_servico.json', 'servico.json', 'chamado.json', 'fila_chamados.json']
+
+	def setUp(self):
+		super(ChamadoReabertoTestCase, self).setUp()			
+
+	def test_init(self):
+		self.assertEqual(1, 1)		
+
+	def test_reabre_ok(self)	:
+		chamado = Chamado.objects.get(pk=4)
+		reaberto = ChamadoReaberto.objects.create(chamado=chamado, motivo='Não estou satisfeito com a resolução do chamado.')
+		self.assertEqual(reaberto.chamado.pk, chamado.pk)
+
+	
