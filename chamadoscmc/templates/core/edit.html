@@ -193,8 +193,32 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
         <button type="button" class="btn btn-primary" id="submit" onclick="javascript:submeteResposta();">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal resposta -->
+<div class="modal fade" id="respostaVeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="exampleModalLabel">Resposta</h4>
+      </div>
+      <div class="modal-body">
+          <div class="form-group">
+            <input type="hidden" name="id_chamado" id="id_chamado" value="{{ object.id }}" />
+            <input type="hidden" name="id_usuario" id="id_usuario" value="{{ user.id }}" />
+            <input type="hidden" name="resposta_id" id="resposta_id" value="" />
+            <label for="resposta" class="control-label">Resposta:</label>
+            <textarea class="form-control" id="resposta" name="resposta" readonly="true"></textarea>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
       </div>
     </div>
   </div>
@@ -251,21 +275,21 @@
                     title: "Data",
                     data: 'data',
                     render: function(data, type, full, meta) {
-                        return '<a href="#" data-toggle="modal" data-target="#respostaModal" data-resposta_id="' + full.resposta_id + '" data-resposta="' + full.resposta + '" data-chamado_id="' + full.chamado_id + '">' + data + '</a>';
+                        return '<a href="#" data-toggle="modal" data-target="#respostaVeModal" data-resposta_id="' + full.resposta_id + '" data-resposta="' + full.resposta + '" data-chamado_id="' + full.chamado_id + '">' + data + '</a>';
                     }
                 },
                 { 
                     title: "Usuário",
                     data: 'usuario',
                     render: function(data, type, full, meta) {
-                        return '<a href="#" data-toggle="modal" data-target="#respostaModal" data-resposta_id="' + full.resposta_id + '" data-resposta="' + full.resposta + '" data-chamado_id="' + full.chamado_id + '">' + data + '</a>';
+                        return '<a href="#" data-toggle="modal" data-target="#respostaVeModal" data-resposta_id="' + full.resposta_id + '" data-resposta="' + full.resposta + '" data-chamado_id="' + full.chamado_id + '">' + data + '</a>';
                     }
                 },
                 { 
                     title: "Resposta",
                     data: 'resposta',
                     render: function(data, type, full, meta) {
-                        return '<a href="#" data-toggle="modal" data-target="#respostaModal" data-resposta_id="' + full.resposta_id + '" data-resposta="' + full.resposta + '" data-chamado_id="' + full.chamado_id + '">' + data + '</a>'; 
+                        return '<a href="#" data-toggle="modal" data-target="#respostaVeModal" data-resposta_id="' + full.resposta_id + '" data-resposta="' + full.resposta + '" data-chamado_id="' + full.chamado_id + '">' + data + '</a>'; 
                     }
                 },
             ],
@@ -439,6 +463,20 @@
         }, 500);
     });
 
+    $('#respostaVeModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var recipient = button.data('chamado_id');
+        var recipient2 = button.data('resposta');
+        var recipient3 = button.data('resposta_id');
+        var modal = $(this);
+        modal.find('.modal-title').text('Resposta para o chamado:  ' + recipient);
+        modal.find('.modal-body textarea').val(recipient2);
+        modal.find('#resposta_id').val(recipient3);
+        setTimeout(function (){
+            $('#resposta').focus();
+        }, 500);
+    });
+
     $('#assinaturaModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
         var recipient = button.data('chamado_id');
@@ -516,7 +554,6 @@
                 console.log(xhr);
             }
         })
-
     }
 
 </script>
