@@ -61,6 +61,7 @@
         var tableChamados;
         var tableFila;
         var chefia = {{ request.session.pessoa_chefia|lower }};
+        var usuario = '{{ request.user.username }}';
         
 		$(document).ready(function() {
 
@@ -179,7 +180,19 @@
                         "targets": [9],
                         "data": null,
                         "render" : function(data, type, full, meta) {
+                            /*
+                            console.log('----------------------------');
+                            console.log(full.chamado_id);
+                            console.log(full.fila_usuario);
+                            console.log(full.chamado_usuario);
+                            console.log(usuario);
+                            console.log('----------------------------');
                             if (full.status == 'FECHADO' && full.fila_usuario == full.chamado_usuario)
+                                return "<a href='#'><span id='reabre' class='badge progress-bar-danger'>Reabrir</span></a>";
+                            else
+                                return "";
+                            */
+                            if (full.status == 'FECHADO' && full.fila_usuario == usuario)
                                 return "<a href='#'><span id='reabre' class='badge progress-bar-danger'>Reabrir</span></a>";
                             else
                                 return "";

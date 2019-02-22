@@ -66,7 +66,7 @@ class Mailer:
             'link': link,
             'setor_solicitante': setor_solicitante
         }
-        mensagem_template = get_template('fila/email.txt').render(Context(ctx))
+        mensagem_template = get_template('fila/email.txt').render(ctx)
         message = EmailMessage(assunto, mensagem_template, to=para, from_email=de)
         #message.content_subtype = 'text'
         messages.append(message)
@@ -74,7 +74,7 @@ class Mailer:
         #cria emails para as assinaturas
         assinaturas = ChamadoAssinatura.objects.filter(chamado=chamado)
         para = []
-        mensagem_template = get_template('fila/email_assinado.txt').render(Context(ctx))
+        mensagem_template = get_template('fila/email_assinado.txt').render(ctx)
         for assinatura in assinaturas:
             para.append(assinatura.email)
 

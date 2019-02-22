@@ -331,3 +331,13 @@ def instala_report():
 			sudo('pip install django-easy-pdf')
 			sudo('pip install https://github.com/CMCuritiba/django-cmc-report/blob/master/dist/django-cmc-report-0.1.tar.gz?raw=true')
 	chown()				
+
+@task
+def atualiza_django():	
+	des_chown()
+	with cd(PROJECT_ROOT):
+		with source_virtualenv():
+			sudo('pip install --upgrade Django==1.11.18')
+			sudo('pip install --upgrade django-python3-ldap')
+			sudo('pip install --upgrade django-ldapdb')
+	chown()					
