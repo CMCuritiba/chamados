@@ -214,7 +214,7 @@
             <input type="hidden" name="id_usuario" id="id_usuario" value="{{ user.id }}" />
             <input type="hidden" name="resposta_id" id="resposta_id" value="" />
             <label for="resposta" class="control-label">Resposta:</label>
-            <textarea class="form-control" id="resposta" name="resposta" readonly="true"></textarea>
+            <textarea class="form-control" id="resposta" name="resposta" readonly="true" value="{{ object.resposta|escape }}"></textarea>
           </div>
       </div>
       <div class="modal-footer">
@@ -275,21 +275,27 @@
                     title: "Data",
                     data: 'data',
                     render: function(data, type, full, meta) {
-                        return '<a href="#" data-toggle="modal" data-target="#respostaVeModal" data-resposta_id="' + full.resposta_id + '" data-resposta="' + full.resposta + '" data-chamado_id="' + full.chamado_id + '">' + data + '</a>';
+                        res = full.resposta;
+                        res = escapeDoubleQuotes(res);
+                        return '<a href="#" data-toggle="modal" data-target="#respostaVeModal" data-resposta_id="' + full.resposta_id + '" data-resposta="' + res + '" data-chamado_id="' + full.chamado_id + '">' + data + '</a>';
                     }
                 },
                 { 
                     title: "Usuário",
                     data: 'usuario',
                     render: function(data, type, full, meta) {
-                        return '<a href="#" data-toggle="modal" data-target="#respostaVeModal" data-resposta_id="' + full.resposta_id + '" data-resposta="' + full.resposta + '" data-chamado_id="' + full.chamado_id + '">' + data + '</a>';
+                        res = full.resposta;
+                        res = escapeDoubleQuotes(res);
+                        return '<a href="#" data-toggle="modal" data-target="#respostaVeModal" data-resposta_id="' + full.resposta_id + '" data-resposta="' + res + '" data-chamado_id="' + full.chamado_id + '">' + data + '</a>';
                     }
                 },
                 { 
                     title: "Resposta",
                     data: 'resposta',
                     render: function(data, type, full, meta) {
-                        return '<a href="#" data-toggle="modal" data-target="#respostaVeModal" data-resposta_id="' + full.resposta_id + '" data-resposta="' + full.resposta + '" data-chamado_id="' + full.chamado_id + '">' + data + '</a>'; 
+                        res = full.resposta;
+                        res = escapeDoubleQuotes(res);
+                        return '<a href="#" data-toggle="modal" data-target="#respostaVeModal" data-resposta_id="' + full.resposta_id + '" data-resposta="' + res + '" data-chamado_id="' + full.chamado_id + '">' + data + '</a>';
                     }
                 },
             ],
@@ -469,6 +475,7 @@
         var recipient2 = button.data('resposta');
         var recipient3 = button.data('resposta_id');
         var modal = $(this);
+        console.log(recipient2);
         modal.find('.modal-title').text('Resposta para o chamado:  ' + recipient);
         modal.find('.modal-body textarea').val(recipient2);
         modal.find('#resposta_id').val(recipient3);
@@ -554,6 +561,11 @@
                 console.log(xhr);
             }
         })
+    }
+
+    function escapeDoubleQuotes(str) {
+        //return str.replace(/\\([\s\S])|(")/g,"\\$1$2"); // thanks @slevithan!
+        return str.replace(/\\([\s\S])|(")/g,"&quot;"); 
     }
 
 </script>
