@@ -343,7 +343,7 @@ def atualiza_django():
 	chown()					
 
 @task
-def atualiza_django-ldap():	
+def atualiza_django_ldap():	
 	des_chown()
 	with cd(PROJECT_ROOT):
 		with source_virtualenv():
