@@ -5,7 +5,7 @@
 wheel==0.29.0
 
 # Bleeding edge Django
-django==1.10.5
+django==1.11.18
 
 # Configuration
 django-environ==0.4.1
@@ -37,8 +37,8 @@ django-redis==4.7.0
 redis>=2.10.5
 
 # LDAP
-django-python3-ldap==0.9.13
-django-ldapdb==0.8.0
+django-python3-ldap==0.11.2
+django-ldapdb==1.3.0
 
 # Django pipeline
 django-pipeline==1.6.12

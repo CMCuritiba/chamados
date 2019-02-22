@@ -338,6 +338,15 @@ def atualiza_django():
 	with cd(PROJECT_ROOT):
 		with source_virtualenv():
 			sudo('pip install --upgrade Django==1.11.18')
+			#sudo('pip install --upgrade django-python3-ldap')
+			#sudo('pip install --upgrade django-ldapdb')
+	chown()					
+
+@task
+def atualiza_django-ldap():	
+	des_chown()
+	with cd(PROJECT_ROOT):
+		with source_virtualenv():
 			sudo('pip install --upgrade django-python3-ldap')
 			sudo('pip install --upgrade django-ldapdb')
-	chown()					
+	chown()						
