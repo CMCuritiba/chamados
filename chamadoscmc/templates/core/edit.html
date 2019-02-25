@@ -23,6 +23,9 @@
         <li>
             <a href="#4" data-toggle="tab">Assinaturas</a>
         </li>
+        <li>
+            <a href="#5" data-toggle="tab">Reaberturas</a>
+        </li>
     </ul>
     <br/>
     <div class="tab-content">
@@ -159,6 +162,34 @@
                                 <input type="button" onclick="javascript:volta_fila();" value="Voltar à fila" class="btn btn-default"/> 
                                 <input type="button" onclick="javascript:fecha_chamado();" value="Fechar chamado" class="btn btn-primary"/>
                                 <input type="button" data-toggle="modal" data-target="#assinaturaModal" data-chamado_id="{{ object.id }}" value="Nova assinatura" class="btn btn-default"/> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane" id="5">
+            <div class="panel panel-primary">
+            <div class="panel-heading"><h4>Reaberturas do chamado : {{ object.id }}</h4></div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table id="treaberturas" class="table table-striped table-hover table-bordered fonteTable" width="100%" cellspacing="0"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-primary">
+                <div class="panel-body">
+                    <div class="row"> 
+                        <div class="form-group"> 
+                            <div class="col-sm-12">
+                                <input type="button" onclick="javascript:volta_fila();" value="Voltar à fila" class="btn btn-default"/> 
+                                {% if object.status == 'ABERTO' %}
+                                    &nbsp;
+                                    <input type="button" onclick="javascript:atende({{ object.id }});" value="Atender" class="btn btn-success"/> 
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -428,6 +459,68 @@
             "bInfo": false,
             "ajax": {
                 "url": "/fila/api/assinaturas/{{ object.id }}/",
+                "dataSrc": "",
+            },
+        });
+
+        tableReaberturas = $('#treaberturas').DataTable({
+            responsive: true,
+            "columns": [
+                { 
+                    title: "id_reabertura" ,
+                    data: 'reabertura_id'
+                },
+                { 
+                    title: "id_chamado" ,
+                    data: 'chamado_id'
+                },
+                { 
+                    title: "Data de reabertura",
+                    data: 'data_reabertura'
+                },
+                { 
+                    title: "Motivo",
+                    data: 'motivo'
+                },
+            ],
+            "columnDefs": [
+                {
+                    "targets": [0],
+                    "visible": false,
+                },
+                {
+                    "targets": [1],
+                    "visible": false,
+                },
+                {
+                    "targets": [2],
+                    "visible": true,
+                },
+                {
+                    "targets": [3],
+                    "visible": true,
+                },
+
+
+            ],
+            "language": {
+                "info": "Páginas _PAGE_ de _PAGES_",
+                "emptyTable": "Sem reaberturas para o chamado",
+                "decimal": ",",
+                "thousands": ".",
+                "oPaginate": {
+                    "sFirst": '<span class="glyphicon glyphicon-fast-backward"></span>',
+                    "sLast": '<span class="glyphicon glyphicon-fast-forward"></span>',
+                    "sNext": '<span class="glyphicon glyphicon-forward"></span>',
+                    "sPrevious": '<span class="glyphicon glyphicon-backward"></span>'
+                }
+            },
+            "bPaginate" : true,
+            "bLengthChange": false,
+            "bFilter": false,
+            "bInfo": false,
+            "ajax": {
+                "url": "/fila/api/reaberturas/{{ object.id }}/",
                 "dataSrc": "",
             },
         });

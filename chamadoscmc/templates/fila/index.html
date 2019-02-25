@@ -53,6 +53,29 @@
         </div>
     </div>
 
+    <!-- Modal reabre -->
+    <div class="modal fade" id="reabreModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+      <div class="modal-dialog" role="document" id="componentes">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="exampleModalLabel">Reabre chamado</h4>
+          </div>
+          <div class="modal-body">
+            <form class="reabre" >{% csrf_token %}
+                <input type="hidden" name="chamado_id" id="chamado_id" value="{{ object.id }}" />
+                <label for="motivo" class="control-label">Motivo:</label>
+                <textarea class="form-control" id="motivo" name="motivo"></textarea>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary" id="submit" onclick="javascript:reabre();">Reabre</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     
 {% endblock %}
 
@@ -193,7 +216,9 @@
                                 return "";
                             */
                             if (full.status == 'FECHADO' && full.fila_usuario == usuario)
-                                return "<a href='#'><span id='reabre' class='badge progress-bar-danger'>Reabrir</span></a>";
+                                /*return "<a href='#'><span id='reabre' class='badge progress-bar-danger'>Reabrir</span></a>";
+                                */
+                                return '<a href="#" data-toggle="modal" data-target="#reabreModal" data-chamado_id="' +  full.chamado_id + '"><span id="reabre" class="badge progress-bar-danger">Reabrir</span></a>';
                             else
                                 return "";
                         },
@@ -370,7 +395,7 @@
 
             $('#tchamados tbody').on('click', '#reabre', function () {
                 var data = tableChamados.row( $(this).parents('tr') ).data();
-                reabre(data.chamado_id);
+                //reabre(data.chamado_id);
             });
 
 			atualiza_estatisticas();
@@ -468,9 +493,11 @@
             location.href = '/chamado/cria/';
         }
 
-        function reabre(id_chamado) {
-            request_url = '/fila/api/reabre/' + id_chamado + '/';
+        function reabre() {
+            var data = $('form.reabre').serialize();
+            request_url = '/fila/api/reabre?' + data;
 
+            $("#reabreModal").modal('hide');
             $.ajax({
                 url: request_url,
                 type: 'GET',
@@ -492,6 +519,18 @@
         $(document).ready(function () {
             $('#id_filtro').selectpicker();
             tableChamados.search('ABERTO').draw();
+        });
+
+        $('#reabreModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var recipient = button.data('chamado_id');
+            var modal = $(this);
+            modal.find('.modal-title').text('Reabre chamado  ' + recipient);
+            $(".modal-body #chamado_id").val(recipient);
+
+            setTimeout(function (){
+                $('#motivo').focus();
+            }, 500);
         });
         
 	</script>
