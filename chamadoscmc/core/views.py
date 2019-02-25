@@ -974,7 +974,7 @@ class ImprimeChamado(CMCReportView):
 
             historicos = HistoricoChamados.objects.filter(chamado=chamado).order_by("data")
 
-            reaberturas = ChamadoReaberto.objects.filter(chamado=chamado).order_by("data")
+            reaberturas = ChamadoReaberto.objects.filter(chamado=chamado).order_by("reaberto")
 
             if opt is None or opt == '1':
                 self.completo = False
