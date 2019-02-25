@@ -1,0 +1,247 @@
+{% extends "easy_pdf/base.html" %}
+{% load reporttags %}
+
+{% block layout_style %}
+    <style type="text/css">
+        @page {
+            size: {{ pagesize|default:"A4" }};
+            margin-left: 0.5cm;
+            margin-right: 0.5cm;
+            margin-top: 3cm;
+            margin-bottom: 1cm;
+            @frame header {
+                -pdf-frame-content: page-header;
+                margin-top: 0.5cm;
+                margin-right: 0.5cm;
+                margin-bottom: 0.5cm;
+                margin-left: 0.5cm;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block extra_style %}
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"> 
+    
+    <style type="text/css">
+        .header h1 {
+            padding-left: 60px;
+            padding-top:-55px;
+            font-size: 24px;
+            font-weight: normal;
+        }
+        .header h2 {
+            font-size: 18px;
+            font-weight: normal;
+            padding-top:-30px;
+            padding-left: 62px;
+        }
+
+        .header h4 {
+            font-size: 10px;
+            font-weight: normal;
+            padding-top:-30px;
+            padding-left: 62px;
+        }
+        table.bordered {
+            border-top: 0.1pt solid #999999;
+            border-bottom: 0.1pt solid #999999;
+        }
+
+        td {
+            font-size: 12px;
+            padding-top: 3px;
+            padding-bottom: 2px;
+            padding-left: 3px;
+        }
+
+        .logo { margin-bottom: 20px;}
+
+        table.table-header {
+            width: 100%;
+            background-color: #b3b3b3;
+        }
+
+        table.relatorio {
+            width: 100%;
+        }
+
+        .odd { 
+            background-color: #d3d3d3;
+        }
+
+        .even { 
+            background-color: #fff;
+            font-weight: normal;
+        }
+
+        td.resposta_data {
+            width: 120px;
+            padding-top: 1px;
+            padding-bottom: 0px;
+        }
+
+        td.resposta_atendente {
+            width: 150px;
+            padding-top: 1px;
+            padding-bottom: 0px;
+        }
+
+        td.resposta_resposta {
+            width: 600px;
+            padding-top: 1px;
+            padding-bottom: 0px;
+        }
+
+        {% block my_style %}
+        {% endblock %} 
+
+    </style>
+{% endblock %} 
+
+{% block page_header %}
+    <div id="page-header">
+        <div class="header">
+            <img src="{{''|brasao}}" height="40" style="margin-top:5px;margin-right:130px;"></img>
+            <h1>Câmara Municipal de Curitiba</h1>
+            <h2>{% block report_title %}Chamado - {{ chamado.id }}{% endblock %}</h2>
+            <h4>Informação emitida em : {% now "d/m/Y H:i" %}</h4>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+{% if chamado %}
+    <div id="content">
+        <table class="relatorio">
+            <tr>
+                <td class="even"><b>Abertura:</b> {{ chamado.data_abertura | date:'d/m/Y H:i' }}</td>
+            </tr>
+            <tr>
+                <td class="even"><b>Fechamento:</b> {{ chamado.data_fechamento | date:'d/m/Y H:i' }}</td>
+            </tr>
+            <tr>
+                <td class="even"><b>Solicitante:</b> {{ chamado.usuario }}</td>
+            </tr>
+            <tr>
+                <td class="even"><b>Atendente:</b> {{ atendente }}</td>
+            </tr>
+            <tr>
+                <td class="even"><b>Setor Solicitante:</b> {{ setor_solicitante }}</td>
+            </tr>
+            <tr>
+                <td class="even"><b>Setor Destino:</b> {{ chamado.setor }}</td>
+            </tr>
+            <tr>
+                <td class="even"><b>Grupo Serviço:</b> {{ chamado.grupo_servico }}</td>
+            </tr>
+            <tr>
+                <td class="even"><b>Serviço:</b> {{ chamado.servico }}</td>
+            </tr>
+            <tr>
+                <td class="even"><b>Assunto:</b> {{ chamado.assunto }}</td>
+            </tr>
+            <tr>
+                <td class="even"><b>Descrição:</b> {{ chamado.descricao }}</td>
+            </tr>
+            <tr>
+                <td class="even"><b>Prioridade:</b> {{ chamado.prioridade }}</td>
+            </tr>
+            <tr>
+                <td class="even"><b>Status:</b> {{ chamado.status }}</td>
+            </tr>
+        </table>
+
+        {% if completo %}
+
+            <table class="relatorio">
+                <tr>
+                    <td class="odd" colspan="3"><b>Histórico:</b></td>
+                </tr>
+                {% if historicos %}
+                    <tr>
+                        <td class="even resposta_data">Data</td>
+                        <td class="even resposta_atendente">Atendente</td>
+                        <td class="even resposta_resposta">Status</td>
+                    </tr>
+                    {% for historico in historicos %}
+                        <tr>
+                            <td class="even resposta_data">{{ historico.data | date:'d/m/Y H:i'}}</td>
+                            <td class="even resposta_atendente">{{ historico.usuario.username }}</td>
+                            <td class="even resposta_resposta">{{ historico.status }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="3" class="even resposta_resposta">Sem respostas</td>
+                    </tr>
+                {% endif %}
+            </table>
+
+            <table class="relatorio">
+                <tr>
+                    <td class="odd" colspan="3"><b>Respostas:</b></td>
+                </tr>
+                {% if respostas %}
+                    <tr>
+                        <td class="even resposta_data">Data</td>
+                        <td class="even resposta_atendente">Atendente</td>
+                        <td class="even resposta_resposta">Resposta</td>
+                    </tr>
+                    {% for resposta in respostas %}
+                        <tr>
+                            <td class="even resposta_data">{{ resposta.data | date:'d/m/Y H:i'}}</td>
+                            <td class="even resposta_atendente">{{ resposta.usuario.username }}</td>
+                            <td class="even resposta_resposta">{{ resposta.resposta }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="3" class="even resposta_resposta">Sem respostas</td>
+                    </tr>
+                {% endif %}
+            </table>
+
+            <table class="relatorio">
+                <tr>
+                    <td class="odd" colspan="3"><b>Assinaturas:</b></td>
+                </tr>
+                {% if assinaturas %}
+                    {% for assinatura in assinaturas %}
+                        <tr>
+                            <td colspan="3" class="even resposta_resposta">{{ assinatura.email }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="3" class="even resposta_resposta">Sem assinaturas</td>
+                    </tr>
+                {% endif %}
+            </table>
+
+            <table class="relatorio">
+                <tr>
+                    <td class="odd" colspan="3"><b>Reaberturas:</b></td>
+                </tr>
+                {% if reaberturas %}
+                    <tr>
+                        <td class="even resposta_data">Data</td>
+                        <td colspan="2" class="even resposta_resposta">Motivo</td>
+                    </tr>
+                    {% for reabertura in reaberturas %}
+                        <tr>
+                            <td class="even resposta_data">{{ reabertura.reaberto | date:'d/m/Y H:i'}}</td>
+                            <td colspan="2" class="even resposta_resposta">{{ reabertura.motivo }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="3" class="even resposta_resposta">Sem reaberturas</td>
+                    </tr>
+                {% endif %}
+            </table>
+        {% endif %}
+    </div>
+{% endif %}
+
+{% endblock content %}

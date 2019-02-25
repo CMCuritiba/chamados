@@ -83,6 +83,7 @@
                         <div class="form-group"> 
                             <div class="col-sm-12">
                                 <input type="button" onclick="javascript:volta_fila();" value="Voltar à fila" class="btn btn-default"/> 
+                                <input type="button" data-toggle="modal" data-target="#imprimeModal" data-chamado_id="{{ object.id }}" value="Imprime" class="btn btn-default"/> 
                                 <input type="button" onclick="javascript:fecha_chamado();" value="Fechar chamado" class="btn btn-primary"/>
                             </div>
                         </div>
@@ -244,6 +245,29 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
         <button type="button" class="btn btn-primary" id="submit" onclick="javascript:submeteAssinatura();">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Imprime -->
+<div class="modal fade" id="imprimeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+  <div class="modal-dialog" role="document" id="componentes">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="exampleModalLabel">Imprime chamado</h4>
+      </div>
+      <div class="modal-body">
+        <form class="imprime" action="/chamado/imprime/">{% csrf_token %}
+            <input type="hidden" name="id_chamado" id="id_chamado" value="{{ object.id }}" />
+            <label class="radio-inline"><input type="radio" name="opt" checked value="0">Completo</label>
+            <label class="radio-inline"><input type="radio" name="opt" value="1">Simplificado</label>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="submit" onclick="javascript:imprime();">Imprime</button>
       </div>
     </div>
   </div>
@@ -495,6 +519,17 @@
         }, 500);
     });
 
+    $('#imprimeModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var recipient = button.data('chamado_id');
+        var modal = $(this);
+        modal.find('.modal-title').text('Imprime chamado  ' + recipient);
+
+        setTimeout(function (){
+            $('#opcao').focus();
+        }, 500);
+    });
+
     function responde() {
         request_url = '/fila/api/responde/';
 
@@ -566,6 +601,13 @@
     function escapeDoubleQuotes(str) {
         //return str.replace(/\\([\s\S])|(")/g,"\\$1$2"); // thanks @slevithan!
         return str.replace(/\\([\s\S])|(")/g,"&quot;"); 
+    }
+
+    function imprime() {
+        var data = $('form.imprime').serialize();
+        var request_url = '/chamado/imprime?' + data;
+        $("#imprimeModal").modal('hide');
+        window.open(request_url, 'chamado');
     }
 
 </script>

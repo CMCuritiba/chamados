@@ -23,5 +23,6 @@ urlpatterns = [
     url(r'^cria/$', views.CadastroChamadosCreateView.as_view(), name='cria'),
     #url(r'^relatorio/$', views.relatorio, name='relatorio'),
     url(r'^relatorio/$', views.RelatorioChamados.as_view(), name='relatorio'),
+    url(r'^imprime/$', views.ImprimeChamado.as_view(), name='imprime'),
 ]
 
