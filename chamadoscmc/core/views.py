@@ -26,7 +26,7 @@ from django.conf import settings
 
 from .forms import ChamadoForm
 from .models import GrupoServico, Servico, Chamado, FilaChamados, ChamadoResposta, HistoricoChamados, SetorChamado, Localizacao, Pavimento, ChamadoAnexo
-from .models import ChamadoAssinatura
+from .models import ChamadoAssinatura, ChamadoReaberto
 from autentica.util.mixin import CMCLoginRequired, CMCAdminLoginRequired
 from .forms import ChamadoForm, ServicoSearchForm, ServicoForm, GrupoServicoForm, RelatorioSetorForm, SetorChamadoForm
 
@@ -463,11 +463,14 @@ class MyIndexView(SuccessMessageMixin, TemplateView):
 #--------------------------------------------------------------------------------------
 # Quando um atendente reabre um chamado
 #--------------------------------------------------------------------------------------
-def reabre_json(request, id_chamado):
-    if id_chamado != None and id_chamado != '':
-        chamado = Chamado.objects.get(pk=id_chamado)
+def reabre_json(request):
+    chamado_id = request.GET.get('chamado_id', None)
+    motivo = request.GET.get('motivo', None)
+
+    if chamado_id != None and chamado_id != '':
+        chamado = Chamado.objects.get(pk=chamado_id)
         fila = FilaManager()
-        fila.reabre(request.user, chamado)
+        fila.reabre(request.user, chamado, motivo)
         response = JsonResponse({'status':'true','message':'Chamado reaberto com sucesso'}, status=200)
     else:
         response = JsonResponse({'status':'false','message':'Nenhum chamado selecionado'}, status=401)
@@ -982,3 +985,25 @@ class ImprimeChamado(CMCReportView):
             self.historicos = historicos
 
         return super(ImprimeChamado, self).get(request, *args, **kwargs)      
+
+#--------------------------------------------------------------------------------------
+# Retorna JSON lista de reaberturas chamado
+#--------------------------------------------------------------------------------------
+def reaberturas_json(request, id_chamado):
+    reabertura = []
+
+    if id_chamado == None or id_chamado == '' or id_chamado == '0':
+        reaberturas = ChamadoReaberto.objects.filter(chamado_id=None)
+    else:
+        reaberturas = ChamadoReaberto.objects.filter(chamado_id=id_chamado)
+
+    for r in reaberturas:
+        reabertura_json = {}
+        reabertura_json['reabertura_id'] = r.id
+        reabertura_json['chamado_id'] = r.chamado.id
+        reabertura_json['data_reabertura'] = r.reaberto.strftime("%d/%m/%Y %H:%M")
+        reabertura_json['motivo'] = r.motivo
+        
+        reabertura.append(reabertura_json)
+
+    return JsonResponse(reabertura, safe=False)                

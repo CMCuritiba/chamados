@@ -10,7 +10,7 @@ from django.core.exceptions import ValidationError
 from datetime import datetime
 
 from autentica.models import User as Usuario
-from chamadoscmc.core.models import GrupoServico, Servico, Chamado, FilaChamados, ChamadoResposta, HistoricoChamados, SetorChamado
+from chamadoscmc.core.models import GrupoServico, Servico, Chamado, FilaChamados, ChamadoResposta, HistoricoChamados, SetorChamado, ChamadoReaberto
 from chamadoscmc.lib.mail import Mailer
 from autentica.lib.exceptions import BusinessLogicException
 
@@ -91,7 +91,7 @@ class FilaManager(object):
 	@novidade
 	@enviaEmail
 	@transaction.atomic
-	def reabre(self, usuario, chamado):
+	def reabre(self, usuario, chamado, motivo):
 		if chamado == None or chamado.status != 'FECHADO':
 			raise BusinessLogicException('Status do chamado não é FECHADO.')
 		fila = FilaChamados.objects.filter(chamado=chamado).first()
@@ -102,6 +102,7 @@ class FilaManager(object):
 		chamado.reaberto = True
 		chamado.save()
 		historico = HistoricoChamados.objects.create(chamado=chamado, status='ABERTO')
+		reaberto = ChamadoReaberto.objects.create(chamado=chamado, motivo=motivo)
 		return fila
 
 	@transaction.atomic
