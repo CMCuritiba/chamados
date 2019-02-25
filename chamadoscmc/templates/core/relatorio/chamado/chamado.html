@@ -225,12 +225,12 @@
                 </tr>
                 {% if reaberturas %}
                     <tr>
-                        <td class="even resposta_data">Data</td>
-                        <td colspan="2" class="even resposta_resposta">Motivo</td>
+                        <td colspan="1" class="even resposta_data">Data Reabertura</td>
+                        <td colspan="2"class="even resposta_resposta">Motivo</td>
                     </tr>
                     {% for reabertura in reaberturas %}
                         <tr>
-                            <td class="even resposta_data">{{ reabertura.reaberto | date:'d/m/Y H:i'}}</td>
+                            <td colspan="1" class="even resposta_data">{{ reabertura.reaberto | date:'d/m/Y H:i'}}</td>
                             <td colspan="2" class="even resposta_resposta">{{ reabertura.motivo }}</td>
                         </tr>
                     {% endfor %}
