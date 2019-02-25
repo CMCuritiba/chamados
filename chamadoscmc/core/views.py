@@ -918,3 +918,67 @@ def exclui_assina_json(request):
     else:
         response = JsonResponse({'status':'false','message':'Nenhuma assinatura selecionada'}, status=401)
     return response            
+
+#--------------------------------------------------------------------------------------
+# Imprime chamado
+#--------------------------------------------------------------------------------------        
+class ImprimeChamado(CMCReportView):
+    template_name = 'core/relatorio/chamado/chamado.html'
+    download_filename = 'chamado.pdf'
+
+    def get_context_data(self, **kwargs):
+        context = super(CMCReportView, self).get_context_data(**kwargs)
+        context['title'] = 'Informação do Chamado'
+        context['pagesize'] = 'A4 portrait'
+        context['chamado'] = self.chamado
+        context['completo'] = self.completo
+        context['setor_solicitante'] = self.setor_solicitante
+        context['atendente'] = self.atendente
+        context['respostas'] = self.respostas
+        context['assinaturas'] = self.assinaturas
+        context['historicos'] = self.historicos
+
+        return context
+
+    def get(self, request, *args, **kwargs):
+        s_helper = ServiceHelper()
+
+        context = super(CMCReportView, self).get_context_data(**kwargs)
+        #id_chamado = kwargs.get('id_chamado', None)
+        #opt = kwargs.get('opt', False)
+
+        id_chamado = request.GET.get('id_chamado', None)
+        opt = request.GET.get('opt', None)
+
+        if id_chamado is not None:
+            chamado = Chamado.objects.get(pk=id_chamado)
+            if chamado.setor_solicitante is not None:
+                setor = s_helper.get_setor(chamado.setor_solicitante)
+                setor_solicitante = setor.set_nome
+            else:
+                setor_solicitante = ''
+
+            fila = FilaChamados.objects.filter(chamado=chamado).first()
+            if fila != None:
+                self.atendente = fila.usuario
+            else:
+                self.atendente = None
+
+            respostas = ChamadoResposta.objects.filter(chamado=chamado).order_by("data")
+
+            assinaturas = ChamadoAssinatura.objects.filter(chamado=chamado).order_by("email")
+
+            historicos = HistoricoChamados.objects.filter(chamado=chamado).order_by("data")
+
+            if opt is None or opt == '1':
+                self.completo = False
+            else:
+                self.completo = True
+
+            self.chamado = chamado
+            self.setor_solicitante = setor_solicitante
+            self.respostas = respostas
+            self.assinaturas = assinaturas
+            self.historicos = historicos
+
+        return super(ImprimeChamado, self).get(request, *args, **kwargs)      
