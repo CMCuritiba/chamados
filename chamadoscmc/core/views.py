@@ -940,6 +940,7 @@ class ImprimeChamado(CMCReportView):
         context['respostas'] = self.respostas
         context['assinaturas'] = self.assinaturas
         context['historicos'] = self.historicos
+        context['reaberturas'] = self.reaberturas
 
         return context
 
@@ -973,6 +974,8 @@ class ImprimeChamado(CMCReportView):
 
             historicos = HistoricoChamados.objects.filter(chamado=chamado).order_by("data")
 
+            reaberturas = ChamadoReaberto.objects.filter(chamado=chamado).order_by("data")
+
             if opt is None or opt == '1':
                 self.completo = False
             else:
@@ -983,6 +986,7 @@ class ImprimeChamado(CMCReportView):
             self.respostas = respostas
             self.assinaturas = assinaturas
             self.historicos = historicos
+            self.reaberturas = reaberturas
 
         return super(ImprimeChamado, self).get(request, *args, **kwargs)      
 
