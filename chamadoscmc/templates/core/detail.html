@@ -110,7 +110,7 @@
                             <div class="col-sm-12">
                                 <input type="button" onclick="javascript:volta_fila();" value="Voltar à fila" class="btn btn-default"/> 
                                 <input type="button" data-toggle="modal" data-target="#imprimeModal" data-chamado_id="{{ object.id }}" value="Imprime" class="btn btn-default"/> 
-                                {% if object.status == 'ABERTO' %}
+                                {% if object.status == 'ABERTO' and atende %}
                                     &nbsp;
                                     <input type="button" onclick="javascript:atende({{ object.id }});" value="Atender" class="btn btn-success"/> 
                                 {% endif %}
@@ -140,7 +140,7 @@
                         <div class="form-group"> 
                             <div class="col-sm-12">
                                 <input type="button" onclick="javascript:volta_fila();" value="Voltar à fila" class="btn btn-default"/> 
-                                {% if object.status == 'ABERTO' %}
+                                {% if object.status == 'ABERTO' and atende %}
                                     &nbsp;
                                     <input type="button" onclick="javascript:atende({{ object.id }});" value="Atender" class="btn btn-success"/> 
                                 {% endif %}
@@ -166,7 +166,7 @@
                         <div class="form-group"> 
                             <div class="col-sm-12">
                                 <input type="button" onclick="javascript:volta_fila();" value="Voltar à fila" class="btn btn-default"/> 
-                                {% if object.status == 'ABERTO' %}
+                                {% if object.status == 'ABERTO' and atende %}
                                     &nbsp;
                                     <input type="button" onclick="javascript:atende({{ object.id }});" value="Atender" class="btn btn-success"/> 
                                 {% endif %}
@@ -194,7 +194,7 @@
                         <div class="form-group"> 
                             <div class="col-sm-12">
                                 <input type="button" onclick="javascript:volta_fila();" value="Voltar à fila" class="btn btn-default"/> 
-                                {% if object.status == 'ABERTO' %}
+                                {% if object.status == 'ABERTO' and atende %}
                                     &nbsp;
                                     <input type="button" onclick="javascript:atende({{ object.id }});" value="Atender" class="btn btn-success"/> 
                                 {% endif %}
@@ -222,7 +222,7 @@
                         <div class="form-group"> 
                             <div class="col-sm-12">
                                 <input type="button" onclick="javascript:volta_fila();" value="Voltar à fila" class="btn btn-default"/> 
-                                {% if object.status == 'ABERTO' %}
+                                {% if object.status == 'ABERTO' and atende %}
                                     &nbsp;
                                     <input type="button" onclick="javascript:atende({{ object.id }});" value="Atender" class="btn btn-success"/> 
                                 {% endif %}
