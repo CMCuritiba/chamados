@@ -18,13 +18,26 @@
             {% endif %}
         </li>
         <li>
-            <a href="#3" data-toggle="tab">Imagens anexadas</a>
+            {% if num_imagens > 0 %}
+                <a href="#3" data-toggle="tab">Imagens anexadas <span class="badge">{{ num_imagens }}</span></a>
+            {% else %}
+                <a href="#3" data-toggle="tab">Imagens anexadas</a>
+            {% endif %}
+            
         </li>
         <li>
-            <a href="#4" data-toggle="tab">Assinaturas</a>
+            {% if num_assinaturas > 0 %}
+                <a href="#4" data-toggle="tab">Assinaturas <span class="badge">{{ num_assinaturas }}</span></a>
+            {% else %}
+                <a href="#4" data-toggle="tab">Assinaturas</a>
+            {% endif %}
         </li>
         <li>
-            <a href="#5" data-toggle="tab">Reaberturas</a>
+            {% if num_reaberturas > 0 %}
+                <a href="#5" data-toggle="tab">Reaberturas <span class="badge">{{ num_reaberturas }}</span></a>
+            {% else %}
+                <a href="#5" data-toggle="tab">Reaberturas</a>
+            {% endif %}
         </li>
     </ul>
     <br/>
@@ -41,7 +54,7 @@
                         <b>Solicitante: </b>{{ object.usuario }}
                     </li>
                     <li class="list-group-item">
-                        <b>Atendente: </b>{{ atendente }}
+                        <b>Atendente: </b>{{ atendente|default_if_none:"" }}
                     </li>
                     <li class="list-group-item">
                         <b>Ramal: </b>{{ object.ramal }}

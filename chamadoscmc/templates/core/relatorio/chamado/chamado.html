@@ -124,7 +124,7 @@
                 <td class="even"><b>Solicitante:</b> {{ chamado.usuario }}</td>
             </tr>
             <tr>
-                <td class="even"><b>Atendente:</b> {{ atendente }}</td>
+                <td class="even"><b>Atendente:</b> {{ atendente|default_if_none:"" }}</td>
             </tr>
             <tr>
                 <td class="even"><b>Setor Solicitante:</b> {{ setor_solicitante }}</td>

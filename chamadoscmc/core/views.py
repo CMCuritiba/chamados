@@ -358,6 +358,8 @@ class ConsolidadoChamadoDetailView(ChamadosVisualizaRequired, SuccessMessageMixi
         fila = FilaChamados.objects.filter(chamado=chamado).first()
         respostas = ChamadoResposta.objects.filter(chamado=self.get_object().id).order_by("data")
         imagens = ChamadoAnexo.objects.filter(chamado=self.get_object().id)
+        assinaturas = ChamadoAssinatura.objects.filter(chamado=self.get_object().id)
+        reaberturas = ChamadoReaberto.objects.filter(chamado=self.get_object().id)
         if chamado.setor_solicitante is not None:
             setor = s_helper.get_setor(chamado.setor_solicitante)
             setor_solicitante = setor.set_nome
@@ -367,6 +369,9 @@ class ConsolidadoChamadoDetailView(ChamadosVisualizaRequired, SuccessMessageMixi
         context['respostas'] = respostas
         context['imagens'] = imagens
         context['num_respostas'] = respostas.count()
+        context['num_imagens'] = imagens.count()
+        context['num_assinaturas'] = assinaturas.count()
+        context['num_reaberturas'] = reaberturas.count()
         context['setor_solicitante'] = setor_solicitante
         if fila != None:
             context['atendente'] = fila.usuario
@@ -846,6 +851,7 @@ class ConsolidadoChamadoEditlView(ChamadosAtendenteRequired, SuccessMessageMixin
         respostas = ChamadoResposta.objects.filter(chamado=self.get_object().id).order_by("data")
         imagens = ChamadoAnexo.objects.filter(chamado=self.get_object().id)
         assinaturas = ChamadoAssinatura.objects.filter(chamado=self.get_object().id).order_by("email")
+        reaberturas = ChamadoReaberto.objects.filter(chamado=self.get_object().id)
         if chamado.setor_solicitante is not None:
             setor = s_helper.get_setor(chamado.setor_solicitante)
             setor_solicitante = setor.set_nome
@@ -856,6 +862,9 @@ class ConsolidadoChamadoEditlView(ChamadosAtendenteRequired, SuccessMessageMixin
         context['imagens'] = imagens
         context['assinaturas'] = assinaturas
         context['num_respostas'] = respostas.count()
+        context['num_imagens'] = imagens.count()
+        context['num_assinaturas'] = assinaturas.count()
+        context['num_reaberturas'] = reaberturas.count()
         context['setor_solicitante'] = setor_solicitante
         context['MSCMC_SERVER'] = settings.MSCMC_SERVER
         if fila != None:
