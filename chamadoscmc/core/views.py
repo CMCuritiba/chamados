@@ -366,6 +366,10 @@ class ConsolidadoChamadoDetailView(ChamadosVisualizaRequired, SuccessMessageMixi
         else:
             setor_solicitante = ''
 
+        if SetorChamado.objects.get(setor_id=self.request.session['setor_id']).id == chamado.setor.id:
+            context['atende'] = True
+        else:
+            context['atende'] = False
         context['respostas'] = respostas
         context['imagens'] = imagens
         context['num_respostas'] = respostas.count()
@@ -799,6 +803,7 @@ class RelatorioChamados(CMCReportView):
         return context
 
     def post(self, request, *args, **kwargs):
+        print('----------------------1')
         context = super(CMCReportView, self).get_context_data(**kwargs)
         form = RelatorioSetorForm(request, request.POST)
         if form.is_valid():
@@ -830,8 +835,10 @@ class RelatorioChamados(CMCReportView):
             self.fim = form['data_fim'].value()
             self.setor = request.session['setor_nome']
             self.setor_solicitante = setor_solicitante
-
-        return super(RelatorioChamados, self).get(request, *args, **kwargs)      
+            return super(RelatorioChamados, self).get(request, *args, **kwargs)      
+        else:
+            print('----------------------2')
+            return render(request, 'core/relatorio/chamado/index.html', {'form': form})
 
 #--------------------------------------------------------------------------------------
 #
