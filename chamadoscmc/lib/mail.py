@@ -30,7 +30,7 @@ class Mailer:
 
         s_helper = ServiceHelper()
 
-        assunto = 'CMC - Controle de Chamados'
+        assunto = 'CMC - Controle do Chamado #' + str(chamado.id)
         para = [chamado.usuario.email]
 
         #de = 'chamados@cmc.pr.gov.br'
