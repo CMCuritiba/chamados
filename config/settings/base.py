@@ -354,8 +354,7 @@ PIPELINE = {
               'datatables.net-responsive-bs/css/responsive.bootstrap.min.css',
               #'datatables-responsive/css/responsive.bootstrap.css',
               #'datatables-rowreorder/css/rowReorder.dataTables.scss',
-              'login.css',
-              'callout.css',
+              'css/callout.css',
               #'blueimp-file-upload/css/jquery.fileupload-ui.css',
               
             ),

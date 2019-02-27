@@ -803,7 +803,6 @@ class RelatorioChamados(CMCReportView):
         return context
 
     def post(self, request, *args, **kwargs):
-        print('----------------------1')
         context = super(CMCReportView, self).get_context_data(**kwargs)
         form = RelatorioSetorForm(request, request.POST)
         if form.is_valid():
@@ -837,7 +836,6 @@ class RelatorioChamados(CMCReportView):
             self.setor_solicitante = setor_solicitante
             return super(RelatorioChamados, self).get(request, *args, **kwargs)      
         else:
-            print('----------------------2')
             return render(request, 'core/relatorio/chamado/index.html', {'form': form})
 
 #--------------------------------------------------------------------------------------
@@ -946,8 +944,8 @@ class ImprimeChamado(CMCReportView):
     download_filename = 'chamado.pdf'
 
     def get_context_data(self, **kwargs):
-        context = super(CMCReportView, self).get_context_data(**kwargs)
-        context['title'] = 'Informação do Chamado'
+        context = super(CMCReportView, self).get_context_data(encoding =u"utf-8", **kwargs)
+        context['title'] = 'Dados do Chamado'
         context['pagesize'] = 'A4 portrait'
         context['chamado'] = self.chamado
         context['completo'] = self.completo
@@ -963,7 +961,7 @@ class ImprimeChamado(CMCReportView):
     def get(self, request, *args, **kwargs):
         s_helper = ServiceHelper()
 
-        context = super(CMCReportView, self).get_context_data(**kwargs)
+        context = super(CMCReportView, self).get_context_data(encoding =u"utf-8", **kwargs)
         #id_chamado = kwargs.get('id_chamado', None)
         #opt = kwargs.get('opt', False)
 
