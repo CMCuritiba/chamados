@@ -1,8 +1,14 @@
 {% extends "easy_pdf/base.html" %}
 {% load reporttags %}
+{% load pipeline %}
+{% stylesheet 'master' %}
 
 {% block layout_style %}
     <style type="text/css">
+        @font-face {
+            font-family: ttf-relatorio;
+            src: url("fonts/arialuni.ttf");
+        }
         @page {
             size: {{ pagesize|default:"A4" }};
             margin-left: 0.5cm;
@@ -93,6 +99,10 @@
             padding-bottom: 0px;
         }
 
+        .ttf {
+            font-family: ttf-relatorio;
+        }
+
         {% block my_style %}
         {% endblock %} 
 
@@ -139,10 +149,10 @@
                 <td class="even"><b>Serviço:</b> {{ chamado.servico }}</td>
             </tr>
             <tr>
-                <td class="even"><b>Assunto:</b> {{ chamado.assunto }}</td>
+                <td class="even"><b>Assunto: </b><span class="ttf">{{ chamado.assunto  }}</span></td>
             </tr>
             <tr>
-                <td class="even"><b>Descrição:</b> {{ chamado.descricao }}</td>
+                <td class="even"><b>Descrição: </b><span class="ttf">{{ chamado.descricao }}</span></td>
             </tr>
             <tr>
                 <td class="even"><b>Prioridade:</b> {{ chamado.prioridade }}</td>
@@ -190,9 +200,9 @@
                     </tr>
                     {% for resposta in respostas %}
                         <tr>
-                            <td class="even resposta_data">{{ resposta.data | date:'d/m/Y H:i'}}</td>
-                            <td class="even resposta_atendente">{{ resposta.usuario.username }}</td>
-                            <td class="even resposta_resposta">{{ resposta.resposta }}</td>
+                            <td class="even resposta_data"><span class="ttf">{{ resposta.data | date:'d/m/Y H:i'}}</span></td>
+                            <td class="even resposta_atendente"><span class="ttf">{{ resposta.usuario.username }}</span></td>
+                            <td class="even resposta_resposta"><span class="ttf">{{ resposta.resposta }}</span></td>
                         </tr>
                     {% endfor %}
                 {% else %}
@@ -230,8 +240,8 @@
                     </tr>
                     {% for reabertura in reaberturas %}
                         <tr>
-                            <td colspan="1" class="even resposta_data">{{ reabertura.reaberto | date:'d/m/Y H:i'}}</td>
-                            <td colspan="2" class="even resposta_resposta">{{ reabertura.motivo }}</td>
+                            <td colspan="1" class="even resposta_data"><span class="ttf">{{ reabertura.reaberto | date:'d/m/Y H:i'}}</span></td>
+                            <td colspan="2" class="even resposta_resposta"><span class="ttf">{{ reabertura.motivo }}</span></td>
                         </tr>
                     {% endfor %}
                 {% else %}

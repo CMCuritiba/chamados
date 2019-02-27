@@ -33,7 +33,7 @@
 	$(document).ready(function () {
 
 		atualizaGrupoServico();
-		atualizaServico();
+		//atualizaServico();
 		atualizaLocalizacao();
 		atualizaPavimento();
 
@@ -120,6 +120,7 @@
 				    toAppend = '<option value="0">----------</option>'
                 }
                 */
+                console.log(toAppend);
                 $('#id_servico').append(toAppend);
                 setaPatrimonio();
 
