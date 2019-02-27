@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 
-{% block title %}{% endblock %}
+{% block title %}Relatório de Chamados{% endblock %}
 
 {% block content %}
 
@@ -42,6 +42,8 @@
             autoclose: true,
             orientation: "bottom left",
         });
+
+        $('#id_data_inicio').datepicker('setDate', new Date());
 
         montaComboGrupoServico();
         //montaComboSetorSolicitante();
@@ -105,6 +107,8 @@
     }
 
     function relatorio() {
+        if ($('#id_data_inicio').val() == '')
+            $('#id_data_inicio').datepicker('setDate', new Date());
         $('#formulario').submit();
     }
 </script>
