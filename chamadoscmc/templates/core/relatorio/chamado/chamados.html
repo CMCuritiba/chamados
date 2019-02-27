@@ -1,8 +1,14 @@
 {% extends "easy_pdf/base.html" %}
 {% load reporttags %}
+{% load pipeline %}
+{% stylesheet 'master' %}
 
 {% block layout_style %}
     <style type="text/css">
+        @font-face {
+            font-family: ttf-relatorio;
+            src: url("fonts/arialuni.ttf");
+        }
         @page {
             size: {{ pagesize|default:"A4" }};
             margin-left: 0.5cm;
@@ -105,6 +111,9 @@
         .even { 
             background-color: #fff;
         }
+        .ttf {
+            font-family: ttf-relatorio;
+        }
 
         {% block my_style %}
         {% endblock %} 
@@ -145,7 +154,7 @@
                 <td class="setor {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">{{ chamado.get_sigla }}</td>
                 <td class="grupo {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">{{ chamado.grupo_servico }}</td>
                 <td class="servico {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">{{ chamado.servico }}</td>
-                <td class="assunto {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">{{ chamado.assunto }}</td>
+                <td class="assunto {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}"><span class="ttf">{{ chamado.assunto }}</span></td>
                 <td class="abertura {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">{{ chamado.data_abertura | date:'d/m/Y H:i' }}</td>
                 <td class="fechamento {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">{{ chamado.data_fechamento | date:'d/m/Y H:i' }}</td>
             </tr>
