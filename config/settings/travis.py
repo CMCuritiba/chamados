@@ -307,19 +307,26 @@ LOGGING = {
 # ------------------------------------------------------------------------------
 
 PIPELINE = {
-    'PIPELINE_ENABLED': False,
+    'PIPELINE_ENABLED': True,
     'JS_COMPRESSOR': False,
     'CSS_COMPRESSOR': False,
     'STYLESHEETS': {
         'master': {
             'source_filenames': (
-              'bootstrap/dist/css/bootstrap.css',
+              'bootstrap-css/css/bootstrap.css',
               'jasny-bootstrap/dist/css/jasny-bootstrap.css',
+              'bootstrap-datepicker/dist/css/bootstrap-datepicker3.css',
               'datatables/media/css/jquery.dataTables.css',
               'datatables/media/css/dataTables.bootstrap.css',
-              'login.css',
-              'font-awesome/css/font-awesome.css',
+              #'font-awesome/css/font-awesome.css',
               'bootstrap-select/dist/css/bootstrap-select.css',
+              'bootstrap-fileinput/css/fileinput.css',
+              'datatables.net-responsive-bs/css/responsive.bootstrap.min.css',
+              #'datatables-responsive/css/responsive.bootstrap.css',
+              #'datatables-rowreorder/css/rowReorder.dataTables.scss',
+              'css/callout.css',
+              #'blueimp-file-upload/css/jquery.fileupload-ui.css',
+              
             ),
             'output_filename': 'css/master.css',
         },
@@ -328,23 +335,42 @@ PIPELINE = {
         'master': {
             'source_filenames': (
               'jquery/dist/jquery.js',
-              'bootstrap/dist/js/bootstrap.js',
+              'moment/min/moment.min.js',
+              'moment/locale/pt-br.js',
+              #'jquery-ui/jquery-ui.js',
+              'bootstrap-css/js/bootstrap.js',
               'jasny-bootstrap/dist/js/jasny-bootstrap.js',
               'underscore/underscore.js',
               'datatables/media/js/jquery.dataTables.js',
               'datatables/media/js/dataTables.bootstrap.js',
-              #'vue/dist/vue.common.js',
-              'vue/dist/vue.js',
               'bootstrap-select/dist/js/bootstrap-select.js',
-              #'vue-strap/dist/vue-strap.js',
-              #'vue-strap/dist/vue-strap-lang.js',
+              'bootstrap-datepicker/dist/js/bootstrap-datepicker.js',
+              'bootstrap-datepicker/dist/locales/bootstrap-datepicker.pt-BR.min.js',
+              'bootstrap-fileinput/js/fileinput.js',
+              'bootstrap-fileinput/js/locales/pt-BR.js',
+              'fontawesome/svg-with-js/js/fontawesome-all.min.js',
+              #'datatables-responsive/js/dataTables.responsive.js',
+              'datatables.net-responsive/js/dataTables.responsive.min.js',
+              'datatables.net-responsive-bs/js/responsive.bootstrap.min.js',
+              'datatables-datetime-moment/dist/js/datetime-moment.js',
+              #'datatables-rowreorder/js/dataTables.rowReorder.js',
+              #'blueimp-load-image/js/load-image.js',
+              #'blueimp-canvas-to-blob/js/canvas-to-blob.js',
+              #'blueimp-file-upload/js/vendor/jquery.ui.widget.js',
+              #'blueimp-file-upload/js/jquery.iframe-transport.js',
+              #'blueimp-file-upload/js/jquery.fileupload.js',
+              #'blueimp-file-upload/js/jquery.fileupload-process.js',
+              #'blueimp-file-upload/js/jquery.fileupload-image.js',
+              #'blueimp-file-upload/js/jquery.fileupload-validate.js',
+              #'jquery.cookie/jquery.cookie.js',
+              'js/build.js',
             ),
             'output_filename': 'js/master.js',
         }
     }
 }
 
-STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
+STATICFILES_STORAGE = 'pipeline.storage.PipelineStorage'
 
 # BOWER
 # ------------------------------------------------------------------------------
