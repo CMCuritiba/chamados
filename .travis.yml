@@ -6,6 +6,7 @@ python:
 before_install:
   - export DJANGO_SETTINGS_MODULE=config.settings.travis
   - python3 -c 'import os,sys; os.set_blocking(sys.stdout.fileno(), True)'  
+  - python3 -c "import fcntl; fcntl.fcntl(1, fcntl.F_SETFL, 0)"
 
 
 # comando para instalar dependencias
