@@ -160,6 +160,11 @@
             <tr>
                 <td class="even"><b>Status:</b> {{ chamado.status }}</td>
             </tr>
+            {% if chamado.patrimonio is not None %}
+                <tr>
+                    <td class="even"><b>Patrimônio:</b> {{ chamado.patrimonio }}</td>
+                </tr>
+            {% endif %}
         </table>
 
         {% if completo %}

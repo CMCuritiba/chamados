@@ -71,7 +71,7 @@
                             <b>Atendente: </b>{{ atendente|default_if_none:"" }}
                         </li>
                         <li class="list-group-item">
-                            <b>Ramal: </b>{{ object.ramal }}
+                            <b>Ramal: </b>{{ object.ramal|default_if_none:"" }}
                         </li>
                         <li class="list-group-item">
                             <b>Setor Destino</b>: {{ object.setor }}
@@ -83,7 +83,7 @@
                             <b>Serviço: </b>{{ object.servico }}
                         </li>
                         <li class="list-group-item">
-                            <b>Assunto: </b>{{ object.assunto }}
+                            <b>Assunto: </b>{{ object.assunto|default_if_none:"" }}
                         </li>
                         <li class="list-group-item">
                             <b>Descrição: </b>{{ object.descricao }}
@@ -94,6 +94,11 @@
                         <li class="list-group-item">
                             <b>Status: </b>{{ object.status }}
                         </li>
+                        {% if object.patrimonio is not None %}
+                            <li class="list-group-item">
+                                <b>Patrimônio: </b>{{ object.patrimonio }}
+                            </li>
+                        {% endif %}
                         <li class="list-group-item">
                             <b>Respostas: </b><br/>
                             {% for resposta in respostas %}
