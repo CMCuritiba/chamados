@@ -125,6 +125,8 @@
         				title: "Assunto",
         				data: 'chamado_assunto',
                         render: function(data, type, full, meta) {
+                            if (data == null)
+                                data = '';
                             return '<a href="/chamado/detalhe/' + full.chamado_id + '/">'+ data + '</a>';
                         }
         			},
