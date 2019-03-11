@@ -23,7 +23,6 @@ Contribuindo
 Escolha o local onde vai armazenar o repositório, por exemplo ~/projetos/python/:
 
 ::
-    :language: bash
 
     $ mkdir -p ~/projetos/python
     $ cd ~/projetos/python
@@ -34,7 +33,6 @@ Membros da comunidade devem seguir os passos abaixo:
 Crie um fork e clone o repositório:
 
 ::
-    :language: bash
 
     $ git clone https://github.com/SEU_USUARIO_GITHUB/chamados
     $ cd chamados
@@ -48,7 +46,6 @@ Após realizar uma contribuição, um pull request pode ser feito diretamente ao
 Os membros da Diretoria de Informática da Câmara Municipal podem clonar o repositório principal, mas devem trabalhar no branch develop.
 
 ::
-    :language: bash
 
     $ git clone git@github.com:CMCuritiba/chamados.git
     $ cd chamados
@@ -57,7 +54,6 @@ Os membros da Diretoria de Informática da Câmara Municipal podem clonar o repo
 Em caso de dúvidas verifique se o branch está correto, o branch ativo terá um asterisco ao lado do nome:
 
 ::
-    :language: bash
 
     $ git branch
     master
@@ -75,7 +71,6 @@ Seguem dois exemplos, com a biblioteca padrão do python, venv e outro exemplo c
 Para criar um ambiente virtual com a biblioteca venv para o python3 que é a versão de python padrão dos projetos no momento, normalmente fazemos:
 
 ::
-    :language: bash
 
     $ mkdir -p ~/projetos/python/chamados
     $ cd ~/projetos/python/chamados
@@ -88,7 +83,6 @@ Necessário sempre que uma nova janela de terminal for aberta.
 Por exemplo, ao abir um terminal:
 
 ::
-    :language: bash
 
     $ cd ~/projetos/python/chamados
     $ source venv/bin/activate
@@ -98,7 +92,6 @@ O pacote do virtualenvwrapper deve estar instalado no sistema operacional.
 Para instalar em um ambiente similar ao Debian GNU/Linux bastam alguns comandos, atenção essas instruções podem variar um pouco dependendo da distribuição:
 
 ::
-    :language: bash
 
     $ sudo apt install virtualenvwrapper
     $ source /usr/share/virtualenvwrapper/virtualenvwrapper.sh
@@ -108,7 +101,6 @@ Ou então, se preferir, pode utilizar as instruções no link da documentação 
 Exemplo de criação do ambiente virtual com virtualenvwrapper:
 
 ::
-    :language: bash
 
     $ mkvirtualenv -p /usr/bin/python3 chamados
     $ mkdir -p ~/projetos/python/chamados
@@ -118,10 +110,7 @@ Exemplo de criação do ambiente virtual com virtualenvwrapper:
 Sempre que precisar ativar o ambiente virtual, por exemplo quando uma nova janela de terminal for aberta.
 O virtualenvwrapper tem uma função para ativar o ambiente virtual e mudar para o diretório do projeto, o nome dela é workon:
 
-::
-    :language: bash
-
-    $ workon chamados
+``$ workon chamados``
 
 Com o ambiente virtual ativado, é possível então instalar as bibliotecas necessárias e realizar as configurações iniciais do Django.
 
@@ -131,7 +120,7 @@ Configurações iniciais do Django
 Ativar o ambiente virtual e então instalar as bibliotecas do projeto, primeiro sem o virtualenvwrapper:
 
 ::
-    :language: bash
+
     $ cd ~/projetos/python/chamados
     $ source venv/bin/activate
     $ pip install -r requirements.txt
@@ -139,7 +128,7 @@ Ativar o ambiente virtual e então instalar as bibliotecas do projeto, primeiro 
 Ou então, se estiver utilizando o virtualenvwrapper:
 
 ::
-    :language: bash
+
     $ workon chamados
     $ pip install -r requirements.txt
 
