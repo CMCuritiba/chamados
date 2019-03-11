@@ -20,13 +20,50 @@ Aplicação Django para controle de chamados Câmara Municipal de Curitiba
 Contribuindo
 ------------
 
+Escolha o local onde vai armazenar o repositório, por exemplo ~/projetos/python/:
+
+::
+    :language: bash
+
+    $ mkdir -p ~/projetos/python
+    $ cd ~/projetos/python
+
+Membros da equipe da Diretoria de Informática da Câmara Municipal pode seguir as instruções abaixo.
+Membros da comunidade devem seguir os passos abaixo:
+
 Crie um fork e clone o repositório:
 
-``$ git clone https://github.com/SEU_USUARIO_GITHUB/chamados``
+::
+    :language: bash
+
+    $ git clone https://github.com/SEU_USUARIO_GITHUB/chamados
+    $ cd chamados
 
 Adicione o repositório remoto upstream:
 
 ``$ git remote add upstream git@github.com:CMCuritiba/chamados.git``
+
+Após realizar uma contribuição, um pull request pode ser feito diretamente ao branch master.
+
+Os membros da Diretoria de Informática da Câmara Municipal podem clonar o repositório principal, mas devem trabalhar no branch develop.
+
+::
+    :language: bash
+
+    $ git clone git@github.com:CMCuritiba/chamados.git
+    $ cd chamados
+    $ git checkout develop
+
+Em caso de dúvidas verifique se o branch está correto, o branch ativo terá um asterisco ao lado do nome:
+
+::
+    :language: bash
+
+    $ git branch
+    master
+    develop*
+
+Após realizar uma contribuição, um merge request pode ser feito do branch develop para o branch master.
 
 Ambiente virtual
 ----------------
@@ -86,6 +123,27 @@ O virtualenvwrapper tem uma função para ativar o ambiente virtual e mudar para
 
     $ workon chamados
 
+Com o ambiente virtual ativado, é possível então instalar as bibliotecas necessárias e realizar as configurações iniciais do Django.
+
+Configurações iniciais do Django
+--------------------------------
+
+Ativar o ambiente virtual e então instalar as bibliotecas do projeto, primeiro sem o virtualenvwrapper:
+
+::
+    :language: bash
+    $ cd ~/projetos/python/chamados
+    $ source venv/bin/activate
+    $ pip install -r requirements.txt
+
+Ou então, se estiver utilizando o virtualenvwrapper:
+
+::
+    :language: bash
+    $ workon chamados
+    $ pip install -r requirements.txt
+
+Em seguida o django pode ser configurado.
 Configure o seu ambiente, crie um arquivo chamado .env alterando as variáveis necessários:
 
 ::
