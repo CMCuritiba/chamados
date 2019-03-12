@@ -525,7 +525,10 @@
     }
 
     function volta_fila() {
-        $(location).attr('href', '/fila/');
+        if ((document.referrer).indexOf("fila") >= 0)
+            $(location).attr('href', '/fila/');
+        else
+            $(location).attr('href', '/chamado/');
     }
 
     function volta_detalhes(id_chamado) {
