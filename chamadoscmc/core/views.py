@@ -366,9 +366,12 @@ class ConsolidadoChamadoDetailView(ChamadosVisualizaRequired, SuccessMessageMixi
         else:
             setor_solicitante = ''
 
-        if SetorChamado.objects.get(setor_id=self.request.session['setor_id']).id == chamado.setor.id:
-            context['atende'] = True
-        else:
+        try:
+            if SetorChamado.objects.get(setor_id=self.request.session['setor_id']).id == chamado.setor.id:
+                context['atende'] = True
+            else:
+                context['atende'] = False
+        except:
             context['atende'] = False
         context['respostas'] = respostas
         context['imagens'] = imagens
