@@ -165,6 +165,16 @@
                     <td class="even"><b>Patrimônio:</b> {{ chamado.patrimonio }}</td>
                 </tr>
             {% endif %}
+            {% if chamado.localizacao is not None %}
+                <tr>
+                    <td class="even"><b>Localização: </b>{{ chamado.localizacao }}</td>
+                </tr>
+            {% endif %}
+            {% if chamado.pavimento is not None %}
+                <tr>
+                    <td class="even"><b>Pavimento: </b>{{ chamado.pavimento }}</td>
+                </tr>
+            {% endif %}
         </table>
 
         {% if completo %}

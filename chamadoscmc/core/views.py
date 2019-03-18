@@ -380,6 +380,9 @@ class ConsolidadoChamadoDetailView(ChamadosVisualizaRequired, SuccessMessageMixi
         context['num_assinaturas'] = assinaturas.count()
         context['num_reaberturas'] = reaberturas.count()
         context['setor_solicitante'] = setor_solicitante
+        context['localizacao'] = chamado.localizacao
+        context['pavimento'] = chamado.pavimento
+
         if fila != None:
             context['atendente'] = fila.usuario
         return context
@@ -958,6 +961,8 @@ class ImprimeChamado(CMCReportView):
         context['assinaturas'] = self.assinaturas
         context['historicos'] = self.historicos
         context['reaberturas'] = self.reaberturas
+        context['localizacao'] = self.localizacao
+        context['pavimento'] = self.pavimento
 
         return context
 
@@ -1004,6 +1009,8 @@ class ImprimeChamado(CMCReportView):
             self.assinaturas = assinaturas
             self.historicos = historicos
             self.reaberturas = reaberturas
+            self.localizacao = chamado.localizacao
+            self.pavimento = chamado.pavimento
 
         return super(ImprimeChamado, self).get(request, *args, **kwargs)      
 
