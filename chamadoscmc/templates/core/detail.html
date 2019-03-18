@@ -94,9 +94,19 @@
                         <li class="list-group-item">
                             <b>Status: </b>{{ object.status }}
                         </li>
-                        {% if object.patrimonio is not None %}
+                        {% if object.patrimonio is not None and object.patrimonio != '' %}
                             <li class="list-group-item">
                                 <b>Patrimônio: </b>{{ object.patrimonio }}
+                            </li>
+                        {% endif %}
+                        {% if object.localizacao is not None %}
+                            <li class="list-group-item">
+                                <b>Localização: </b>{{ object.localizacao }}
+                            </li>
+                        {% endif %}
+                        {% if object.pavimento is not None %}
+                            <li class="list-group-item">
+                                <b>Pavimento: </b>{{ object.pavimento }}
                             </li>
                         {% endif %}
                         <li class="list-group-item">
