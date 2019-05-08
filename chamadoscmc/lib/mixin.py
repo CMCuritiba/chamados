@@ -32,9 +32,11 @@ class ChamadosAtendenteRequired(CMCLoginRequired):
 
 		if retorno.status_code == 302:
 			return HttpResponseRedirect(retorno.url)
-
-		setor_chamado = SetorChamado.objects.get(setor_id=request.session['setor_id'])
-		if not setor_chamado.recebe_chamados:
+		try:
+			setor_chamado = SetorChamado.objects.get(setor_id=request.session['setor_id'])
+			if not setor_chamado.recebe_chamados:
+				return HttpResponseRedirect(self.message_url)
+		except:
 			return HttpResponseRedirect(self.message_url)
 
 		chave = kwargs.get('pk', None)
