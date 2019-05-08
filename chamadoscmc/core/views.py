@@ -24,6 +24,8 @@ from django.db.models import Q
 from django.shortcuts import render
 from django.conf import settings
 
+import datetime
+
 from .forms import ChamadoForm
 from .models import GrupoServico, Servico, Chamado, FilaChamados, ChamadoResposta, HistoricoChamados, SetorChamado, Localizacao, Pavimento, ChamadoAnexo
 from .models import ChamadoAssinatura, ChamadoReaberto
@@ -117,7 +119,7 @@ def chamados_abertos_json(request, setor_id):
     if setor_id == None or setor_id == '' or setor_id == '0':
         chamados = None
     else:
-        chamados = Chamado.objects.filter(setor__setor_id=setor_id)
+        chamados = Chamado.objects.filter(setor__setor_id=setor_id).order_by('-id')[:100]
         #chamados = Chamado.objects.filter(setor__setor_id=27)
     '''        
     if len(chamados) == 0:
@@ -143,7 +145,7 @@ def chamados_abertos_json(request, setor_id):
             chamado_json['fila_usuario'] = fila.usuario.username
 
         resposta.append(chamado_json)
-    
+
     return JsonResponse(resposta, safe=False)           
 
 #--------------------------------------------------------------------------------------
