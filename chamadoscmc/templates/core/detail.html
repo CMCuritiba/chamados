@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% load static %}
+{% load file_util %}
 
 {% block title %}Informações do Chamado{% endblock %}
 
@@ -509,7 +510,7 @@
             showBrowse: false,
             showPreview: true,
             showCaption: false,
-            allowedFileExtensions: ["jpg", "png", "gif", "jpeg"],
+            allowedFileExtensions: ["jpg", "png", "gif", "jpeg", "pdf"],
             maxFileSize: 5000,
             maxFilesNum: 3,
             overwriteInitial: false,
@@ -519,8 +520,12 @@
                 {% for imagem in imagens %}
                     "/media/{{ imagem.arquivo }}",
                 {% endfor %}
+            ],
+            initialPreviewConfig: [
+                {% for imagem in imagens %}
+                    {{ imagem | extensao }},
+                {% endfor %}
             ]
-
         });
 
     });

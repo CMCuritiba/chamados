@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
+{% load file_util %}
 
 {% block title %}Chamados{% endblock %}
 
@@ -56,6 +57,16 @@
             maxFileCount: 3,
             initialPreviewAsData: true,
             overwriteInitial: false,
+						initialPreview: [
+                {% for imagem in imagens %}
+                    "/media/{{ imagem.arquivo }}",
+                {% endfor %}
+            ],
+            initialPreviewConfig: [
+                {% for imagem in imagens %}
+                    {{ imagem | extensao }},
+                {% endfor %}
+            ]
         });
 		$('#btSalvar').attr('enabled', true);		
 	});
