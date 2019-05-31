@@ -38,7 +38,7 @@ class ChamadoForm(forms.ModelForm):
         #self.fields['setor'] = forms.ChoiceField(label='Setor',  required=True, widget=forms.Select(attrs={'data-live-search': 'true'}))
         self.fields['localizacao'].empty_label = "Selecione..."
         self.fields['pavimento'].empty_label = "Selecione..."
-        self.fields['foto'] = forms.ImageField(required=False, label='Foto(s)', widget=forms.FileInput(attrs={'multiple': 'true'}))
+        self.fields['foto'] = forms.FileField(required=False, label='Foto(s)', widget=forms.FileInput(attrs={'multiple': 'true'}))
 
         self.fields['grupo_servico'].label = 'Grupo de Serviço'
         self.fields['servico'].label = 'Serviço'
