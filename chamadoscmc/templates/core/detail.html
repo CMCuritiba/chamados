@@ -2,6 +2,7 @@
 {% load crispy_forms_tags %}
 {% load static %}
 {% load file_util %}
+{% load format_resposta %}
 
 {% block title %}Informações do Chamado{% endblock %}
 
@@ -113,7 +114,7 @@
                         <li class="list-group-item">
                             <b>Respostas: </b><br/>
                             {% for resposta in respostas %}
-                                <i class="fas fa-comment"></i> {{ resposta.data|date:"d/m/Y H:i" }} - {{ resposta }}<br/>
+                                <i class="fas fa-comment"></i> {{ resposta.data|date:"d/m/Y H:i" }} - {{ resposta | format_resposta }}
                             {% endfor %}
                         </li>
                     </ul>
@@ -338,7 +339,7 @@
                     title: "Resposta",
                     data: 'resposta',
                     render: function(data, type, full, meta) {
-                        return '<a href="#" data-toggle="modal" data-target="#respostaModal" data-resposta="' + full.resposta + '" data-chamado_id="' + full.chamado_id + '">' + data + '</a>';
+                        return '<a href="#" data-toggle="modal" data-target="#respostaModal" data-resposta="' + full.resposta + '" data-chamado_id="' + full.chamado_id + '">' + formata_resposta(data) + '</a>';
                     }
                 },
             ],
@@ -588,6 +589,10 @@
         var request_url = '/chamado/imprime?' + data;
         $("#imprimeModal").modal('hide');
         window.open(request_url, 'chamado');
+    }
+
+    function formata_resposta(resp) {
+        return (resp.replace(new RegExp('\n', 'g'), '<br />'))
     }
 
 
