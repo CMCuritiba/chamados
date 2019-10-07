@@ -406,6 +406,7 @@ def respostas_json(request, id_chamado):
         resposta_json['chamado_id'] = r.chamado.id
         resposta_json['data'] = r.data.strftime("%d/%m/%Y %H:%M")
         resposta_json['usuario'] = r.usuario.username
+        # resposta_json['resposta'] = str.replace(r.resposta, '\n', '<br/>')
         resposta_json['resposta'] = r.resposta
         
         resposta.append(resposta_json)

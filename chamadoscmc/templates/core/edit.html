@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% load file_util %}
+{% load format_resposta %}
 
 {% block title %}Atualização de Chamados{% endblock %}
 
@@ -102,7 +103,7 @@
                     <li class="list-group-item">
                         <b>Respostas: </b><br/>
                         {% for resposta in respostas %}
-                            <i class="fas fa-comment"></i> {{ resposta.data|date:"d/m/Y H:i" }} - {{ resposta }}<br/>
+                            <i class="fas fa-comment"></i> {{ resposta.data|date:"d/m/Y H:i" }} - {{ resposta | format_resposta }}
                         {% endfor %}
                     </li>
                 </ul>
@@ -379,7 +380,7 @@
                     render: function(data, type, full, meta) {
                         res = full.resposta;
                         res = escapeDoubleQuotes(res);
-                        return '<a href="#" data-toggle="modal" data-target="#respostaVeModal" data-resposta_id="' + full.resposta_id + '" data-resposta="' + res + '" data-chamado_id="' + full.chamado_id + '">' + data + '</a>';
+                        return '<a href="#" data-toggle="modal" data-target="#respostaVeModal" data-resposta_id="' + full.resposta_id + '" data-resposta="' + res + '" data-chamado_id="' + full.chamado_id + '">' + formata_resposta(data) + '</a>';
                     }
                 },
             ],
@@ -582,6 +583,10 @@
         $('.selectpicker').selectpicker();
 
     });
+
+    function formata_resposta(resp) {
+        return (resp.replace(new RegExp('\n', 'g'), '<br />'))
+    }
 
     function submeteResposta() {
         responde();
