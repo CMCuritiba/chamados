@@ -119,7 +119,7 @@ def chamados_abertos_json(request, setor_id):
     if setor_id == None or setor_id == '' or setor_id == '0':
         chamados = None
     else:
-        chamados = Chamado.objects.filter(setor__setor_id=setor_id).order_by('-id')[:100]
+        chamados = Chamado.objects.filter(setor__setor_id=setor_id, status='ABERTO').order_by('-id')[:100]
         #chamados = Chamado.objects.filter(setor__setor_id=27)
     '''        
     if len(chamados) == 0:
